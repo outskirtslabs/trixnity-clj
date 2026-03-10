@@ -26,12 +26,20 @@
             devenv.capsules.base
             devenv.capsules.clojure
           ];
+          env = [
+            {
+              name = "JAVA_HOME";
+              value = pkgs.jdk25.home;
+            }
+          ];
           # https://numtide.github.io/devshell
           commands = [
             # { package = pkgs.bazqux; }
           ];
           packages = [
-            pkgs.gradle
+            (pkgs.gradle_9.override {
+              java = pkgs.jdk25;
+            })
           ];
 
         };

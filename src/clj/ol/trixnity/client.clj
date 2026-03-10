@@ -61,6 +61,34 @@
           ::schemas/event-id (:event-id payload)
           ::schemas/key (:key payload))))
 
+(defn current-user-id
+  "Returns the Matrix user id of `client` as a string."
+  [client]
+  (interop/current-user-id-blocking
+   {::schemas/client client}))
+
+(defn open-client!
+  "Constructs or reuses a `MatrixClient`.
+
+  Resolution order:
+
+  1. `::schemas/client` when the caller already has a client instance.
+  2. `::schemas/open-client` when the caller wants custom construction logic.
+  3. Built-in sqlite4clj store resume when `::schemas/database-path` and
+     `::schemas/media-path` are present.
+  4. Built-in password login via the Kotlin bridge.
+
+  This keeps [[start!]] flexible enough for callers who want to supply their
+  own repository implementation without pulling that dependency graph into this
+  library."
+  [config]
+  (or (::schemas/client config)
+      (when-let [open-client (::schemas/open-client config)]
+        (open-client config))
+      (when (and (::schemas/database-path config) (::schemas/media-path config))
+        (interop/from-store-blocking config))
+      (interop/login-with-password-blocking config)))
+
 (defn- normalize-event [runtime raw-event]
   (let [kind     (event-kind raw-event)
         room-id  (or (lookup raw-event :room-id) (lookup raw-event :room))
@@ -126,9 +154,7 @@
                           (enqueue-event! events normalized)
                           (dispatch-callback! handlers normalized)
                           normalized))
-         client       (or (when (and (::schemas/database config) (::schemas/media-path config))
-                            (interop/from-store-blocking config))
-                          (interop/login-with-password-blocking config))
+         client       (open-client! config)
          _            (interop/start-sync-blocking
                        (->start-sync-request {:client client}))
          base-runtime {:client client

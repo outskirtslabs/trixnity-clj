@@ -9,7 +9,7 @@
     (let [request {:homeserver-url "https://matrix.example.org"
                    :username       "bot"
                    :password       "secret"
-                   :database       :not-a-database
+                   :database-path  "./tmp/state/trixnity.sqlite"
                    :media-path     "./tmp/media"}]
       (try
         (sut/login-with-password-blocking request)
@@ -24,7 +24,7 @@
 
 (deftest from-store-blocking-validates-namespaced-request-keys-test
   (testing "unqualified keys are rejected before bridge invocation"
-    (let [request {:database   :not-a-database
+    (let [request {:database-path "./tmp/state/trixnity.sqlite"
                    :media-path "./tmp/media"}]
       (try
         (sut/from-store-blocking request)
@@ -37,12 +37,12 @@
           (is (= [:catn [:request ::schemas/FromStoreRequest]]
                  (:com.fulcrologic.guardrails/spec (ex-data ex)))))))))
 
-(deftest login-with-password-blocking-rejects-non-database-values-test
-  (testing "::database must be an Exposed Database value"
+(deftest login-with-password-blocking-rejects-non-string-database-path-test
+  (testing "::database-path must be a string value"
     (let [request {::schemas/homeserver-url "https://matrix.example.org"
                    ::schemas/username       "bot"
                    ::schemas/password       "secret"
-                   ::schemas/database       :not-a-database
+                   ::schemas/database-path  :not-a-path
                    ::schemas/media-path     "./tmp/media"}]
       (try
         (sut/login-with-password-blocking request)

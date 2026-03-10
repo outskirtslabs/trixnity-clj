@@ -245,7 +245,7 @@
 
 (deftest start-prefers-from-store-client-before-login-test
   (let [calls    (atom {})
-        database (Object.)]
+        database-path "./tmp/state/trixnity.sqlite"]
     (with-redefs [interop/from-store-blocking
                   (fn [request]
                     (swap! calls assoc :from-store (request-payload request))
@@ -265,9 +265,94 @@
 
                   interop/stop-timeline-pump
                   (fn [_] nil)]
-      (let [runtime (sut/start! {::schemas/database   database
+      (let [runtime (sut/start! {::schemas/database-path database-path
                                  ::schemas/media-path "./tmp/media"})]
         (is (= :stored-client (:client runtime)))
-        (is (= database (get-in @calls [:from-store ::schemas/database])))
+        (is (= database-path (get-in @calls [:from-store ::schemas/database-path])))
         (is (= "./tmp/media" (get-in @calls [:from-store ::schemas/media-path])))
         (is (= :stored-client (get-in @calls [:sync ::schemas/client])))))))
+
+(deftest start-falls-back-to-login-when-store-resume-returns-nil-test
+  (let [calls (atom {})]
+    (with-redefs [interop/from-store-blocking
+                  (fn [request]
+                    (swap! calls assoc :from-store (request-payload request))
+                    nil)
+
+                  interop/login-with-password-blocking
+                  (fn [request]
+                    (swap! calls assoc :login (request-payload request))
+                    :logged-in-client)
+
+                  interop/start-sync-blocking
+                  (fn [request]
+                    (swap! calls assoc :sync (request-payload request))
+                    nil)
+
+                  interop/start-timeline-pump
+                  (fn [_] :timeline-pump)
+
+                  interop/stop-timeline-pump
+                  (fn [_] nil)]
+      (let [runtime (sut/start! {::schemas/homeserver-url "https://matrix.example.org"
+                                 ::schemas/username       "bot"
+                                 ::schemas/password       "secret"
+                                 ::schemas/database-path  "./tmp/state/trixnity.sqlite"
+                                 ::schemas/media-path     "./tmp/media"})]
+        (is (= :logged-in-client (:client runtime)))
+        (is (= "./tmp/state/trixnity.sqlite"
+               (get-in @calls [:from-store ::schemas/database-path])))
+        (is (= "bot" (get-in @calls [:login ::schemas/username])))
+        (is (= :logged-in-client (get-in @calls [:sync ::schemas/client])))))))
+
+(deftest start-uses-prebuilt-client-without-opening-new-one-test
+  (let [calls (atom {})]
+    (with-redefs [interop/from-store-blocking
+                  (fn [_]
+                    (throw (ex-info "from-store should not be called" {})))
+
+                  interop/login-with-password-blocking
+                  (fn [_]
+                    (throw (ex-info "login should not be called" {})))
+
+                  interop/start-sync-blocking
+                  (fn [request]
+                    (swap! calls assoc :sync (request-payload request))
+                    nil)
+
+                  interop/start-timeline-pump
+                  (fn [_] :timeline-pump)
+
+                  interop/stop-timeline-pump
+                  (fn [_] nil)]
+      (let [runtime (sut/start! {::schemas/client :external-client})]
+        (is (= :external-client (:client runtime)))
+        (is (= :external-client (get-in @calls [:sync ::schemas/client])))))))
+
+(deftest start-uses-custom-open-client-function-test
+  (let [calls (atom {})]
+    (with-redefs [interop/from-store-blocking
+                  (fn [_]
+                    (throw (ex-info "from-store should not be called" {})))
+
+                  interop/login-with-password-blocking
+                  (fn [_]
+                    (throw (ex-info "login should not be called" {})))
+
+                  interop/start-sync-blocking
+                  (fn [request]
+                    (swap! calls assoc :sync (request-payload request))
+                    nil)
+
+                  interop/start-timeline-pump
+                  (fn [_] :timeline-pump)
+
+                  interop/stop-timeline-pump
+                  (fn [_] nil)]
+      (let [runtime (sut/start! {::schemas/open-client (fn [config]
+                                                         (swap! calls assoc :opened (request-payload config))
+                                                         :custom-client)
+                                 ::schemas/username    "bot"})]
+        (is (= :custom-client (:client runtime)))
+        (is (= "bot" (get-in @calls [:opened ::schemas/username])))
+        (is (= :custom-client (get-in @calls [:sync ::schemas/client])))))))

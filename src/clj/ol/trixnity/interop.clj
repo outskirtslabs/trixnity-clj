@@ -26,6 +26,12 @@
        (ClientBridge/fromStoreBlocking
         (schemas/validate! schema-registry ::schemas/FromStoreRequest request)))
 
+(>defn current-user-id-blocking
+       [request]
+       [::schemas/CurrentUserIdRequest => :string]
+       (ClientBridge/currentUserIdBlocking
+        (schemas/validate! schema-registry ::schemas/CurrentUserIdRequest request)))
+
 (>defn start-sync-blocking
        [request]
        [::schemas/StartSyncRequest => :nil]

@@ -1,14 +1,14 @@
 (ns ol.trixnity-poc.facade-main
   (:require
    [ol.trixnity.client :as client]
+   [ol.trixnity.repo :as repo]
    [ol.trixnity.schemas :as mx]
-   [ol.trixnity.store.h2 :as h2]
    [ol.trixnity-poc.bot-logic :as bot-logic]
    [ol.trixnity-poc.config :as config]
+   [ol.trixnity-poc.invite-error :as invite-error]
    [ol.trixnity-poc.room-state :as room-state])
   (:import
-   (java.nio.file Files Path)
-   (net.folivo.trixnity.core.model RoomId)))
+   (java.nio.file Files Path)))
 
 (defn- create-dirs! [^Path path]
   (Files/createDirectories path
@@ -28,19 +28,11 @@
   (some-> (:room-id-file cfg) ->path .getParent create-dirs!)
   nil)
 
-(defn create-database [cfg]
-  (h2/connect-exposed (str (:database-path cfg))))
-
-(defn- try-client-user-id [runtime]
-  (try
-    (some-> (:client runtime) (.getUserId))
-    (catch Throwable _
-      nil)))
-
-(defn- handlers [bot-user-id*]
+(defn- handlers [bot-user-id]
   (letfn [(should-handle-sender? [sender]
-            (or (nil? @bot-user-id*)
-                (not= (str sender) (str @bot-user-id*))))]
+            (and bot-user-id
+                 sender
+                 (not= (str sender) (str bot-user-id))))]
     {:on-text
      (fn [{:keys [sender body reply!]}]
        (when (and reply!
@@ -59,45 +51,51 @@
        (println "facade event error at" stage ":" (ex-message ex)))}))
 
 (defn- start-runtime! [cfg]
-  (let [facade-config {::mx/homeserver-url (config/url->string (:homeserver-url cfg))
-                       ::mx/username       (:username cfg)
-                       ::mx/password       (:password cfg)
-                       ::mx/database       (create-database cfg)
-                       ::mx/media-path     (str (:media-path cfg))
-                       :encryption?        true}
-        bot-user-id*  (atom nil)
-        runtime       (client/start! facade-config
-                                     (handlers bot-user-id*))]
-    (reset! bot-user-id* (try-client-user-id runtime))
-    runtime))
+  (let [facade-config (merge
+                       {::mx/homeserver-url (config/url->string (:homeserver-url cfg))
+                        ::mx/username       (:username cfg)
+                        ::mx/password       (:password cfg)
+                        :encryption?        true}
+                       (repo/sqlite4clj-config
+                        {:database-path (:database-path cfg)
+                         :media-path    (:media-path cfg)}))
+        client-handle (client/open-client! facade-config)
+        bot-user-id   (client/current-user-id client-handle)
+        runtime       (client/start! (assoc facade-config ::mx/client client-handle)
+                                     (handlers bot-user-id))]
+    (assoc runtime :bot-user-id bot-user-id)))
 
 (defn- resolve-room! [runtime cfg]
   (let [stored-room-id (room-state/load-room-id (:room-id-file cfg))]
     (if stored-room-id
       (do
         (println "Reusing room from state file:" stored-room-id)
-        (str stored-room-id))
-      (let [created-room-id (let [room-id (client/ensure-room! runtime
-                                                               {:room-name (:room-name cfg)})]
-                              (if (instance? RoomId room-id)
-                                room-id
-                                (RoomId. (str room-id))))]
+        stored-room-id)
+      (let [created-room-id (str (client/ensure-room! runtime
+                                                      {:room-name (:room-name cfg)}))]
         (room-state/save-room-id! (:room-id-file cfg) created-room-id)
         (println "Created room and persisted id to" (:room-id-file cfg))
-        (str created-room-id)))))
+        created-room-id))))
 
 (defn run-poc! []
   (let [cfg     (config/load-config)
         _       (ensure-local-paths! cfg)
         runtime (start-runtime! cfg)
         room-id (resolve-room! runtime cfg)]
-    (when-let [invite-user (:invite-user cfg)]
-      (client/invite-user! runtime
-                           {:room-id room-id
-                            :user-id (str invite-user)}))
     (println "Room name:" (:room-name cfg))
     (println "Room id:" room-id)
-    (println "Bot user:" (or (try-client-user-id runtime) :unknown))
+    (println "Bot user:" (or (:bot-user-id runtime) :unknown))
+    (when-let [invite-user (:invite-user cfg)]
+      (try
+        (println "Inviting user:" invite-user)
+        (client/invite-user! runtime
+                             {:room-id room-id
+                              :user-id invite-user})
+        (println "Invite completed for:" invite-user)
+        (catch Throwable ex
+          (if (invite-error/already-in-room-invite-failure? ex)
+            (println "Invite skipped; user already in room:" invite-user)
+            (println "Invite failed:" (ex-message ex))))))
     (assoc runtime
            :config cfg
            :room-id room-id)))

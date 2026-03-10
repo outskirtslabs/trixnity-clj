@@ -5,8 +5,7 @@
    [malli.core :as m]
    [malli.util :as mu])
   (:import
-   (net.folivo.trixnity.client MatrixClient)
-   (org.jetbrains.exposed.sql Database)
+   (de.connect2x.trixnity.client MatrixClient)
    (ol.trixnity.bridge TimelinePumpHandle)))
 
 (set! *warn-on-reflection* true)
@@ -16,9 +15,10 @@
   {::homeserver-url                    :string
    ::username                          :string
    ::password                          :string
-   ::database                          [:fn #(instance? Database %)]
+   ::database-path                     :string
    ::media-path                        :string
    ::client                            [:fn #(instance? MatrixClient %)]
+   ::open-client                       [:fn ifn?]
    ::timeline-pump                     [:fn #(instance? TimelinePumpHandle %)]
    ::room-name                         :string
    ::room-id                           :string
@@ -32,12 +32,15 @@
     [::homeserver-url ::homeserver-url]
     [::username ::username]
     [::password ::password]
-    [::database ::database]
+    [::database-path ::database-path]
     [::media-path ::media-path]]
    ::FromStoreRequest
    [:map
-    [::database ::database]
+    [::database-path ::database-path]
     [::media-path ::media-path]]
+   ::CurrentUserIdRequest
+   [:map
+    [::client ::client]]
    ::StartSyncRequest
    [:map
     [::client ::client]]

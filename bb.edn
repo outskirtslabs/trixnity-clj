@@ -12,10 +12,15 @@
          {:doc  "Start a local development server"
           :task (apply clojure "-M:repl/dev:dev" *command-line-args*)}
 
-         test
-         {:doc     "Run all tests or specific test suites"
+         test:clj
+         {:doc     "Run clojure test"
           :depends [bridge:build]
           :task    (apply clojure "-M:dev:kaocha" *command-line-args*)}
+
+         test:kotlin
+         {:doc     "Run kotlin tests"
+          :depends [bridge:build]
+          :task    (shell "gradle test")}
 
          poc:run
          {:doc  "Run facade POC entrypoint"
@@ -35,6 +40,9 @@
 
          build
          {:doc "Build" :depends [bridge:build]}
+
+         test
+         {:doc "Test" :depends [test:clj test:kotlin]}
 
          fmt
          {:doc  "Format code with cljfmt"

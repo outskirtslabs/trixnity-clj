@@ -1,15 +1,15 @@
 package ol.trixnity.bridge
 
 import kotlinx.coroutines.runBlocking
-import net.folivo.trixnity.client.room
-import net.folivo.trixnity.client.room.message.react
-import net.folivo.trixnity.client.room.message.reply
-import net.folivo.trixnity.client.room.message.text
-import net.folivo.trixnity.core.model.EventId
-import net.folivo.trixnity.core.model.RoomId
-import net.folivo.trixnity.core.model.UserId
-import net.folivo.trixnity.core.model.events.InitialStateEvent
-import net.folivo.trixnity.core.model.events.m.room.EncryptionEventContent
+import de.connect2x.trixnity.client.room
+import de.connect2x.trixnity.client.room.message.react
+import de.connect2x.trixnity.client.room.message.reply
+import de.connect2x.trixnity.client.room.message.text
+import de.connect2x.trixnity.core.model.EventId
+import de.connect2x.trixnity.core.model.RoomId
+import de.connect2x.trixnity.core.model.UserId
+import de.connect2x.trixnity.core.model.events.InitialStateEvent
+import de.connect2x.trixnity.core.model.events.m.room.EncryptionEventContent
 
 object RoomBridge {
     @JvmStatic

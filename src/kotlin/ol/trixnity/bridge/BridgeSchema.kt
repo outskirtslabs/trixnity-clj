@@ -7,7 +7,7 @@ internal typealias KeywordMap = Map<Keyword, *>
 internal object BridgeSchema {
     private const val namespace = "ol.trixnity.schemas"
 
-    val database: Keyword = Keyword.intern(namespace, "database")
+    val databasePath: Keyword = Keyword.intern(namespace, "database-path")
     val mediaPath: Keyword = Keyword.intern(namespace, "media-path")
     val client: Keyword = Keyword.intern(namespace, "client")
     val roomName: Keyword = Keyword.intern(namespace, "room-name")
@@ -23,12 +23,12 @@ internal object BridgeSchema {
         val homeserverUrl: Keyword = Keyword.intern(namespace, "homeserver-url")
         val username: Keyword = Keyword.intern(namespace, "username")
         val password: Keyword = Keyword.intern(namespace, "password")
-        val database: Keyword = BridgeSchema.database
+        val databasePath: Keyword = BridgeSchema.databasePath
         val mediaPath: Keyword = BridgeSchema.mediaPath
     }
 
     object FromStoreRequest {
-        val database: Keyword = BridgeSchema.database
+        val databasePath: Keyword = BridgeSchema.databasePath
         val mediaPath: Keyword = BridgeSchema.mediaPath
     }
 

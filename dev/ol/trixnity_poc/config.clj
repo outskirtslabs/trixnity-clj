@@ -3,8 +3,7 @@
    [clojure.string :as str])
   (:import
    (io.ktor.http URLBuilder URLParserKt Url)
-   (java.nio.file Path)
-   (net.folivo.trixnity.core.model UserId)))
+   (java.nio.file Path)))
 
 (defn- parse-url [s]
   (-> (URLBuilder.)
@@ -42,16 +41,15 @@
                                         (str "trixnity-clj-bot-room-" timestamp))
          room-id-file               (to-path
                                      (or (get env "MATRIX_ROOM_ID_FILE")
-                                         "./kotlin/.bot-state/room-id.txt"))
+                                         "./dev-data/room-id.txt"))
          media-path                 (to-path
                                      (or (get env "MATRIX_MEDIA_PATH")
-                                         "./kotlin/.bot-media"))
+                                         "./dev-data/media"))
          database-path              (to-path
                                      (or (get env "MATRIX_DB_PATH")
-                                         "./kotlin/.bot-state/trixnity-poc"))
+                                         "./dev-data/trixnity-poc.sqlite"))
          invite-user                (some-> (get env "MATRIX_INVITE_USER")
-                                            maybe-non-blank
-                                            (UserId.))
+                                            maybe-non-blank)
          try-register               (not= "false"
                                           (some-> (get env "MATRIX_TRY_REGISTER")
                                                   str/lower-case))]

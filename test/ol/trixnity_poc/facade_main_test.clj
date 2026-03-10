@@ -5,6 +5,7 @@
    [ol.trixnity.schemas :as mx]
    [ol.trixnity-poc.config :as config]
    [ol.trixnity-poc.facade-main :as sut]
+   [ol.trixnity-poc.invite-error :as invite-error]
    [ol.trixnity-poc.room-state :as room-state]))
 
 (deftest run-poc-creates-room-and-wires-mirror-and-reaction-handlers-test
@@ -24,9 +25,6 @@
                      :media-path     "./tmp/facade-media"
                      :invite-user    "@alice:example.org"})
 
-                  sut/create-database
-                  (fn [_] :database)
-
                   room-state/load-room-id
                   (fn [_] @room-state*)
 
@@ -34,6 +32,14 @@
                   (fn [_ room-id]
                     (reset! room-state* room-id)
                     room-id)
+
+                  client/open-client!
+                  (fn [_]
+                    :client-handle)
+
+                  client/current-user-id
+                  (fn [_]
+                    "@bot:example.org")
 
                   client/start!
                   (fn [cfg handlers]
@@ -58,16 +64,19 @@
         (is (= [[:start {::mx/homeserver-url "https://matrix.example.org"
                          ::mx/username       "bot"
                          ::mx/password       "secret"
-                         ::mx/database       :database
+                         ::mx/database-path  "./tmp/facade-db"
                          ::mx/media-path     "./tmp/facade-media"
+                         ::mx/client         :client-handle
                          :encryption?        true}]
-                [:ensure-room {:client :client-handle
-                               :events (:events result)
-                               :stop!  (:stop! result)}
+                [:ensure-room {:client      :client-handle
+                               :events      (:events result)
+                               :stop!       (:stop! result)
+                               :bot-user-id "@bot:example.org"}
                  {:room-name "Bot Room"}]
-                [:invite {:client :client-handle
-                          :events (:events result)
-                          :stop!  (:stop! result)}
+                [:invite {:client      :client-handle
+                          :events      (:events result)
+                          :stop!       (:stop! result)
+                          :bot-user-id "@bot:example.org"}
                  {:room-id "!new:example.org"
                   :user-id "@alice:example.org"}]]
                @calls))
@@ -82,6 +91,12 @@
                     :reply! (fn [body] (swap! reply-bodies conj body))})
           (on-reaction {:sender "@human:example.org"
                         :key    "🔥"
+                        :react! (fn [key] (swap! reaction-keys conj key))})
+          (on-text {:sender "@bot:example.org"
+                    :body   "echo"
+                    :reply! (fn [body] (swap! reply-bodies conj body))})
+          (on-reaction {:sender "@bot:example.org"
+                        :key    "🤖"
                         :react! (fn [key] (swap! reaction-keys conj key))})
 
           (is (= ["HELLO"] @reply-bodies))
@@ -100,15 +115,20 @@
                      :media-path     "./tmp/facade-media"
                      :invite-user    nil})
 
-                  sut/create-database
-                  (fn [_] :database)
-
                   room-state/load-room-id
                   (fn [_] "!existing:example.org")
 
                   room-state/save-room-id!
                   (fn [_ _]
                     (throw (ex-info "save-room-id! should not be called" {})))
+
+                  client/open-client!
+                  (fn [_]
+                    :client-handle)
+
+                  client/current-user-id
+                  (fn [_]
+                    "@bot:example.org")
 
                   client/start!
                   (fn [_ _]
@@ -128,3 +148,42 @@
       (let [result (sut/run-poc!)]
         (is (= "!existing:example.org" (:room-id result)))
         (is (empty? @calls))))))
+
+(deftest run-poc-continues-when-invite-fails-test
+  (with-redefs [config/load-config
+                (fn []
+                  {:homeserver-url "https://matrix.example.org"
+                   :username       "bot"
+                   :password       "secret"
+                   :room-name      "Bot Room"
+                   :room-id-file   "./tmp/facade-room-id.txt"
+                   :database-path  "./tmp/facade-db"
+                   :media-path     "./tmp/facade-media"
+                   :invite-user    "@alice:example.org"})
+
+                room-state/load-room-id
+                (fn [_] "!existing:example.org")
+
+                client/open-client!
+                (fn [_]
+                  :client-handle)
+
+                client/current-user-id
+                (fn [_]
+                  "@bot:example.org")
+
+                client/start!
+                (fn [_ _]
+                  {:client :client-handle
+                   :events (java.util.concurrent.LinkedBlockingQueue.)
+                   :stop!  (fn [] nil)})
+
+                client/invite-user!
+                (fn [_ _]
+                  (throw (RuntimeException. "statusCode=500 Internal Server Error")))
+
+                invite-error/already-in-room-invite-failure?
+                (fn [_] false)]
+    (let [runtime (sut/run-poc!)]
+      (is (= "!existing:example.org" (:room-id runtime)))
+      (is (= "@bot:example.org" (:bot-user-id runtime))))))

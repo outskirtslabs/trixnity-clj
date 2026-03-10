@@ -41,10 +41,10 @@
       (is (false? (:bot-admin config)))
       (is (str/starts-with? (:room-name config)
                             "trixnity-clj-bot-room-"))
-      (is (= "./kotlin/.bot-state/room-id.txt"
+      (is (= "./dev-data/room-id.txt"
              (str (:room-id-file config))))
-      (is (= "./kotlin/.bot-media" (str (:media-path config))))
-      (is (= "./kotlin/.bot-state/trixnity-poc"
+      (is (= "./dev-data/media" (str (:media-path config))))
+      (is (= "./dev-data/trixnity-poc.sqlite"
              (str (:database-path config))))
       (is (nil? (:invite-user config)))
       (is (true? (:try-register config))))))

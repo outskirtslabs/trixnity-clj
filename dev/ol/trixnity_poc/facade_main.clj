@@ -2,12 +2,12 @@
   (:require
    [ol.trixnity.client :as client]
    [ol.trixnity.schemas :as mx]
+   [ol.trixnity.store.sqlite :as sqlite]
    [ol.trixnity-poc.bot-logic :as bot-logic]
    [ol.trixnity-poc.config :as config]
    [ol.trixnity-poc.room-state :as room-state])
   (:import
    (java.nio.file Files Path)
-   (org.jetbrains.exposed.sql Database)
    (net.folivo.trixnity.core.model RoomId)))
 
 (defn- create-dirs! [^Path path]
@@ -29,11 +29,7 @@
   nil)
 
 (defn create-database [cfg]
-  (.connect Database/Companion
-            (str "jdbc:h2:file:" (->path (:database-path cfg)) ";DB_CLOSE_DELAY=-1;")
-            "org.h2.Driver"
-            ""
-            ""))
+  (sqlite/connect-exposed (str (:database-path cfg))))
 
 (defn- try-client-user-id [runtime]
   (try

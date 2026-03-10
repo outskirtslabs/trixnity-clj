@@ -1,16 +1,14 @@
-{:paths   ["src/clj"]
+{:paths   ["src/clj" "build/classes/kotlin/main" "build/resources/main"]
  :deps    {net.folivo/trixnity-client-jvm                    {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-repository-exposed-jvm {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-media-okio-jvm         {:mvn/version "4.22.7"}
            io.ktor/ktor-client-java-jvm                      {:mvn/version "3.4.1"}
-           org.slf4j/slf4j-nop     {:mvn/version "2.0.17"}
+           org.slf4j/slf4j-nop                               {:mvn/version "2.0.17"}
            com.h2database/h2                                 {:mvn/version "2.4.240"}
            org.babashka/http-client                          {:mvn/version "0.4.23"}}
  :aliases {:kaocha {:extra-paths ["test"]
                     :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
                     :main-opts   ["-m" "kaocha.runner"]}
-           :bridge {:extra-paths ["build/classes/kotlin/main"
-                                  "build/resources/main"]}
            :dev    {:extra-paths ["dev"]
                     :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
                                   io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
@@ -20,7 +18,7 @@
                                                                 :git/sha "97c5562"}
                                  slipset/deps-deploy           {:mvn/version "0.2.2"}}
                     :ns-default build}
-           :neil   {:project {:name        com.outskirtslabs/TODO
-                              :license     {:id "TODO"}
+           :neil   {:project {:name        com.outskirtslabs/trixnity-clj
+                              :license     {:id "Apache-2.0"}
                               :description ""
-                              :version     "0.0.TODO"}}}}
+                              :version     "0.0.1"}}}}

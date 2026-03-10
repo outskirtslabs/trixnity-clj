@@ -18,52 +18,23 @@
           :task    (apply clojure "-M:dev:kaocha:bridge" *command-line-args*)}
 
          poc:run
-         {:doc  "Run Phase 2 Clojure interop POC entrypoint"
-          :task (apply clojure "-M:dev -m ol.trixnity-poc.main" *command-line-args*)}
-
-         poc:facade:run
-         {:doc  "Run Phase 3 facade POC entrypoint"
+         {:doc  "Run facade POC entrypoint"
           :task (apply clojure "-M:dev:bridge -m ol.trixnity-poc.facade-main" *command-line-args*)}
 
-         poc:test
-         {:doc     "Run only Phase 2 POC tests"
-          :depends [bridge:build]
-          :task    (apply clojure
-                          "-M:dev:kaocha:bridge"
-                          "--focus" ":ol.trixnity-poc.bot-logic-test"
-                          "--focus" ":ol.trixnity-poc.config-test"
-                          "--focus" ":ol.trixnity-poc.invite-error-test"
-                          "--focus" ":ol.trixnity-poc.room-state-test"
-                          "--focus" ":ol.trixnity-poc.synapse-register-test"
-                          *command-line-args*)}
-
-         poc:facade:test
-         {:doc     "Run only Phase 3.5 facade POC tests"
-          :depends [bridge:build]
-          :task    (apply clojure
-                          "-M:dev:kaocha:bridge"
-                          "--focus" ":ol.trixnity-poc.facade-main-test"
-                          *command-line-args*)}
-
          facade:test
-         {:doc     "Run only Phase 3.4 facade tests"
+         {:doc     "Run only POC facade tests"
           :depends [bridge:build]
           :task    (apply clojure
                           "-M:dev:kaocha:bridge"
                           "--focus" ":ol.trixnity.client-test"
                           *command-line-args*)}
 
-         poc:repl
-         {:doc  "Start REPL for Phase 2 POC work"
-          :task (apply clojure "-M:repl/dev:dev" *command-line-args*)}
-
          bridge:build
-         {:doc     "Compile the Kotlin bridge classes"
-          :task    (shell "gradle classes")}
+         {:doc  "Compile the Kotlin bridge classes"
+          :task (shell "gradle classes")}
 
-         bridge:jar
-         {:doc     "Build the Kotlin bridge jar"
-          :task    (shell "gradle jar")}
+         build
+         {:doc "Build" :deps [bridge:build]}
 
          fmt
          {:doc  "Format code with cljfmt"
@@ -99,15 +70,18 @@
          {:doc     "Run CI checks: test, format check, and lint"
           :depends [test fmt:check lint]}
 
-         jar                                                                                                                                                         {:override-builtin true
-                                                                                                                                                                      :depends          [clean]
-                                                                                                                                                                      :doc              "Build an jar"
-                                                                                                                                                                      :task             (shell "clojure -T:build jar")}
+         jar
+         {:override-builtin true
+          :depends          [clean]
+          :doc              "Build an jar"
+          :task             (shell "clojure -T:build jar")}
 
-         clean                                                                                                                                                       {:override-builtin true
-                                                                                                                                                                      :doc              "Clean build artifacts"
-                                                                                                                                                                      :task             (shell "clojure -T:build clean")}
+         clean
+         {:override-builtin true
+          :doc              "Clean build artifacts"
+          :task             (shell "clojure -T:build clean")}
 
-         publish                                                                                                                                                     {:doc     "Publish the clojure sdk libs to clojars"
-                                                                                                                                                                      :depends [jar]
-                                                                                                                                                                      :task    (clojure "-T:build deploy")}}}
+         publish
+         {:doc     "Publish the clojure sdk libs to clojars"
+          :depends [jar]
+          :task    (clojure "-T:build deploy")}}}

@@ -20,3 +20,4 @@ build
 .gradle
 .bot-state
 *.db
+archive

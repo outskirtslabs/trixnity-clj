@@ -16,7 +16,7 @@ prompts/*
 result
 .env
 kotlin/build
-kotlin-bridge/build
+build
 .gradle
 .bot-state
 *.db

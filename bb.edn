@@ -6,7 +6,7 @@
           [babashka.tasks :refer [shell]])
 
          :init
-         (do (def paths ["src" "dev" "test"]))
+         (do (def paths ["src/clj" "dev" "test"]))
 
          dev
          {:doc  "Start a local development server"
@@ -57,41 +57,13 @@
          {:doc  "Start REPL for Phase 2 POC work"
           :task (apply clojure "-M:repl/dev:dev" *command-line-args*)}
 
-         versions:sync
-         {:doc  "Sync trixnity version from deps.edn into managed files"
-          :task (apply clojure "-X" "ol.trixnity.phase3/versions-sync" *command-line-args*)}
-
-         versions:verify
-         {:doc  "Verify managed files match trixnity version from deps.edn"
-          :task (apply clojure "-X" "ol.trixnity.phase3/versions-verify" *command-line-args*)}
-
-         bridge:gen
-         {:doc  "Generate Kotlin bridge sources from bridge-spec.edn"
-          :task (apply clojure "-X" "ol.trixnity.phase3/bridge-gen" *command-line-args*)}
-
          bridge:build
          {:doc     "Compile the Kotlin bridge classes"
-          :task    (shell "gradle -p kotlin-bridge classes")}
+          :task    (shell "gradle classes")}
 
          bridge:jar
          {:doc     "Build the Kotlin bridge jar"
-          :task    (shell "gradle -p kotlin-bridge jar")}
-
-         interop:gen
-         {:doc  "Generate Clojure interop namespace from bridge-spec.edn"
-          :task (apply clojure "-X" "ol.trixnity.phase3/interop-gen" *command-line-args*)}
-
-         interop:verify
-         {:doc  "Verify Clojure interop namespace is up-to-date"
-          :task (apply clojure "-X" "ol.trixnity.phase3/interop-verify" *command-line-args*)}
-
-         interop:test
-         {:doc     "Run interop/codegen/phase3 generation tests"
-          :depends [bridge:build]
-          :task    (apply clojure
-                          "-M:dev:kaocha:bridge"
-                          "--focus" ":ol.trixnity.phase3-test"
-                          *command-line-args*)}
+          :task    (shell "gradle jar")}
 
          fmt
          {:doc  "Format code with cljfmt"
@@ -121,11 +93,11 @@
 
          qa
          {:doc     "Run full quality assurance: format, lint, and test"
-          :depends [versions:verify interop:verify fmt lint test]}
+          :depends [fmt lint test]}
 
          ci
-         {:doc     "Run CI checks: version pins, test, format check, and lint"
-          :depends [versions:verify interop:verify test fmt:check lint]}
+         {:doc     "Run CI checks: test, format check, and lint"
+          :depends [test fmt:check lint]}
 
          jar                                                                                                                                                         {:override-builtin true
                                                                                                                                                                       :depends          [clean]

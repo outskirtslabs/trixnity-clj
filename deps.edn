@@ -1,4 +1,4 @@
-{:paths   ["src"]
+{:paths   ["src/clj"]
  :deps    {net.folivo/trixnity-client-jvm                    {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-repository-exposed-jvm {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-media-okio-jvm         {:mvn/version "4.22.7"}
@@ -9,8 +9,8 @@
  :aliases {:kaocha {:extra-paths ["test"]
                     :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
                     :main-opts   ["-m" "kaocha.runner"]}
-           :bridge {:extra-paths ["kotlin-bridge/build/classes/kotlin/main"
-                                  "kotlin-bridge/build/resources/main"]}
+           :bridge {:extra-paths ["build/classes/kotlin/main"
+                                  "build/resources/main"]}
            :dev    {:extra-paths ["dev"]
                     :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
                                   io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}

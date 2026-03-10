@@ -16,10 +16,7 @@ dependencies {
 
 kotlin {
     jvmToolchain(17)
-}
-
-sourceSets {
-    main {
-        kotlin.srcDir("src/generated/kotlin")
+    sourceSets {
+        getByName("main").kotlin.srcDir("src/kotlin")
     }
 }

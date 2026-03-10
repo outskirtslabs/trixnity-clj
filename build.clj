@@ -41,7 +41,7 @@
                 :lib       lib
                 :version   version
                 :basis     @basis_
-                :src-dirs  ["src"]
+                :src-dirs  ["src/clj"]
                 :pom-data  [[:description description]
                             [:url repo-url-prefix]
                             [:licenses
@@ -50,7 +50,7 @@
                               [:url (permalink license-file)]]]
                             (conj (url->scm repo-url-prefix) [:tag rev])]})
 
-  (b/copy-dir {:src-dirs   ["src" "resources"]
+  (b/copy-dir {:src-dirs   ["src/clj" "resources"]
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
           :jar-file  jar-file}))

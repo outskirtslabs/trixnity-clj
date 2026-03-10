@@ -27,14 +27,12 @@
                   (str (* 1024 1024 1024)) ;; 1G
                   )))
 
-(defn make-sqlite-datasource
-  [filename]
-  (let [ds (SQLiteDataSource. sqlite-config)]
-    (.setUrl ds (str "jdbc:sqlite:" filename))
-    ds))
-
-(def make-datasource
-  make-sqlite-datasource)
+(defn make-datasource
+  ([filename]
+   (make-datasource filename sqlite-config))
+  ([filename sqlite-config]
+   (doto (SQLiteDataSource. sqlite-config)
+     (.setUrl (str "jdbc:sqlite:" filename)))))
 
 (defn connect-exposed
   [filename]

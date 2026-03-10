@@ -2,7 +2,7 @@
   (:require
    [ol.trixnity.client :as client]
    [ol.trixnity.schemas :as mx]
-   [ol.trixnity.store.sqlite :as sqlite]
+   [ol.trixnity.store.h2 :as h2]
    [ol.trixnity-poc.bot-logic :as bot-logic]
    [ol.trixnity-poc.config :as config]
    [ol.trixnity-poc.room-state :as room-state])
@@ -29,7 +29,7 @@
   nil)
 
 (defn create-database [cfg]
-  (sqlite/connect-exposed (str (:database-path cfg))))
+  (h2/connect-exposed (str (:database-path cfg))))
 
 (defn- try-client-user-id [runtime]
   (try

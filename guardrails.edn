@@ -1,0 +1,2 @@
+{:throw?                 true
+ :guardrails/use-stderr? true}

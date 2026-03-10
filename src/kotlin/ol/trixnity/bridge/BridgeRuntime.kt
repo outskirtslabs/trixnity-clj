@@ -1,7 +1,5 @@
 package ol.trixnity.bridge
 
-import io.ktor.http.URLBuilder
-import io.ktor.http.takeFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,9 +9,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import net.folivo.trixnity.client.MatrixClient
-import net.folivo.trixnity.client.fromStore
-import net.folivo.trixnity.client.login
 import net.folivo.trixnity.client.room
 import net.folivo.trixnity.client.room.message.react
 import net.folivo.trixnity.client.room.message.reply
@@ -24,7 +19,6 @@ import net.folivo.trixnity.client.store.sender
 import net.folivo.trixnity.client.store.repository.exposed.createExposedRepositoriesModule
 import net.folivo.trixnity.client.media.okio.OkioMediaStore
 import net.folivo.trixnity.clientserverapi.client.SyncState
-import net.folivo.trixnity.clientserverapi.model.authentication.IdentifierType
 import net.folivo.trixnity.core.model.EventId
 import net.folivo.trixnity.core.model.RoomId
 import net.folivo.trixnity.core.model.UserId
@@ -33,10 +27,6 @@ import net.folivo.trixnity.core.model.events.m.ReactionEventContent
 import net.folivo.trixnity.core.model.events.m.RelatesTo
 import net.folivo.trixnity.core.model.events.m.room.EncryptionEventContent
 import net.folivo.trixnity.core.model.events.m.room.RoomMessageEventContent
-import okio.Path.Companion.toPath
-import org.jetbrains.exposed.sql.Database
-import java.nio.file.Files
-import java.nio.file.Path
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -44,45 +34,6 @@ import kotlin.time.Duration.Companion.seconds
 internal object BridgeRuntime {
     private val timelineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val timelineJobs = ConcurrentHashMap<String, Job>()
-
-    fun loginBlocking(request: LoginRequest): MatrixClient = runBlocking {
-        val payload = normalizePayload(request.payload)
-        val homeserverUrl = requireString(payload, "homeserver-url")
-        val username = requireString(payload, "username")
-        val password = requireString(payload, "password")
-        val storePath = requireString(payload, "store-path")
-        val mediaPath = requireString(payload, "media-path")
-        val repositoriesModule = createRepositoriesModule(storePath)
-        val mediaStore = createMediaStore(mediaPath)
-        MatrixClient.login(
-            baseUrl = URLBuilder().takeFrom(homeserverUrl).build(),
-            identifier = IdentifierType.User(username),
-            password = password,
-            repositoriesModule = repositoriesModule,
-            mediaStore = mediaStore,
-        ).getOrThrow()
-    }
-
-    fun fromStoreBlocking(request: FromStoreRequest): MatrixClient? = runBlocking {
-        val payload = normalizePayload(request.payload)
-        val storePath = requireString(payload, "store-path")
-        val mediaPath = requireString(payload, "media-path")
-        val repositoriesModule = createRepositoriesModule(storePath)
-        val mediaStore = createMediaStore(mediaPath)
-        MatrixClient.fromStore(
-            repositoriesModule = repositoriesModule,
-            mediaStore = mediaStore,
-        ).getOrThrow()
-    }
-
-    fun startSyncBlocking(request: StartSyncRequest) {
-        val payload = normalizePayload(request.payload)
-        val client = requireClient(payload)
-        runBlocking {
-            client.startSync()
-            client.syncState.first { it == SyncState.RUNNING }
-        }
-    }
 
     fun createRoomBlocking(request: CreateRoomRequest): String {
         val payload = normalizePayload(request.payload)
@@ -193,27 +144,6 @@ internal object BridgeRuntime {
             job.cancelAndJoin()
         }
     }
-
-    private suspend fun createRepositoriesModule(storePath: String): org.koin.core.module.Module {
-        val dbPath = Path.of(storePath).toAbsolutePath()
-        dbPath.parent?.let { Files.createDirectories(it) }
-        val database = Database.connect("jdbc:h2:file:${dbPath};DB_CLOSE_DELAY=-1;")
-        return createExposedRepositoriesModule(database)
-    }
-
-    private fun createMediaStore(mediaPath: String): OkioMediaStore {
-        val path = Path.of(mediaPath).toAbsolutePath()
-        Files.createDirectories(path)
-        return OkioMediaStore(path.toString().toPath())
-    }
-
-    private fun requireClient(payload: Map<String, Any?>): MatrixClient =
-        payload["client"] as? MatrixClient
-            ?: throw IllegalArgumentException("request payload is missing MatrixClient under :client")
-
-    private fun requireString(payload: Map<String, Any?>, key: String): String =
-        payload[key]?.toString()?.takeIf { it.isNotBlank() }
-            ?: throw IllegalArgumentException("request payload is missing required key :$key")
 
     private fun normalizePayload(payload: Map<String, Any?>): Map<String, Any?> {
         val normalized = LinkedHashMap<String, Any?>()

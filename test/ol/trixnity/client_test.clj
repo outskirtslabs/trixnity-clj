@@ -1,13 +1,16 @@
 (ns ol.trixnity.client-test
   (:require
    [clojure.test :refer [deftest is testing]]
+   [ol.trixnity.schemas :as schemas]
    [ol.trixnity.client :as sut]
    [ol.trixnity.interop :as interop])
   (:import
    (java.util.concurrent BlockingQueue TimeUnit)))
 
 (defn- request-payload [request]
-  (into {} (.getPayload request)))
+  (cond
+    (map? request) (into {} request)
+    :else (into {} (.getPayload request))))
 
 (deftest start-and-stop-lifecycle-test
   (let [calls (atom {})
@@ -36,16 +39,18 @@
                   (fn [request]
                     (swap! stops conj (request-payload request))
                     nil)]
-      (let [runtime (sut/start! {:homeserver-url "https://matrix.example.org"
-                                 :username       "bot"})]
+      (let [runtime (sut/start! {::schemas/homeserver-url "https://matrix.example.org"
+                                 ::schemas/username       "bot"})]
         (is (= :client-handle (:client runtime)))
         (is (instance? BlockingQueue (:events runtime)))
         (is (fn? (:stop! runtime)))
         (is (= "https://matrix.example.org"
-               (get-in @calls [:login :homeserver-url])))
+               (get-in @calls [:login ::schemas/homeserver-url])))
+        (is (= "bot"
+               (get-in @calls [:login ::schemas/username])))
         (is (nil? (:from-store @calls)))
         (is (= :client-handle
-               (get-in @calls [:sync :client])))
+               (get-in @calls [:sync ::schemas/client])))
         (is (fn? (get-in @calls [:pump :on-event])))
         ((:stop! runtime))
         (is (= :timeline-pump
@@ -126,7 +131,7 @@
                   (fn [request]
                     (swap! reacts conj (request-payload request))
                     :ok)]
-      (let [runtime  (sut/start! {:username "bot"}
+      (let [runtime  (sut/start! {::schemas/username "bot"}
                                  {:on-text
                                   (fn [event]
                                     (swap! callbacks conj [:text event])
@@ -176,7 +181,7 @@
 
                   interop/stop-timeline-pump
                   (fn [_] nil)]
-      (let [runtime  (sut/start! {:username         "bot"
+      (let [runtime  (sut/start! {::schemas/username "bot"
                                   :event-queue-size 1})
             on-event (get-in @calls [:pump :on-event])
             done     (promise)]
@@ -217,7 +222,7 @@
 
                   interop/stop-timeline-pump
                   (fn [_] nil)]
-      (let [runtime  (sut/start! {:username "bot"})
+      (let [runtime  (sut/start! {::schemas/username "bot"})
             on-event (get-in @calls [:pump :on-event])]
         (on-event {"type"   "m.room.message"
                    "room"   "!r:example.org"
@@ -261,9 +266,9 @@
 
                   interop/stop-timeline-pump
                   (fn [_] nil)]
-      (let [runtime (sut/start! {:store-path "./tmp/store"
-                                 :media-path "./tmp/media"})]
+      (let [runtime (sut/start! {::schemas/store-path "./tmp/store"
+                                 ::schemas/media-path "./tmp/media"})]
         (is (= :stored-client (:client runtime)))
-        (is (= "./tmp/store" (get-in @calls [:from-store :store-path])))
-        (is (= "./tmp/media" (get-in @calls [:from-store :media-path])))
-        (is (= :stored-client (get-in @calls [:sync :client])))))))
+        (is (= "./tmp/store" (get-in @calls [:from-store ::schemas/store-path])))
+        (is (= "./tmp/media" (get-in @calls [:from-store ::schemas/media-path])))
+        (is (= :stored-client (get-in @calls [:sync ::schemas/client])))))))

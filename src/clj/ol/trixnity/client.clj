@@ -1,17 +1,15 @@
 (ns ol.trixnity.client
   (:require
-   [ol.trixnity.interop :as interop])
+   [ol.trixnity.interop :as interop]
+   [ol.trixnity.schemas :as schemas])
   (:import
    (java.util HashMap)
    (java.util.concurrent BlockingQueue LinkedBlockingQueue)
    (ol.trixnity.bridge
     CreateRoomRequest
-    FromStoreRequest
     InviteUserRequest
-    LoginRequest
     SendReactionRequest
     SendTextReplyRequest
-    StartSyncRequest
     StartTimelinePumpRequest
     StopTimelinePumpRequest)))
 
@@ -20,14 +18,8 @@
 (defn- ->jmap [payload]
   (HashMap. payload))
 
-(defn- ->login-request [payload]
-  (LoginRequest. (->jmap payload)))
-
-(defn- ->from-store-request [payload]
-  (FromStoreRequest. (->jmap payload)))
-
 (defn- ->start-sync-request [payload]
-  (StartSyncRequest. (->jmap payload)))
+  {::schemas/client (:client payload)})
 
 (defn- ->start-timeline-pump-request [payload]
   (StartTimelinePumpRequest. (->jmap payload)))
@@ -144,11 +136,9 @@
                           (enqueue-event! events normalized)
                           (dispatch-callback! handlers normalized)
                           normalized))
-         client       (or (when (and (:store-path config) (:media-path config))
-                            (interop/from-store-blocking
-                             (->from-store-request {:store-path (:store-path config)
-                                                    :media-path (:media-path config)})))
-                          (interop/login-blocking (->login-request config)))
+         client       (or (when (and (::schemas/store-path config) (::schemas/media-path config))
+                            (interop/from-store-blocking config))
+                          (interop/login-blocking config))
          _            (interop/start-sync-blocking
                        (->start-sync-request {:client client}))
          base-runtime {:client client

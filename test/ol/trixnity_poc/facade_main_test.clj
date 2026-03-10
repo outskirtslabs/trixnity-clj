@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [clojure.test :refer [deftest is]]
    [ol.trixnity.client :as client]
+   [ol.trixnity.schemas :as mx]
    [ol.trixnity-poc.config :as config]
    [ol.trixnity-poc.facade-main :as sut]
    [ol.trixnity-poc.room-state :as room-state]))
@@ -52,12 +53,12 @@
       (let [result (sut/run-poc!)]
         (is (= "!new:example.org" (:room-id result)))
         (is (= :client-handle (:client result)))
-        (is (= [[:start {:homeserver-url "https://matrix.example.org"
-                         :username       "bot"
-                         :password       "secret"
-                         :store-path     "./tmp/facade-db"
-                         :media-path     "./tmp/facade-media"
-                         :encryption?    true}]
+        (is (= [[:start {::mx/homeserver-url "https://matrix.example.org"
+                         ::mx/username       "bot"
+                         ::mx/password       "secret"
+                         ::mx/store-path     "./tmp/facade-db"
+                         ::mx/media-path     "./tmp/facade-media"
+                         :encryption?        true}]
                 [:ensure-room {:client :client-handle
                                :events (:events result)
                                :stop!  (:stop! result)}

@@ -34,7 +34,7 @@
           :task (shell "gradle classes")}
 
          build
-         {:doc "Build" :deps [bridge:build]}
+         {:doc "Build" :depends [bridge:build]}
 
          fmt
          {:doc  "Format code with cljfmt"

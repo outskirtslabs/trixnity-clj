@@ -1,6 +1,7 @@
 (ns ol.trixnity-poc.facade-main
   (:require
    [ol.trixnity.client :as client]
+   [ol.trixnity.schemas :as mx]
    [ol.trixnity-poc.bot-logic :as bot-logic]
    [ol.trixnity-poc.config :as config]
    [ol.trixnity-poc.room-state :as room-state])
@@ -54,12 +55,12 @@
        (println "facade event error at" stage ":" (ex-message ex)))}))
 
 (defn- start-runtime! [cfg]
-  (let [facade-config {:homeserver-url (config/url->string (:homeserver-url cfg))
-                       :username       (:username cfg)
-                       :password       (:password cfg)
-                       :store-path     (str (:database-path cfg))
-                       :media-path     (str (:media-path cfg))
-                       :encryption?    true}
+  (let [facade-config {::mx/homeserver-url (config/url->string (:homeserver-url cfg))
+                       ::mx/username       (:username cfg)
+                       ::mx/password       (:password cfg)
+                       ::mx/store-path     (str (:database-path cfg))
+                       ::mx/media-path     (str (:media-path cfg))
+                       :encryption?        true}
         bot-user-id*  (atom nil)
         runtime       (client/start! facade-config
                                      (handlers bot-user-id*))]

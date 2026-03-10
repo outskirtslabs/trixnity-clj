@@ -11,6 +11,7 @@ dependencies {
     implementation("net.folivo:trixnity-client-repository-exposed:4.22.7")
     implementation("net.folivo:trixnity-client-media-okio:4.22.7")
 
+    implementation("org.clojure:clojure:1.12.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 }
 

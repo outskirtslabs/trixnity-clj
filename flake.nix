@@ -31,7 +31,7 @@
             # { package = pkgs.bazqux; }
           ];
           packages = [
-            # pkgs.foobar
+            pkgs.gradle
           ];
 
         };

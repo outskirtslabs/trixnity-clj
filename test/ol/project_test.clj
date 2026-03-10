@@ -1,7 +1,8 @@
 (ns ol.project-test
   (:require
-   [o.project :as sut]
-   [clojure.test :refer [deftest is testing]]))
+   [clojure.test :refer [deftest is]]
+   [ol.project :as sut]))
 
-(deftest FIXME
-  (is (= 1 0)))
+(deftest namespace-loads-test
+  (is (some? (find-ns 'ol.project)))
+  (is (= 'ol.project (ns-name (the-ns 'ol.project)))))

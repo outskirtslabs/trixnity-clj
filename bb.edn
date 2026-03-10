@@ -6,7 +6,7 @@
                             [babashka.tasks :refer [shell]])
 
          :init
-         (do (def paths ["src" "test"]))
+         (do (def paths ["src" "dev" "test"]))
 
          dev
          {:doc  "Start a local development server"
@@ -15,6 +15,25 @@
          test
          {:doc  "Run all tests or specific test suites"
           :task (apply clojure "-M:dev:kaocha" *command-line-args*)}
+
+         poc:run
+         {:doc  "Run Phase 2 Clojure interop POC entrypoint"
+          :task (apply clojure "-M:dev -m ol.trixnity-poc.main" *command-line-args*)}
+
+         poc:test
+         {:doc  "Run only Phase 2 POC tests"
+          :task (apply clojure
+                       "-M:dev:kaocha"
+                       "--focus" ":ol.trixnity-poc.bot-logic-test"
+                       "--focus" ":ol.trixnity-poc.config-test"
+                       "--focus" ":ol.trixnity-poc.invite-error-test"
+                       "--focus" ":ol.trixnity-poc.room-state-test"
+                       "--focus" ":ol.trixnity-poc.synapse-register-test"
+                       *command-line-args*)}
+
+         poc:repl
+         {:doc  "Start REPL for Phase 2 POC work"
+          :task (apply clojure "-M:repl/dev:dev" *command-line-args*)}
 
          fmt
          {:doc  "Format code with cljfmt"

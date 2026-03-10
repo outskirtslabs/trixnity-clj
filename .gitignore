@@ -15,3 +15,7 @@ prompts/PROMPTS.md
 prompts/*
 result
 .env
+kotlin/build
+.gradle
+.bot-state
+*.db

@@ -1,15 +1,20 @@
 {:paths   ["src"]
- :deps    {}
+ :deps    {net.folivo/trixnity-client-jvm                    {:mvn/version "4.22.7"}
+           net.folivo/trixnity-client-repository-exposed-jvm {:mvn/version "4.22.7"}
+           net.folivo/trixnity-client-media-okio-jvm         {:mvn/version "4.22.7"}
+           io.ktor/ktor-client-java                          {:mvn/version "3.4.1"}
+           com.h2database/h2                                 {:mvn/version "2.4.240"}
+           org.babashka/http-client                          {:mvn/version "0.4.23"}}
  :aliases {:kaocha {:extra-paths ["test"]
                     :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
                     :main-opts   ["-m" "kaocha.runner"]}
            :dev    {:extra-paths ["dev"]
                     :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
                                   io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
-                                  djblue/portal                            {:mvn/version "0.62.1"}
-                                  com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.6.2"}}}
-           :build  {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.11"
-                                                                :git/sha "c6c670a"}
+                                  djblue/portal                            {:mvn/version "0.63.0"}
+                                  com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}}
+           :build  {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.12"
+                                                                :git/sha "97c5562"}
                                  slipset/deps-deploy           {:mvn/version "0.2.2"}}
                     :ns-default build}
            :neil   {:project {:name        com.outskirtslabs/TODO

@@ -1,0 +1,44 @@
+{:bridges
+ [{:class "ClientBridge"
+   :operations
+   [{:name "loginBlocking"
+     :request "LoginRequest"
+     :return "Any"}
+    {:name "fromStoreBlocking"
+     :request "FromStoreRequest"
+     :return "Any"}
+    {:name "startSyncBlocking"
+     :request "StartSyncRequest"
+     :return "Unit"}]}
+  {:class "RoomBridge"
+   :operations
+   [{:name "createRoomBlocking"
+     :request "CreateRoomRequest"
+     :return "String"}
+    {:name "inviteUserBlocking"
+     :request "InviteUserRequest"
+     :return "Unit"}
+    {:name "sendTextReplyBlocking"
+     :request "SendTextReplyRequest"
+     :return "Unit"}
+    {:name "sendReactionBlocking"
+     :request "SendReactionRequest"
+     :return "Unit"}]}
+  {:class "EventBridge"
+   :operations
+   [{:name "startTimelinePump"
+     :request "StartTimelinePumpRequest"
+     :return "TimelinePumpHandle"}
+    {:name "stopTimelinePump"
+     :request "StopTimelinePumpRequest"
+     :return "Unit"}]}]
+ :dto-types
+ ["LoginRequest"
+  "FromStoreRequest"
+  "StartSyncRequest"
+  "CreateRoomRequest"
+  "InviteUserRequest"
+  "SendTextReplyRequest"
+  "SendReactionRequest"
+  "StartTimelinePumpRequest"
+  "StopTimelinePumpRequest"]}

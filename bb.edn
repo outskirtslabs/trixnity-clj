@@ -35,6 +35,28 @@
          {:doc  "Start REPL for Phase 2 POC work"
           :task (apply clojure "-M:repl/dev:dev" *command-line-args*)}
 
+         versions:sync
+         {:doc  "Sync trixnity version from deps.edn into managed files"
+          :task (apply clojure "-X" "ol.trixnity.phase3/versions-sync" *command-line-args*)}
+
+         versions:verify
+         {:doc  "Verify managed files match trixnity version from deps.edn"
+          :task (apply clojure "-X" "ol.trixnity.phase3/versions-verify" *command-line-args*)}
+
+         bridge:gen
+         {:doc  "Generate Kotlin bridge sources from bridge-spec.edn"
+          :task (apply clojure "-X" "ol.trixnity.phase3/bridge-gen" *command-line-args*)}
+
+         bridge:build
+         {:doc     "Generate and compile the Kotlin bridge classes"
+          :depends [bridge:gen]
+          :task    (shell "gradle -p kotlin-bridge classes")}
+
+         bridge:jar
+         {:doc     "Build the Kotlin bridge jar"
+          :depends [bridge:gen]
+          :task    (shell "gradle -p kotlin-bridge jar")}
+
          fmt
          {:doc  "Format code with cljfmt"
           :task (apply shell "cljfmt --quiet -v fix" (if (seq *command-line-args*) *command-line-args* paths))}
@@ -63,11 +85,11 @@
 
          qa
          {:doc     "Run full quality assurance: format, lint, and test"
-          :depends [fmt lint test]}
+          :depends [versions:verify fmt lint test]}
 
          ci
-         {:doc     "Run CI checks: test, format check, and lint"
-          :depends [test fmt:check lint]}
+         {:doc     "Run CI checks: version pins, test, format check, and lint"
+          :depends [versions:verify test fmt:check lint]}
 
          jar     {:override-builtin true
                   :depends          [clean]

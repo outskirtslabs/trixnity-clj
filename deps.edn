@@ -2,7 +2,8 @@
  :deps    {net.folivo/trixnity-client-jvm                    {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-repository-exposed-jvm {:mvn/version "4.22.7"}
            net.folivo/trixnity-client-media-okio-jvm         {:mvn/version "4.22.7"}
-           io.ktor/ktor-client-java                          {:mvn/version "3.4.1"}
+           io.ktor/ktor-client-java-jvm                      {:mvn/version "3.4.1"}
+           org.slf4j/slf4j-nop     {:mvn/version "2.0.17"}
            com.h2database/h2                                 {:mvn/version "2.4.240"}
            org.babashka/http-client                          {:mvn/version "0.4.23"}}
  :aliases {:kaocha {:extra-paths ["test"]

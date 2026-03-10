@@ -8,11 +8,11 @@ repositories {
 }
 
 dependencies {
-    implementation("net.folivo:trixnity-client:4.15.0")
-    implementation("net.folivo:trixnity-client-repository-exposed:4.15.0")
-    implementation("net.folivo:trixnity-client-media-okio:4.15.0")
-    implementation("com.h2database:h2:2.3.232")
-    implementation("io.ktor:ktor-client-java:3.1.2")
+    implementation("net.folivo:trixnity-client:4.22.7")
+    implementation("net.folivo:trixnity-client-repository-exposed:4.22.7")
+    implementation("net.folivo:trixnity-client-media-okio:4.22.7")
+    implementation("com.h2database:h2:2.4.240")
+    implementation("io.ktor:ktor-client-java:3.4.1")
     implementation("io.github.oshai:kotlin-logging:7.0.6")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")

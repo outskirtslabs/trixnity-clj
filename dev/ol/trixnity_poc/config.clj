@@ -48,7 +48,7 @@
                                          "./kotlin/.bot-media"))
          database-path              (to-path
                                      (or (get env "MATRIX_DB_PATH")
-                                         "./kotlin/.bot-state/trixnity"))
+                                         "./kotlin/.bot-state/trixnity-poc"))
          invite-user                (some-> (get env "MATRIX_INVITE_USER")
                                             maybe-non-blank
                                             (UserId.))

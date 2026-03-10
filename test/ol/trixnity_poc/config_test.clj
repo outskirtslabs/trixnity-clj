@@ -44,7 +44,7 @@
       (is (= "./kotlin/.bot-state/room-id.txt"
              (str (:room-id-file config))))
       (is (= "./kotlin/.bot-media" (str (:media-path config))))
-      (is (= "./kotlin/.bot-state/trixnity"
+      (is (= "./kotlin/.bot-state/trixnity-poc"
              (str (:database-path config))))
       (is (nil? (:invite-user config)))
       (is (true? (:try-register config))))))

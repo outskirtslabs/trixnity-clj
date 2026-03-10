@@ -187,3 +187,169 @@
          #"missing required bridge operations"
          (sut/generate-bridge! {:spec-file spec-file
                                 :out-dir   (str (.resolve tmp "generated"))})))))
+
+(deftest generate-interop-creates-thin-wrapper-namespace-test
+  (let [tmp          (make-temp-dir)
+        spec-file    (write-file! tmp
+                                  "bridge-spec.edn"
+                                  (str "{:bridges [{:class \"ClientBridge\"\n"
+                                       "            :operations [{:name \"loginBlocking\"\n"
+                                       "                          :request \"LoginRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"fromStoreBlocking\"\n"
+                                       "                          :request \"FromStoreRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"startSyncBlocking\"\n"
+                                       "                          :request \"StartSyncRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"RoomBridge\"\n"
+                                       "            :operations [{:name \"createRoomBlocking\"\n"
+                                       "                          :request \"CreateRoomRequest\"\n"
+                                       "                          :return \"String\"}\n"
+                                       "                         {:name \"inviteUserBlocking\"\n"
+                                       "                          :request \"InviteUserRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendTextReplyBlocking\"\n"
+                                       "                          :request \"SendTextReplyRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendReactionBlocking\"\n"
+                                       "                          :request \"SendReactionRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"EventBridge\"\n"
+                                       "            :operations [{:name \"startTimelinePump\"\n"
+                                       "                          :request \"StartTimelinePumpRequest\"\n"
+                                       "                          :return \"TimelinePumpHandle\"}\n"
+                                       "                         {:name \"stopTimelinePump\"\n"
+                                       "                          :request \"StopTimelinePumpRequest\"\n"
+                                       "                          :return \"Unit\"}]}]\n"
+                                       " :dto-types [\"LoginRequest\"\n"
+                                       "             \"FromStoreRequest\"\n"
+                                       "             \"StartSyncRequest\"\n"
+                                       "             \"CreateRoomRequest\"\n"
+                                       "             \"InviteUserRequest\"\n"
+                                       "             \"SendTextReplyRequest\"\n"
+                                       "             \"SendReactionRequest\"\n"
+                                       "             \"StartTimelinePumpRequest\"\n"
+                                       "             \"StopTimelinePumpRequest\"]}\n"))
+        interop-file (str (.resolve tmp "generated/interop.clj"))
+        _            (sut/generate-interop! {:spec-file spec-file
+                                             :out-file  interop-file})
+        source       (read-file interop-file)]
+    (is (.exists (java.io.File. interop-file)))
+    (is (str/includes? source "(ns ol.trixnity.interop"))
+    (is (str/includes? source "(defn login-blocking"))
+    (is (str/includes? source "^LoginRequest request"))
+    (is (str/includes? source "(ClientBridge/loginBlocking request)"))
+    (is (str/includes? source "(defn start-timeline-pump"))
+    (is (str/includes? source "(EventBridge/startTimelinePump request)"))
+    (is (not (str/includes? source "clojure.lang.Reflector/invoke")))
+    (is (not (str/includes? source "$default")))))
+
+(deftest verify-interop-detects-stale-generated-file-test
+  (let [tmp          (make-temp-dir)
+        spec-file    (write-file! tmp
+                                  "bridge-spec.edn"
+                                  (str "{:bridges [{:class \"ClientBridge\"\n"
+                                       "            :operations [{:name \"loginBlocking\"\n"
+                                       "                          :request \"LoginRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"fromStoreBlocking\"\n"
+                                       "                          :request \"FromStoreRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"startSyncBlocking\"\n"
+                                       "                          :request \"StartSyncRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"RoomBridge\"\n"
+                                       "            :operations [{:name \"createRoomBlocking\"\n"
+                                       "                          :request \"CreateRoomRequest\"\n"
+                                       "                          :return \"String\"}\n"
+                                       "                         {:name \"inviteUserBlocking\"\n"
+                                       "                          :request \"InviteUserRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendTextReplyBlocking\"\n"
+                                       "                          :request \"SendTextReplyRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendReactionBlocking\"\n"
+                                       "                          :request \"SendReactionRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"EventBridge\"\n"
+                                       "            :operations [{:name \"startTimelinePump\"\n"
+                                       "                          :request \"StartTimelinePumpRequest\"\n"
+                                       "                          :return \"TimelinePumpHandle\"}\n"
+                                       "                         {:name \"stopTimelinePump\"\n"
+                                       "                          :request \"StopTimelinePumpRequest\"\n"
+                                       "                          :return \"Unit\"}]}]\n"
+                                       " :dto-types [\"LoginRequest\"\n"
+                                       "             \"FromStoreRequest\"\n"
+                                       "             \"StartSyncRequest\"\n"
+                                       "             \"CreateRoomRequest\"\n"
+                                       "             \"InviteUserRequest\"\n"
+                                       "             \"SendTextReplyRequest\"\n"
+                                       "             \"SendReactionRequest\"\n"
+                                       "             \"StartTimelinePumpRequest\"\n"
+                                       "             \"StopTimelinePumpRequest\"]}\n"))
+        interop-file (write-file! tmp
+                                  "generated/interop.clj"
+                                  "(ns ol.trixnity.interop)\n")
+        result       (sut/verify-interop {:spec-file spec-file
+                                          :out-file  interop-file})]
+    (is (false? (:ok? result)))
+    (is (= #{:stale}
+           (set (map :status (:mismatches result)))))))
+
+(deftest verify-interop-passes-for-up-to-date-file-test
+  (let [tmp          (make-temp-dir)
+        spec-file    (write-file! tmp
+                                  "bridge-spec.edn"
+                                  (str "{:bridges [{:class \"ClientBridge\"\n"
+                                       "            :operations [{:name \"loginBlocking\"\n"
+                                       "                          :request \"LoginRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"fromStoreBlocking\"\n"
+                                       "                          :request \"FromStoreRequest\"\n"
+                                       "                          :return \"Any\"}\n"
+                                       "                         {:name \"startSyncBlocking\"\n"
+                                       "                          :request \"StartSyncRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"RoomBridge\"\n"
+                                       "            :operations [{:name \"createRoomBlocking\"\n"
+                                       "                          :request \"CreateRoomRequest\"\n"
+                                       "                          :return \"String\"}\n"
+                                       "                         {:name \"inviteUserBlocking\"\n"
+                                       "                          :request \"InviteUserRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendTextReplyBlocking\"\n"
+                                       "                          :request \"SendTextReplyRequest\"\n"
+                                       "                          :return \"Unit\"}\n"
+                                       "                         {:name \"sendReactionBlocking\"\n"
+                                       "                          :request \"SendReactionRequest\"\n"
+                                       "                          :return \"Unit\"}]}\n"
+                                       "           {:class \"EventBridge\"\n"
+                                       "            :operations [{:name \"startTimelinePump\"\n"
+                                       "                          :request \"StartTimelinePumpRequest\"\n"
+                                       "                          :return \"TimelinePumpHandle\"}\n"
+                                       "                         {:name \"stopTimelinePump\"\n"
+                                       "                          :request \"StopTimelinePumpRequest\"\n"
+                                       "                          :return \"Unit\"}]}]\n"
+                                       " :dto-types [\"LoginRequest\"\n"
+                                       "             \"FromStoreRequest\"\n"
+                                       "             \"StartSyncRequest\"\n"
+                                       "             \"CreateRoomRequest\"\n"
+                                       "             \"InviteUserRequest\"\n"
+                                       "             \"SendTextReplyRequest\"\n"
+                                       "             \"SendReactionRequest\"\n"
+                                       "             \"StartTimelinePumpRequest\"\n"
+                                       "             \"StopTimelinePumpRequest\"]}\n"))
+        interop-file (str (.resolve tmp "generated/interop.clj"))
+        _            (sut/generate-interop! {:spec-file spec-file
+                                             :out-file  interop-file})
+        result       (sut/verify-interop {:spec-file spec-file
+                                          :out-file  interop-file})]
+    (is (true? (:ok? result)))
+    (is (empty? (:mismatches result)))))
+
+(deftest bb-edn-includes-phase35-and36-entrypoints-test
+  (let [source (slurp "bb.edn")]
+    (is (str/includes? source "interop:test"))
+    (is (str/includes? source "poc:facade:run"))
+    (is (str/includes? source "poc:facade:test"))))

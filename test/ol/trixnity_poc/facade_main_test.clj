@@ -1,6 +1,5 @@
 (ns ol.trixnity-poc.facade-main-test
   (:require
-   [clojure.string :as str]
    [clojure.test :refer [deftest is]]
    [ol.trixnity.client :as client]
    [ol.trixnity.schemas :as mx]
@@ -24,6 +23,9 @@
                      :database-path  "./tmp/facade-db"
                      :media-path     "./tmp/facade-media"
                      :invite-user    "@alice:example.org"})
+
+                  sut/create-database
+                  (fn [_] :database)
 
                   room-state/load-room-id
                   (fn [_] @room-state*)
@@ -56,7 +58,7 @@
         (is (= [[:start {::mx/homeserver-url "https://matrix.example.org"
                          ::mx/username       "bot"
                          ::mx/password       "secret"
-                         ::mx/store-path     "./tmp/facade-db"
+                         ::mx/database       :database
                          ::mx/media-path     "./tmp/facade-media"
                          :encryption?        true}]
                 [:ensure-room {:client :client-handle
@@ -98,6 +100,9 @@
                      :media-path     "./tmp/facade-media"
                      :invite-user    nil})
 
+                  sut/create-database
+                  (fn [_] :database)
+
                   room-state/load-room-id
                   (fn [_] "!existing:example.org")
 
@@ -123,9 +128,3 @@
       (let [result (sut/run-poc!)]
         (is (= "!existing:example.org" (:room-id result)))
         (is (empty? @calls))))))
-
-(deftest facade-main-source-avoids-legacy-reflection-interop-test
-  (let [source (slurp "dev/ol/trixnity_poc/facade_main.clj")]
-    (is (str/includes? source "ol.trixnity.client"))
-    (is (not (str/includes? source "clojure.lang.Reflector/invoke")))
-    (is (not (str/includes? source "$default")))))

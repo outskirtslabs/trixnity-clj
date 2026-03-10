@@ -17,6 +17,6 @@
   (clj-reload/reload)
   (clj-reload/reload {:only :all}) ;; rcf
   #_(reset! my-portal/portal-state nil)
-  (clojure.repl.deps/sync-deps)
+  ;;(clojure.repl.deps/sync-deps)
   ;;;
   )

@@ -15,17 +15,17 @@
          test
          {:doc     "Run all tests or specific test suites"
           :depends [bridge:build]
-          :task    (apply clojure "-M:dev:kaocha:bridge" *command-line-args*)}
+          :task    (apply clojure "-M:dev:kaocha" *command-line-args*)}
 
          poc:run
          {:doc  "Run facade POC entrypoint"
-          :task (apply clojure "-M:dev:bridge -m ol.trixnity-poc.facade-main" *command-line-args*)}
+          :task (apply clojure "-M:dev -m ol.trixnity-poc.facade-main" *command-line-args*)}
 
          facade:test
          {:doc     "Run only POC facade tests"
           :depends [bridge:build]
           :task    (apply clojure
-                          "-M:dev:kaocha:bridge"
+                          "-M:dev:kaocha"
                           "--focus" ":ol.trixnity.client-test"
                           *command-line-args*)}
 

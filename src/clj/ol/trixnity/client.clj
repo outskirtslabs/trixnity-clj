@@ -3,41 +3,22 @@
    [ol.trixnity.interop :as interop]
    [ol.trixnity.schemas :as schemas])
   (:import
-   (java.util HashMap)
-   (java.util.concurrent BlockingQueue LinkedBlockingQueue)
-   (ol.trixnity.bridge
-    CreateRoomRequest
-    InviteUserRequest
-    SendReactionRequest
-    SendTextReplyRequest
-    StartTimelinePumpRequest
-    StopTimelinePumpRequest)))
+   (java.util.concurrent BlockingQueue LinkedBlockingQueue)))
+
+(set! *warn-on-reflection* true)
 
 (declare lookup send-reaction! send-text!)
-
-(defn- ->jmap [payload]
-  (HashMap. payload))
 
 (defn- ->start-sync-request [payload]
   {::schemas/client (:client payload)})
 
 (defn- ->start-timeline-pump-request [payload]
-  (StartTimelinePumpRequest. (->jmap payload)))
+  {::schemas/client   (:client payload)
+   ::schemas/on-event (:on-event payload)})
 
 (defn- ->stop-timeline-pump-request [payload]
-  (StopTimelinePumpRequest. (->jmap payload)))
-
-(defn- ->create-room-request [payload]
-  (CreateRoomRequest. (->jmap payload)))
-
-(defn- ->invite-user-request [payload]
-  (InviteUserRequest. (->jmap payload)))
-
-(defn- ->send-text-reply-request [payload]
-  (SendTextReplyRequest. (->jmap payload)))
-
-(defn- ->send-reaction-request [payload]
-  (SendReactionRequest. (->jmap payload)))
+  {::schemas/client        (:client payload)
+   ::schemas/timeline-pump (:timeline-pump payload)})
 
 (defn- event-kind [raw-event]
   (let [kind (or (lookup raw-event :kind) (lookup raw-event :type))]
@@ -53,23 +34,32 @@
             (get m (str ":" name'))))))
 
 (defn- with-client [runtime payload]
-  (assoc payload :client (:client runtime)))
+  (assoc payload ::schemas/client (:client runtime)))
 
 (defn ensure-room! [runtime payload]
   (interop/create-room-blocking
-   (->create-room-request (with-client runtime payload))))
+   (assoc (with-client runtime payload)
+          ::schemas/room-name (:room-name payload))))
 
 (defn invite-user! [runtime payload]
   (interop/invite-user-blocking
-   (->invite-user-request (with-client runtime payload))))
+   (assoc (with-client runtime payload)
+          ::schemas/room-id (:room-id payload)
+          ::schemas/user-id (:user-id payload))))
 
 (defn send-text! [runtime payload]
   (interop/send-text-reply-blocking
-   (->send-text-reply-request (with-client runtime payload))))
+   (assoc (with-client runtime payload)
+          ::schemas/room-id (:room-id payload)
+          ::schemas/event-id (:event-id payload)
+          ::schemas/body (:body payload))))
 
 (defn send-reaction! [runtime payload]
   (interop/send-reaction-blocking
-   (->send-reaction-request (with-client runtime payload))))
+   (assoc (with-client runtime payload)
+          ::schemas/room-id (:room-id payload)
+          ::schemas/event-id (:event-id payload)
+          ::schemas/key (:key payload))))
 
 (defn- normalize-event [runtime raw-event]
   (let [kind     (event-kind raw-event)
@@ -136,7 +126,7 @@
                           (enqueue-event! events normalized)
                           (dispatch-callback! handlers normalized)
                           normalized))
-         client       (or (when (and (::schemas/store-path config) (::schemas/media-path config))
+         client       (or (when (and (::schemas/database config) (::schemas/media-path config))
                             (interop/from-store-blocking config))
                           (interop/login-blocking config))
          _            (interop/start-sync-blocking

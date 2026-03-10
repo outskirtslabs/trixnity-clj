@@ -8,9 +8,7 @@
    (java.util.concurrent BlockingQueue TimeUnit)))
 
 (defn- request-payload [request]
-  (cond
-    (map? request) (into {} request)
-    :else (into {} (.getPayload request))))
+  (into {} request))
 
 (deftest start-and-stop-lifecycle-test
   (let [calls (atom {})
@@ -51,10 +49,10 @@
         (is (nil? (:from-store @calls)))
         (is (= :client-handle
                (get-in @calls [:sync ::schemas/client])))
-        (is (fn? (get-in @calls [:pump :on-event])))
+        (is (fn? (get-in @calls [:pump ::schemas/on-event])))
         ((:stop! runtime))
         (is (= :timeline-pump
-               (get-in (first @stops) [:timeline-pump])))))))
+               (get-in (first @stops) [::schemas/timeline-pump])))))))
 
 (deftest facade-operation-wrapper-test
   (let [calls   (atom {})
@@ -95,10 +93,10 @@
                                   :event-id "$event"
                                   :key      "👍"})))
       (testing "runtime client is injected into each bridge request payload"
-        (is (= :client-handle (get-in @calls [:create-room :client])))
-        (is (= :client-handle (get-in @calls [:invite-user :client])))
-        (is (= :client-handle (get-in @calls [:send-text :client])))
-        (is (= :client-handle (get-in @calls [:send-reaction :client])))))))
+        (is (= :client-handle (get-in @calls [:create-room ::schemas/client])))
+        (is (= :client-handle (get-in @calls [:invite-user ::schemas/client])))
+        (is (= :client-handle (get-in @calls [:send-text ::schemas/client])))
+        (is (= :client-handle (get-in @calls [:send-reaction ::schemas/client])))))))
 
 (deftest start-registers-on-event-callback-with-normalized-helper-fns-test
   (let [calls      (atom {})
@@ -140,7 +138,7 @@
                                   (fn [event]
                                     (swap! callbacks conj [:reaction event])
                                     ((:react! event) (:key event)))})
-            on-event (get-in @calls [:pump :on-event])]
+            on-event (get-in @calls [:pump ::schemas/on-event])]
         (on-event {:kind     :text
                    :room-id  "!r:example.org"
                    :sender   "@alice:example.org"
@@ -182,8 +180,8 @@
                   interop/stop-timeline-pump
                   (fn [_] nil)]
       (let [runtime  (sut/start! {::schemas/username "bot"
-                                  :event-queue-size 1})
-            on-event (get-in @calls [:pump :on-event])
+                                  :event-queue-size  1})
+            on-event (get-in @calls [:pump ::schemas/on-event])
             done     (promise)]
         (on-event {:kind     :text
                    :room-id  "!r:example.org"
@@ -223,7 +221,7 @@
                   interop/stop-timeline-pump
                   (fn [_] nil)]
       (let [runtime  (sut/start! {::schemas/username "bot"})
-            on-event (get-in @calls [:pump :on-event])]
+            on-event (get-in @calls [:pump ::schemas/on-event])]
         (on-event {"type"   "m.room.message"
                    "room"   "!r:example.org"
                    "id"     "$e1"
@@ -246,7 +244,8 @@
           (is (fn? (:react! reaction-event))))))))
 
 (deftest start-prefers-from-store-client-before-login-test
-  (let [calls (atom {})]
+  (let [calls    (atom {})
+        database (Object.)]
     (with-redefs [interop/from-store-blocking
                   (fn [request]
                     (swap! calls assoc :from-store (request-payload request))
@@ -266,9 +265,9 @@
 
                   interop/stop-timeline-pump
                   (fn [_] nil)]
-      (let [runtime (sut/start! {::schemas/store-path "./tmp/store"
+      (let [runtime (sut/start! {::schemas/database   database
                                  ::schemas/media-path "./tmp/media"})]
         (is (= :stored-client (:client runtime)))
-        (is (= "./tmp/store" (get-in @calls [:from-store ::schemas/store-path])))
+        (is (= database (get-in @calls [:from-store ::schemas/database])))
         (is (= "./tmp/media" (get-in @calls [:from-store ::schemas/media-path])))
         (is (= :stored-client (get-in @calls [:sync ::schemas/client])))))))

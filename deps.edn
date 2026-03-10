@@ -17,7 +17,8 @@
                     :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
                                   io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
                                   djblue/portal                            {:mvn/version "0.63.0"}
-                                  com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}}
+                                  com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}
+                                  org.xerial/sqlite-jdbc                   {:mvn/version "3.51.2.0"}}}
            :build  {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.12"
                                                                 :git/sha "97c5562"}
                                  slipset/deps-deploy           {:mvn/version "0.2.2"}}

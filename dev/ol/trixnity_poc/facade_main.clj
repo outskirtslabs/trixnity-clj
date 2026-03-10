@@ -7,6 +7,7 @@
    [ol.trixnity-poc.room-state :as room-state])
   (:import
    (java.nio.file Files Path)
+   (org.jetbrains.exposed.sql Database)
    (net.folivo.trixnity.core.model RoomId)))
 
 (defn- create-dirs! [^Path path]
@@ -26,6 +27,13 @@
   (some-> (:database-path cfg) ->path .getParent create-dirs!)
   (some-> (:room-id-file cfg) ->path .getParent create-dirs!)
   nil)
+
+(defn create-database [cfg]
+  (.connect Database/Companion
+            (str "jdbc:h2:file:" (->path (:database-path cfg)) ";DB_CLOSE_DELAY=-1;")
+            "org.h2.Driver"
+            ""
+            ""))
 
 (defn- try-client-user-id [runtime]
   (try
@@ -58,7 +66,7 @@
   (let [facade-config {::mx/homeserver-url (config/url->string (:homeserver-url cfg))
                        ::mx/username       (:username cfg)
                        ::mx/password       (:password cfg)
-                       ::mx/store-path     (str (:database-path cfg))
+                       ::mx/database       (create-database cfg)
                        ::mx/media-path     (str (:media-path cfg))
                        :encryption?        true}
         bot-user-id*  (atom nil)

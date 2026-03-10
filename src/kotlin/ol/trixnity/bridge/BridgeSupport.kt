@@ -1,9 +1,11 @@
 package ol.trixnity.bridge
 
+import clojure.lang.Keyword
 import net.folivo.trixnity.client.MatrixClient
-import net.folivo.trixnity.client.media.okio.OkioMediaStore
+import net.folivo.trixnity.client.media.okio.createOkioMediaStoreModule
 import net.folivo.trixnity.client.store.repository.exposed.createExposedRepositoriesModule
 import okio.Path.Companion.toPath
+import org.koin.core.module.Module
 import org.jetbrains.exposed.sql.Database
 import java.nio.file.Files
 import java.nio.file.Path
@@ -12,23 +14,23 @@ internal fun requireKeywordString(payload: KeywordMap, key: clojure.lang.Keyword
     payload[key]?.toString()?.takeIf { it.isNotBlank() }
         ?: throw IllegalArgumentException("request payload is missing required key $key")
 
-internal fun requireString(payload: Map<String, Any?>, key: String): String =
-    payload[key]?.toString()?.takeIf { it.isNotBlank() }
-        ?: throw IllegalArgumentException("request payload is missing required key :$key")
+internal fun requireKeywordClient(payload: KeywordMap, key: Keyword): MatrixClient =
+    payload[key] as? MatrixClient
+        ?: throw IllegalArgumentException("request payload is missing MatrixClient under $key")
 
-internal fun requireClient(payload: Map<String, Any?>): MatrixClient =
-    payload["client"] as? MatrixClient
-        ?: throw IllegalArgumentException("request payload is missing MatrixClient under :client")
+internal fun requireKeywordDatabase(payload: KeywordMap, key: Keyword): Database =
+    payload[key] as? Database
+        ?: throw IllegalArgumentException("request payload is missing Exposed Database under $key")
 
-internal suspend fun createRepositoriesModule(storePath: String): org.koin.core.module.Module {
-    val dbPath = Path.of(storePath).toAbsolutePath()
-    dbPath.parent?.let { Files.createDirectories(it) }
-    val database = Database.connect("jdbc:h2:file:${dbPath};DB_CLOSE_DELAY=-1;")
+internal fun requireKeywordValue(payload: KeywordMap, key: Keyword): Any =
+    payload[key] ?: throw IllegalArgumentException("request payload is missing required key $key")
+
+internal suspend fun createRepositoriesModule(database: Database): org.koin.core.module.Module {
     return createExposedRepositoriesModule(database)
 }
 
-internal fun createMediaStore(mediaPath: String): OkioMediaStore {
+internal fun createMediaStoreModule(mediaPath: String): Module {
     val path = Path.of(mediaPath).toAbsolutePath()
     Files.createDirectories(path)
-    return OkioMediaStore(path.toString().toPath())
+    return createOkioMediaStoreModule(path.toString().toPath())
 }

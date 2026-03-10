@@ -5,57 +5,65 @@
   (:import
    (ol.trixnity.bridge
     ClientBridge
-    CreateRoomRequest
     EventBridge
-    InviteUserRequest
     RoomBridge
-    SendReactionRequest
-    SendTextReplyRequest
-    StartTimelinePumpRequest
-    StopTimelinePumpRequest
     TimelinePumpHandle)))
 
 (set! *warn-on-reflection* true)
+
+(def ^:private schema-registry
+  (schemas/registry {}))
 
 (>defn login-blocking
        [request]
        [::schemas/LoginRequest => :some]
        (ClientBridge/loginBlocking
-        (schemas/validate! (schemas/registry {}) ::schemas/LoginRequest request)))
+        (schemas/validate! schema-registry ::schemas/LoginRequest request)))
 
 (>defn from-store-blocking
        [request]
        [::schemas/FromStoreRequest => [:maybe :some]]
        (ClientBridge/fromStoreBlocking
-        (schemas/validate! (schemas/registry {}) ::schemas/FromStoreRequest request)))
+        (schemas/validate! schema-registry ::schemas/FromStoreRequest request)))
 
 (>defn start-sync-blocking
        [request]
        [::schemas/StartSyncRequest => :nil]
        (ClientBridge/startSyncBlocking
-        (schemas/validate! (schemas/registry {}) ::schemas/StartSyncRequest request)))
+        (schemas/validate! schema-registry ::schemas/StartSyncRequest request)))
 
-(defn create-room-blocking
-  [^CreateRoomRequest request]
-  (RoomBridge/createRoomBlocking request))
+(>defn create-room-blocking
+       [request]
+       [::schemas/CreateRoomRequest => :string]
+       (RoomBridge/createRoomBlocking
+        (schemas/validate! schema-registry ::schemas/CreateRoomRequest request)))
 
-(defn invite-user-blocking
-  [^InviteUserRequest request]
-  (RoomBridge/inviteUserBlocking request))
+(>defn invite-user-blocking
+       [request]
+       [::schemas/InviteUserRequest => :nil]
+       (RoomBridge/inviteUserBlocking
+        (schemas/validate! schema-registry ::schemas/InviteUserRequest request)))
 
-(defn send-text-reply-blocking
-  [^SendTextReplyRequest request]
-  (RoomBridge/sendTextReplyBlocking request))
+(>defn send-text-reply-blocking
+       [request]
+       [::schemas/SendTextReplyRequest => :nil]
+       (RoomBridge/sendTextReplyBlocking
+        (schemas/validate! schema-registry ::schemas/SendTextReplyRequest request)))
 
-(defn send-reaction-blocking
-  [^SendReactionRequest request]
-  (RoomBridge/sendReactionBlocking request))
+(>defn send-reaction-blocking
+       [request]
+       [::schemas/SendReactionRequest => :nil]
+       (RoomBridge/sendReactionBlocking
+        (schemas/validate! schema-registry ::schemas/SendReactionRequest request)))
 
-(defn start-timeline-pump
-  ^TimelinePumpHandle
-  [^StartTimelinePumpRequest request]
-  (EventBridge/startTimelinePump request))
+(>defn start-timeline-pump
+       [request]
+       [::schemas/StartTimelinePumpRequest => [:fn #(instance? TimelinePumpHandle %)]]
+       (EventBridge/startTimelinePump
+        (schemas/validate! schema-registry ::schemas/StartTimelinePumpRequest request)))
 
-(defn stop-timeline-pump
-  [^StopTimelinePumpRequest request]
-  (EventBridge/stopTimelinePump request))
+(>defn stop-timeline-pump
+       [request]
+       [::schemas/StopTimelinePumpRequest => :nil]
+       (EventBridge/stopTimelinePump
+        (schemas/validate! schema-registry ::schemas/StopTimelinePumpRequest request)))

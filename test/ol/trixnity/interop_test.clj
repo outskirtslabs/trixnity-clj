@@ -4,7 +4,7 @@
    [ol.trixnity.interop :as sut]
    [ol.trixnity.schemas :as schemas]))
 
-(deftest login-blocking-validates-namespaced-request-keys-test
+(deftest login-with-password-blocking-validates-namespaced-request-keys-test
   (testing "unqualified keys are rejected before bridge invocation"
     (let [request {:homeserver-url "https://matrix.example.org"
                    :username       "bot"
@@ -12,7 +12,7 @@
                    :database       :not-a-database
                    :media-path     "./tmp/media"}]
       (try
-        (sut/login-blocking request)
+        (sut/login-with-password-blocking request)
         (is false "expected schema validation failure")
         (catch clojure.lang.ExceptionInfo ex
           (is (= :com.fulcrologic.guardrails/validation-error
@@ -37,7 +37,7 @@
           (is (= [:catn [:request ::schemas/FromStoreRequest]]
                  (:com.fulcrologic.guardrails/spec (ex-data ex)))))))))
 
-(deftest login-blocking-rejects-non-database-values-test
+(deftest login-with-password-blocking-rejects-non-database-values-test
   (testing "::database must be an Exposed Database value"
     (let [request {::schemas/homeserver-url "https://matrix.example.org"
                    ::schemas/username       "bot"
@@ -45,7 +45,7 @@
                    ::schemas/database       :not-a-database
                    ::schemas/media-path     "./tmp/media"}]
       (try
-        (sut/login-blocking request)
+        (sut/login-with-password-blocking request)
         (is false "expected schema validation failure")
         (catch clojure.lang.ExceptionInfo ex
           (is (= :com.fulcrologic.guardrails/validation-error

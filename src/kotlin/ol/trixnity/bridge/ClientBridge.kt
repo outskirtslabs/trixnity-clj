@@ -12,7 +12,7 @@ import net.folivo.trixnity.clientserverapi.model.authentication.IdentifierType
 
 object ClientBridge {
     @JvmStatic
-    fun loginBlocking(request: KeywordMap): Any = runBlocking {
+    fun loginWithPasswordBlocking(request: KeywordMap): Any = runBlocking {
         val homeserverUrl = requireKeywordString(request, BridgeSchema.LoginRequest.homeserverUrl)
         val username = requireKeywordString(request, BridgeSchema.LoginRequest.username)
         val password = requireKeywordString(request, BridgeSchema.LoginRequest.password)

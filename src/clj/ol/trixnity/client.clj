@@ -128,7 +128,7 @@
                           normalized))
          client       (or (when (and (::schemas/database config) (::schemas/media-path config))
                             (interop/from-store-blocking config))
-                          (interop/login-blocking config))
+                          (interop/login-with-password-blocking config))
          _            (interop/start-sync-blocking
                        (->start-sync-request {:client client}))
          base-runtime {:client client

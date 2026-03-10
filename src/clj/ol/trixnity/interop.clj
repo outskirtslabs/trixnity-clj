@@ -14,10 +14,10 @@
 (def ^:private schema-registry
   (schemas/registry {}))
 
-(>defn login-blocking
+(>defn login-with-password-blocking
        [request]
        [::schemas/LoginRequest => :some]
-       (ClientBridge/loginBlocking
+       (ClientBridge/loginWithPasswordBlocking
         (schemas/validate! schema-registry ::schemas/LoginRequest request)))
 
 (>defn from-store-blocking

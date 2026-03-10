@@ -13,7 +13,7 @@
 (deftest start-and-stop-lifecycle-test
   (let [calls (atom {})
         stops (atom [])]
-    (with-redefs [interop/login-blocking
+    (with-redefs [interop/login-with-password-blocking
                   (fn [request]
                     (swap! calls assoc :login (request-payload request))
                     :client-handle)
@@ -103,7 +103,7 @@
         callbacks  (atom [])
         text-sends (atom [])
         reacts     (atom [])]
-    (with-redefs [interop/login-blocking
+    (with-redefs [interop/login-with-password-blocking
                   (fn [_] :client-handle)
 
                   interop/from-store-blocking
@@ -163,7 +163,7 @@
 
 (deftest queue-backpressure-blocks-producer-until-consumer-drains-test
   (let [calls (atom {})]
-    (with-redefs [interop/login-blocking
+    (with-redefs [interop/login-with-password-blocking
                   (fn [_] :client-handle)
 
                   interop/from-store-blocking
@@ -204,7 +204,7 @@
 
 (deftest start-normalizes-stringly-typed-bridge-events-test
   (let [calls (atom {})]
-    (with-redefs [interop/login-blocking
+    (with-redefs [interop/login-with-password-blocking
                   (fn [_] :client-handle)
 
                   interop/from-store-blocking
@@ -251,7 +251,7 @@
                     (swap! calls assoc :from-store (request-payload request))
                     :stored-client)
 
-                  interop/login-blocking
+                  interop/login-with-password-blocking
                   (fn [_]
                     (throw (ex-info "login should not be called" {})))
 

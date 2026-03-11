@@ -1,180 +1,70 @@
 (ns ol.trixnity.client
   (:require
+   [clojure.string :as str]
    [ol.trixnity.interop :as interop]
-   [ol.trixnity.schemas :as schemas])
+   [ol.trixnity.schemas :as mx])
   (:import
-   (java.util.concurrent BlockingQueue LinkedBlockingQueue)))
+   [java.util.concurrent CompletableFuture]))
 
 (set! *warn-on-reflection* true)
 
-(declare lookup send-reaction! send-text!)
+(def ^:private schema-registry
+  (mx/registry {}))
 
-(defn- ->start-sync-request [payload]
-  {::schemas/client (:client payload)})
+(defn- existing-client [config]
+  (::mx/client config))
 
-(defn- ->start-timeline-pump-request [payload]
-  {::schemas/client   (:client payload)
-   ::schemas/on-event (:on-event payload)})
+(defn- timeout-request [client opts]
+  (cond-> {::mx/client client}
+    (::mx/timeout opts) (assoc ::mx/timeout (::mx/timeout opts))))
 
-(defn- ->stop-timeline-pump-request [payload]
-  {::schemas/client        (:client payload)
-   ::schemas/timeline-pump (:timeline-pump payload)})
+(defn open!
+  "Opens or resumes a `MatrixClient` using the built-in sqlite-backed happy path.
 
-(defn- event-kind [raw-event]
-  (let [kind (or (lookup raw-event :kind) (lookup raw-event :type))]
-    (case kind
-      "m.room.message" :text
-      "m.reaction" :reaction
-      kind)))
+  If `config` already contains a client under `::mx/client`, that client is
+  wrapped in a completed future."
+  [config]
+  (if-let [client (existing-client config)]
+    (CompletableFuture/completedFuture client)
+    (->> config
+         (mx/validate! schema-registry ::mx/OpenClientRequest)
+         interop/open-client)))
 
-(defn- lookup [m k]
-  (or (get m k)
-      (let [name' (if (keyword? k) (name k) (str k))]
-        (or (get m name')
-            (get m (str ":" name'))))))
+(defn start-sync!
+  "Starts sync for `client` and returns a cancelable `CompletableFuture`."
+  [client]
+  (interop/start-sync {::mx/client client}))
 
-(defn- with-client [runtime payload]
-  (assoc payload ::schemas/client (:client runtime)))
+(defn await-running!
+  "Waits for `client` to reach `RUNNING`.
 
-(defn ensure-room! [runtime payload]
-  (interop/create-room-blocking
-   (assoc (with-client runtime payload)
-          ::schemas/room-name (:room-name payload))))
+  Supported opts:
 
-(defn invite-user! [runtime payload]
-  (interop/invite-user-blocking
-   (assoc (with-client runtime payload)
-          ::schemas/room-id (:room-id payload)
-          ::schemas/user-id (:user-id payload))))
+  `{::mx/timeout java.time.Duration}`"
+  ([client]
+   (await-running! client {}))
+  ([client opts]
+   (interop/await-running (timeout-request client opts))))
 
-(defn send-text! [runtime payload]
-  (interop/send-text-reply-blocking
-   (assoc (with-client runtime payload)
-          ::schemas/room-id (:room-id payload)
-          ::schemas/event-id (:event-id payload)
-          ::schemas/body (:body payload))))
+(defn stop-sync!
+  "Stops sync for `client` and returns a cancelable `CompletableFuture`."
+  [client]
+  (interop/stop-sync {::mx/client client}))
 
-(defn send-reaction! [runtime payload]
-  (interop/send-reaction-blocking
-   (assoc (with-client runtime payload)
-          ::schemas/room-id (:room-id payload)
-          ::schemas/event-id (:event-id payload)
-          ::schemas/key (:key payload))))
+(defn close!
+  "Closes `client` and tears down its bridge-owned coroutine scope."
+  [client]
+  (interop/close-client {::mx/client client}))
 
 (defn current-user-id
   "Returns the Matrix user id of `client` as a string."
   [client]
-  (interop/current-user-id-blocking
-   {::schemas/client client}))
+  (interop/current-user-id {::mx/client client}))
 
-(defn open-client!
-  "Constructs or reuses a `MatrixClient`.
-
-  Resolution order:
-
-  1. `::schemas/client` when the caller already has a client instance.
-  2. `::schemas/open-client` when the caller wants custom construction logic.
-  3. Built-in sqlite4clj store resume when `::schemas/database-path` and
-     `::schemas/media-path` are present.
-  4. Built-in password login via the Kotlin bridge.
-
-  This keeps [[start!]] flexible enough for callers who want to supply their
-  own repository implementation without pulling that dependency graph into this
-  library."
-  [config]
-  (or (::schemas/client config)
-      (when-let [open-client (::schemas/open-client config)]
-        (open-client config))
-      (when (and (::schemas/database-path config) (::schemas/media-path config))
-        (interop/from-store-blocking config))
-      (interop/login-with-password-blocking config)))
-
-(defn- normalize-event [runtime raw-event]
-  (let [kind     (event-kind raw-event)
-        room-id  (or (lookup raw-event :room-id) (lookup raw-event :room))
-        event-id (or (lookup raw-event :event-id) (lookup raw-event :id))
-        base     {:kind     kind
-                  :room-id  room-id
-                  :sender   (lookup raw-event :sender)
-                  :event-id event-id
-                  :raw      raw-event}]
-    (case kind
-      :text
-      (assoc base
-             :body (or (lookup raw-event :body) (lookup raw-event :text))
-             :reply! (fn [body]
-                       (send-text! runtime
-                                   {:room-id  room-id
-                                    :event-id event-id
-                                    :body     body})))
-
-      :reaction
-      (assoc base
-             :key (or (lookup raw-event :key) (lookup raw-event :reaction))
-             :react! (fn [key]
-                       (send-reaction! runtime
-                                       {:room-id  room-id
-                                        :event-id event-id
-                                        :key      key})))
-
-      base)))
-
-(defn- enqueue-event! [^BlockingQueue events event]
-  (.put events event)
-  event)
-
-(defn- dispatch-callback! [handlers event]
-  (try
-    (case (:kind event)
-      :text
-      (when-let [on-text (:on-text handlers)]
-        (on-text event))
-
-      :reaction
-      (when-let [on-reaction (:on-reaction handlers)]
-        (on-reaction event))
-
-      nil)
-    (catch Throwable ex
-      (when-let [on-error (:on-error handlers)]
-        (on-error {:stage :event-callback
-                   :event event
-                   :ex    ex})))))
-
-(defn start!
-  ([config]
-   (start! config {}))
-  ([config handlers]
-   (let [queue-size   (int (or (:event-queue-size config) 256))
-         events       (LinkedBlockingQueue. queue-size)
-         runtime*     (atom nil)
-         on-event     (fn [raw-event]
-                        (let [runtime    @runtime*
-                              normalized (normalize-event runtime raw-event)]
-                          (enqueue-event! events normalized)
-                          (dispatch-callback! handlers normalized)
-                          normalized))
-         client       (open-client! config)
-         _            (interop/start-sync-blocking
-                       (->start-sync-request {:client client}))
-         base-runtime {:client client
-                       :events events}
-         _            (reset! runtime* base-runtime)
-         timeline     (interop/start-timeline-pump
-                       (->start-timeline-pump-request
-                        {:client   client
-                         :on-event on-event}))
-         stop-fn      (fn []
-                        (interop/stop-timeline-pump
-                         (->stop-timeline-pump-request
-                          {:client        client
-                           :timeline-pump timeline}))
-                        nil)
-         runtime      (assoc base-runtime
-                             :timeline-pump timeline
-                             :stop! stop-fn)]
-     (reset! runtime* runtime)
-     runtime)))
-
-(defn stop! [runtime]
-  ((:stop! runtime)))
+(defn sync-state
+  "Returns the current sync state as a lower-case keyword."
+  [client]
+  (let [state (interop/sync-state {::mx/client client})]
+    (if (keyword? state)
+      state
+      (-> state str str/lower-case keyword))))

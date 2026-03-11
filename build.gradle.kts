@@ -36,6 +36,7 @@ dependencies {
     implementation("de.connect2x.trixnity:trixnity-client-jvm:5.2.0")
     implementation("de.connect2x.trixnity:trixnity-client-media-okio-jvm:5.2.0")
     implementation("de.connect2x.trixnity:trixnity-client-cryptodriver-vodozemac-jvm:5.2.0")
+    implementation("io.ktor:ktor-client-mock-jvm:3.4.1")
 
     implementation("org.clojure:clojure:1.12.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")

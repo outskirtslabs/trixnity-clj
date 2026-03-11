@@ -2,7 +2,8 @@
   (:require
    [clojure.string :as str]))
 
-(defn already-in-room-invite-failure? [error]
+(defn already-in-room-invite-failure?
+  [error]
   (boolean
    (some-> error
            ex-message

@@ -3,67 +3,39 @@
 
   Most callers do not need to interact with the raw repository handle or the
   Kotlin bridge types directly. Use [[sqlite4clj-config]] with
-  [[ol.trixnity.client/open-client!]] or [[ol.trixnity.client/start!]].
+  [[ol.trixnity.client/open!]].
 
   Advanced callers can still build a `MatrixClient` with some other repository
-  implementation and pass that client to [[ol.trixnity.client/start!]] via
-  `::ol.trixnity.schemas/client`."
+  implementation and pass that client to [[ol.trixnity.client/open!]] via
+  `::mx/client`."
   (:require
    [ol.trixnity.repo.common :as common]
-   [ol.trixnity.schemas :as schemas])
+   [ol.trixnity.schemas :as mx])
   (:import
-   (de.connect2x.trixnity.client.store KeyChainLink StoredNotification StoredNotificationUpdate)
-   (de.connect2x.trixnity.client.store.repository
-    AccountRepository
-    AuthenticationRepository
-    CrossSigningKeysRepository
-    DeviceKeysRepository
-    GlobalAccountDataRepository
-    InboundMegolmMessageIndexRepository
-    InboundMegolmMessageIndexRepositoryKey
-    InboundMegolmSessionRepository
-    InboundMegolmSessionRepositoryKey
-    KeyVerificationStateKey
-    KeyVerificationStateRepository
-    MediaCacheMappingRepository
-    MigrationRepository
-    NotificationStateRepository
-    OlmAccountRepository
-    OlmForgetFallbackKeyAfterRepository
-    OlmSessionRepository
-    OutboundMegolmSessionRepository
-    OutdatedKeysRepository
-    RoomAccountDataRepositoryKey
-    RoomKeyRequestRepository
-    RoomOutboxMessageRepositoryKey
-    RoomRepository
-    RoomStateRepositoryKey
-    SecretKeyRequestRepository
-    SecretsRepository
-    ServerDataRepository
-    TimelineEventKey
-    TimelineEventRelationKey
-    UserPresenceRepository)
-   (de.connect2x.trixnity.core.model EventId RoomId UserId)
-   (de.connect2x.trixnity.core.model.keys Key$Ed25519Key KeyValue$Curve25519KeyValue)
-   (de.connect2x.trixnity.core.serialization.events EventContentSerializerMappings)
-   (de.connect2x.trixnity.crypto.olm StoredInboundMegolmSession)
-   (kotlinx.serialization KSerializer)
-   (kotlinx.serialization.json Json)
-   (ol.trixnity.bridge
-    KeyChainLinkRepositoryOps
-    NotificationRepositoryOps
-    NotificationUpdateRepositoryOps
-    RoomAccountDataRepositoryOps
-    RoomOutboxMessageRepositoryOps
-    RoomStateRepositoryOps
-    RoomUserReceiptsRepositoryOps
-    RoomUserRepositoryOps
-    Sqlite4cljModelBridge
-    Sqlite4cljRepositoryHandle
-    Sqlite4cljSerializers
-    TimelineEventRelationRepositoryOps
-    TimelineEventRepositoryOps)))
+   [de.connect2x.trixnity.client.store KeyChainLink StoredNotification
+    StoredNotificationUpdate]
+   [de.connect2x.trixnity.client.store.repository AccountRepository
+    AuthenticationRepository CrossSigningKeysRepository DeviceKeysRepository
+    GlobalAccountDataRepository InboundMegolmMessageIndexRepository
+    InboundMegolmMessageIndexRepositoryKey InboundMegolmSessionRepository
+    InboundMegolmSessionRepositoryKey KeyVerificationStateKey
+    KeyVerificationStateRepository MediaCacheMappingRepository MigrationRepository
+    NotificationStateRepository OlmAccountRepository OlmForgetFallbackKeyAfterRepository
+    OlmSessionRepository OutboundMegolmSessionRepository OutdatedKeysRepository
+    RoomAccountDataRepositoryKey RoomKeyRequestRepository RoomOutboxMessageRepositoryKey
+    RoomRepository RoomStateRepositoryKey SecretKeyRequestRepository SecretsRepository
+    ServerDataRepository TimelineEventKey TimelineEventRelationKey UserPresenceRepository]
+   [de.connect2x.trixnity.core.model EventId RoomId UserId]
+   [de.connect2x.trixnity.core.model.keys Key$Ed25519Key KeyValue$Curve25519KeyValue]
+   [de.connect2x.trixnity.core.serialization.events EventContentSerializerMappings]
+   [de.connect2x.trixnity.crypto.olm StoredInboundMegolmSession]
+   [kotlinx.serialization KSerializer]
+   [kotlinx.serialization.json Json]
+   [ol.trixnity.bridge KeyChainLinkRepositoryOps NotificationRepositoryOps
+    NotificationUpdateRepositoryOps RoomAccountDataRepositoryOps
+    RoomOutboxMessageRepositoryOps RoomStateRepositoryOps RoomUserReceiptsRepositoryOps
+    RoomUserRepositoryOps Sqlite4cljModelBridge Sqlite4cljRepositoryHandle
+    Sqlite4cljSerializers TimelineEventRelationRepositoryOps TimelineEventRepositoryOps]))
 
 (set! *warn-on-reflection* true)
 
@@ -75,30 +47,32 @@
 (defn sqlite4clj-config
   "Returns config entries for the built-in sqlite4clj repository and okio media store.
 
-  Accepts plain keywords or the namespaced keys from [[ol.trixnity.schemas]].
+  Prefer the namespaced keys from [[ol.trixnity.schemas]]. Plain keywords are
+  still accepted here as a convenience when normalizing app config.
 
   Options:
 
   | key | description
   |-----|-------------
-  | `:database-path` | SQLite file path used by `ol.trixnity.repo`
-  | `:media-path` | Directory used by the okio-backed media store
+  | `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`
+  | `::mx/media-path` | Directory used by the okio-backed media store
 
   Example:
 
   ```clojure
-  (client/start!
+  (.get
+   (client/open!
     (merge
-      {::schemas/homeserver-url \"https://matrix.example.org\"
-       ::schemas/username \"bot\"
-       ::schemas/password \"secret\"}
+      {::mx/homeserver-url \"https://matrix.example.org\"
+       ::mx/username \"bot\"
+       ::mx/password \"secret\"}
       (repo/sqlite4clj-config
-        {:database-path \"./var/trixnity.sqlite\"
-         :media-path \"./var/media\"})))
+        {::mx/database-path \"./var/trixnity.sqlite\"
+         ::mx/media-path \"./var/media\"}))))
   ```"
   [options]
-  {::schemas/database-path (some-> (option-value options ::schemas/database-path) str)
-   ::schemas/media-path    (some-> (option-value options ::schemas/media-path) str)})
+  {::mx/database-path (some-> (option-value options ::mx/database-path) str)
+   ::mx/media-path    (some-> (option-value options ::mx/media-path) str)})
 
 (defn open-handle!
   [path ^Json json]

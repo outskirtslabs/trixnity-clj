@@ -3,11 +3,11 @@
    [clojure.string :as str]
    [sqlite4clj.core :as sqlite])
   (:import
-   (de.connect2x.trixnity.core.model EventId RoomId UserId)
-   (java.util.concurrent BlockingQueue)
-   (kotlinx.serialization DeserializationStrategy SerializationStrategy)
-   (kotlinx.serialization.json Json)
-   (ol.trixnity.bridge CurrentTx Sqlite4cljRepositoryHandle)))
+   [de.connect2x.trixnity.core.model EventId RoomId UserId]
+   [java.util.concurrent BlockingQueue]
+   [kotlinx.serialization DeserializationStrategy SerializationStrategy]
+   [kotlinx.serialization.json Json]
+   [ol.trixnity.bridge CurrentTx Sqlite4cljRepositoryHandle]))
 
 (set! *warn-on-reflection* true)
 

@@ -1,75 +1,85 @@
 (ns ol.trixnity.interop
   (:require
-   [com.fulcrologic.guardrails.malli.core :refer [=> >defn]]
-   [ol.trixnity.schemas :as schemas])
+   [com.fulcrologic.guardrails.malli.core :refer [>defn]]
+   [ol.trixnity.schemas :as mx])
   (:import
-   (ol.trixnity.bridge
-    ClientBridge
-    EventBridge
-    RoomBridge
-    TimelinePumpHandle)))
+   [ol.trixnity.bridge ClientBridge RoomBridge TimelineBridge]))
 
 (set! *warn-on-reflection* true)
 
 (def ^:private schema-registry
-  (schemas/registry {}))
+  (mx/registry {}))
 
-(>defn login-with-password-blocking
+(>defn open-client
        [request]
-       [::schemas/LoginRequest => :some]
-       (ClientBridge/loginWithPasswordBlocking
-        (schemas/validate! schema-registry ::schemas/LoginRequest request)))
+       [::mx/OpenClientRequest => :some]
+       (ClientBridge/openClient
+        (mx/validate! schema-registry ::mx/OpenClientRequest request)))
 
-(>defn from-store-blocking
+(>defn current-user-id
        [request]
-       [::schemas/FromStoreRequest => [:maybe :some]]
-       (ClientBridge/fromStoreBlocking
-        (schemas/validate! schema-registry ::schemas/FromStoreRequest request)))
+       [::mx/CurrentUserIdRequest => :string]
+       (ClientBridge/currentUserId
+        (mx/validate! schema-registry ::mx/CurrentUserIdRequest request)))
 
-(>defn current-user-id-blocking
+(>defn sync-state
        [request]
-       [::schemas/CurrentUserIdRequest => :string]
-       (ClientBridge/currentUserIdBlocking
-        (schemas/validate! schema-registry ::schemas/CurrentUserIdRequest request)))
+       [::mx/SyncStateRequest => :string]
+       (ClientBridge/syncState
+        (mx/validate! schema-registry ::mx/SyncStateRequest request)))
 
-(>defn start-sync-blocking
+(>defn start-sync
        [request]
-       [::schemas/StartSyncRequest => :nil]
-       (ClientBridge/startSyncBlocking
-        (schemas/validate! schema-registry ::schemas/StartSyncRequest request)))
+       [::mx/StartSyncRequest => :some]
+       (ClientBridge/startSync
+        (mx/validate! schema-registry ::mx/StartSyncRequest request)))
 
-(>defn create-room-blocking
+(>defn await-running
        [request]
-       [::schemas/CreateRoomRequest => :string]
-       (RoomBridge/createRoomBlocking
-        (schemas/validate! schema-registry ::schemas/CreateRoomRequest request)))
+       [::mx/AwaitRunningRequest => :some]
+       (ClientBridge/awaitRunning
+        (mx/validate! schema-registry ::mx/AwaitRunningRequest request)))
 
-(>defn invite-user-blocking
+(>defn stop-sync
        [request]
-       [::schemas/InviteUserRequest => :nil]
-       (RoomBridge/inviteUserBlocking
-        (schemas/validate! schema-registry ::schemas/InviteUserRequest request)))
+       [::mx/StopSyncRequest => :some]
+       (ClientBridge/stopSync
+        (mx/validate! schema-registry ::mx/StopSyncRequest request)))
 
-(>defn send-text-reply-blocking
+(>defn close-client
        [request]
-       [::schemas/SendTextReplyRequest => :nil]
-       (RoomBridge/sendTextReplyBlocking
-        (schemas/validate! schema-registry ::schemas/SendTextReplyRequest request)))
+       [::mx/CloseClientRequest => :some]
+       (ClientBridge/closeClient
+        (mx/validate! schema-registry ::mx/CloseClientRequest request)))
 
-(>defn send-reaction-blocking
+(>defn create-room
        [request]
-       [::schemas/SendReactionRequest => :nil]
-       (RoomBridge/sendReactionBlocking
-        (schemas/validate! schema-registry ::schemas/SendReactionRequest request)))
+       [::mx/CreateRoomRequest => :some]
+       (RoomBridge/createRoom
+        (mx/validate! schema-registry ::mx/CreateRoomRequest request)))
 
-(>defn start-timeline-pump
+(>defn invite-user
        [request]
-       [::schemas/StartTimelinePumpRequest => [:fn #(instance? TimelinePumpHandle %)]]
-       (EventBridge/startTimelinePump
-        (schemas/validate! schema-registry ::schemas/StartTimelinePumpRequest request)))
+       [::mx/InviteUserRequest => :some]
+       (RoomBridge/inviteUser
+        (mx/validate! schema-registry ::mx/InviteUserRequest request)))
 
-(>defn stop-timeline-pump
+(>defn send-message
        [request]
-       [::schemas/StopTimelinePumpRequest => :nil]
-       (EventBridge/stopTimelinePump
-        (schemas/validate! schema-registry ::schemas/StopTimelinePumpRequest request)))
+       [::mx/SendMessageRequest => :some]
+       (RoomBridge/sendMessage
+        (mx/validate! schema-registry ::mx/SendMessageRequest request)))
+
+(>defn send-reaction
+       [request]
+       [::mx/SendReactionRequest => :some]
+       (RoomBridge/sendReaction
+        (mx/validate! schema-registry ::mx/SendReactionRequest request)))
+
+(>defn subscribe-timeline
+       [request]
+       [::mx/SubscribeTimelineRequest => ::mx/closeable]
+       (TimelineBridge/subscribeTimeline
+        (mx/validate! schema-registry
+                      ::mx/SubscribeTimelineRequest
+                      request)))

@@ -1,14 +1,15 @@
 {:paths   ["src/clj" "build/classes/kotlin/main" "build/resources/main"]
- :deps    {de.connect2x.trixnity/trixnity-client-jvm            {:mvn/version "5.2.0"}
-           de.connect2x.trixnity/trixnity-client-media-okio-jvm {:mvn/version "5.2.0"}
+ :deps    {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.2.0"}
+           de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.2.0"}
            de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.2.0"}
-           io.ktor/ktor-client-java-jvm                         {:mvn/version "3.4.1"}
-           org.slf4j/slf4j-nop                                  {:mvn/version "2.0.17"}
-           andersmurphy/sqlite4clj                              {:git/url "https://github.com/andersmurphy/sqlite4clj"
-                                                                 :git/sha "7cc1fc180c683a27aa3f91d434729eb07f9702f6"}
-           org.babashka/http-client                             {:mvn/version "0.4.23"}
-           com.fulcrologic/guardrails                           {:mvn/version "1.2.16"}
-           metosin/malli                                        {:mvn/version "0.20.1"}}
+           io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.4.1"}
+           io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.4.1"}
+           org.slf4j/slf4j-nop                                              {:mvn/version "2.0.17"}
+           andersmurphy/sqlite4clj                                          {:git/url "https://github.com/andersmurphy/sqlite4clj"
+                                                                             :git/sha "7cc1fc180c683a27aa3f91d434729eb07f9702f6"}
+           org.babashka/http-client                                         {:mvn/version "0.4.23"}
+           com.fulcrologic/guardrails                                       {:mvn/version "1.2.16"}
+           metosin/malli                                                    {:mvn/version "0.20.1"}}
  :aliases {:kaocha {:extra-paths ["test"]
                     :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
                     :main-opts   ["-m" "kaocha.runner"]}

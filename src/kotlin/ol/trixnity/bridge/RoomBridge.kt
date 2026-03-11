@@ -1,6 +1,5 @@
 package ol.trixnity.bridge
 
-import kotlinx.coroutines.runBlocking
 import de.connect2x.trixnity.client.room
 import de.connect2x.trixnity.client.room.message.react
 import de.connect2x.trixnity.client.room.message.reply
@@ -13,56 +12,83 @@ import de.connect2x.trixnity.core.model.events.m.room.EncryptionEventContent
 
 object RoomBridge {
     @JvmStatic
-    fun createRoomBlocking(request: KeywordMap): String {
-        val client = requireKeywordClient(request, BridgeSchema.CreateRoomRequest.client)
-        val roomName = requireKeywordString(request, BridgeSchema.CreateRoomRequest.roomName)
-        return runBlocking {
+    fun createRoom(request: KeywordMap) =
+        BridgeAsync.submitFuture(
+            scope = BridgeAsync.clientScope(
+                requireKeywordClient(request, BridgeSchema.CreateRoomRequest.client),
+            ),
+        ) {
+            val client = requireKeywordClient(request, BridgeSchema.CreateRoomRequest.client)
+            val roomName = requireKeywordString(request, BridgeSchema.CreateRoomRequest.roomName)
             client.api.room.createRoom(
                 name = roomName,
-                initialState = listOf(InitialStateEvent(content = EncryptionEventContent(), stateKey = "")),
+                initialState = listOf(
+                    InitialStateEvent(
+                        content = EncryptionEventContent(),
+                        stateKey = "",
+                    ),
+                ),
             ).getOrThrow().full
         }
-    }
 
     @JvmStatic
-    fun inviteUserBlocking(request: KeywordMap) {
-        val client = requireKeywordClient(request, BridgeSchema.InviteUserRequest.client)
-        val roomId = RoomId(requireKeywordString(request, BridgeSchema.InviteUserRequest.roomId))
-        val userId = UserId(requireKeywordString(request, BridgeSchema.InviteUserRequest.userId))
-        runBlocking {
-            client.api.room.inviteUser(roomId, userId).onFailure { ex ->
-                if (!isAlreadyInRoomInviteFailure(ex)) throw ex
-            }
+    fun inviteUser(request: KeywordMap) =
+        BridgeAsync.submitFuture(
+            scope = BridgeAsync.clientScope(
+                requireKeywordClient(request, BridgeSchema.InviteUserRequest.client),
+            ),
+            timeout = optionalKeywordDuration(request, BridgeSchema.InviteUserRequest.timeout),
+        ) {
+            val client = requireKeywordClient(request, BridgeSchema.InviteUserRequest.client)
+            val roomId = RoomId(requireKeywordString(request, BridgeSchema.InviteUserRequest.roomId))
+            val userId = UserId(requireKeywordString(request, BridgeSchema.InviteUserRequest.userId))
+            client.api.room.inviteUser(roomId, userId).getOrThrow()
+            null
         }
-    }
 
     @JvmStatic
-    fun sendTextReplyBlocking(request: KeywordMap) {
-        val client = requireKeywordClient(request, BridgeSchema.SendTextReplyRequest.client)
-        val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendTextReplyRequest.roomId))
-        val eventId = EventId(requireKeywordString(request, BridgeSchema.SendTextReplyRequest.eventId))
-        val body = requireKeywordString(request, BridgeSchema.SendTextReplyRequest.body)
-        runBlocking {
+    fun sendMessage(request: KeywordMap) =
+        BridgeAsync.submitFuture(
+            scope = BridgeAsync.clientScope(
+                requireKeywordClient(request, BridgeSchema.SendMessageRequest.client),
+            ),
+            timeout = optionalKeywordDuration(request, BridgeSchema.SendMessageRequest.timeout),
+        ) {
+            val client = requireKeywordClient(request, BridgeSchema.SendMessageRequest.client)
+            val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendMessageRequest.roomId))
+            val message = requireMessageSpec(request, BridgeSchema.SendMessageRequest.message)
+
             client.room.sendMessage(roomId) {
-                text(body)
-                reply(eventId, null)
+                when (message.kind) {
+                    "text", ":text" -> text(
+                        body = message.body,
+                        format = message.format,
+                        formattedBody = message.formattedBody,
+                    )
+
+                    else -> error("unsupported message kind: ${message.kind}")
+                }
+
+                message.replyTo?.let {
+                    reply(EventId(it.eventId), relationFrom(it.relatesTo))
+                }
             }
         }
-    }
 
     @JvmStatic
-    fun sendReactionBlocking(request: KeywordMap) {
-        val client = requireKeywordClient(request, BridgeSchema.SendReactionRequest.client)
-        val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendReactionRequest.roomId))
-        val eventId = EventId(requireKeywordString(request, BridgeSchema.SendReactionRequest.eventId))
-        val key = requireKeywordString(request, BridgeSchema.SendReactionRequest.key)
-        runBlocking {
+    fun sendReaction(request: KeywordMap) =
+        BridgeAsync.submitFuture(
+            scope = BridgeAsync.clientScope(
+                requireKeywordClient(request, BridgeSchema.SendReactionRequest.client),
+            ),
+            timeout = optionalKeywordDuration(request, BridgeSchema.SendReactionRequest.timeout),
+        ) {
+            val client = requireKeywordClient(request, BridgeSchema.SendReactionRequest.client)
+            val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendReactionRequest.roomId))
+            val eventId = EventId(requireKeywordString(request, BridgeSchema.SendReactionRequest.eventId))
+            val key = requireKeywordString(request, BridgeSchema.SendReactionRequest.key)
             client.room.sendMessage(roomId) {
                 react(eventId, key)
             }
         }
-    }
-
-    private fun isAlreadyInRoomInviteFailure(error: Throwable): Boolean =
-        error.message?.contains("already in the room", ignoreCase = true) == true
 }

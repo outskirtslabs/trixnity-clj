@@ -24,7 +24,14 @@
                                                                 :git/sha "97c5562"}
                                  slipset/deps-deploy           {:mvn/version "0.2.2"}}
                     :ns-default build}
+           :gradle {:extra-deps {de.connect2x.trixnity/trixnity-test-utils-jvm {:mvn/version "5.2.0"}
+                                 org.jetbrains.kotlin/kotlin-gradle-plugin      {:mvn/version "2.3.10"}
+                                 org.jetbrains.kotlin/kotlin-test               {:mvn/version "2.3.10"}
+                                 org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm
+                                 {:mvn/version "1.8.0"}
+                                 org.jetbrains.kotlinx/kotlinx-coroutines-test  {:mvn/version "1.10.1"}}}
            :neil   {:project {:name        com.outskirtslabs/trixnity-clj
                               :license     {:id "Apache-2.0"}
-                              :description ""
+                              :description "A Clojure adapter for Trixnity, a Matrix SDK."
+                              :url         "https://github.com/outskirtslabs/trixnity-clj"
                               :version     "0.0.1"}}}}

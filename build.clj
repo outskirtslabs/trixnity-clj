@@ -1,20 +1,42 @@
 ;; Copyright © 2025 Casey Link <casey@outskirtslabs.com>
 ;; SPDX-License-Identifier: MIT
 (ns build
-  (:require [clojure.tools.build.api :as b]
-            [clojure.edn :as edn]
-            [clojure.string :as str]))
+  (:require
+   [clojure.edn :as edn]
+   [clojure.string :as str]
+   [clojure.tools.build.api :as b]))
 
 (def project (-> (edn/read-string (slurp "deps.edn")) :aliases :neil :project))
-(def rev (str/trim (b/git-process {:git-args "rev-parse HEAD"})))
+(defn- git-process
+  [git-args]
+  (try
+    (some-> (b/git-process {:git-args git-args})
+            str/trim
+            not-empty)
+    (catch Exception _
+      nil)))
+
+(defn- existing-dir?
+  [path]
+  (.isDirectory (java.io.File. path)))
+
+(defn- existing-dirs
+  [paths]
+  (filter existing-dir? paths))
+
 (def lib (:name project))
 (def version (:version project))
 (def license-id (-> project :license :id))
 (def license-file (or (-> project :license :file) "LICENSE"))
 (def description (:description project))
-(def repo-url-prefix (:url project (-> (b/git-process {:git-args "remote get-url origin"})
-                                       (str/trim)
-                                       (str/replace #"\.git$" ""))))
+(def rev (or (System/getenv "TRIXNITY_CLJ_GIT_SHA")
+             (git-process "rev-parse HEAD")
+             "UNKNOWN"))
+(def repo-url-prefix (or (:url project)
+                         (System/getenv "TRIXNITY_CLJ_REPO_URL")
+                         (some-> (git-process "remote get-url origin")
+                                 (str/replace #"\.git$" ""))
+                         "https://github.com/outskirtslabs/trixnity-clj"))
 (assert lib ":name must be set in deps.edn under the :neil alias")
 (assert version ":version must be set in deps.edn under the :neil alias")
 (assert description ":description must be set in deps.edn under the :neil alias")
@@ -50,7 +72,9 @@
                               [:url (permalink license-file)]]]
                             (conj (url->scm repo-url-prefix) [:tag rev])]})
 
-  (b/copy-dir {:src-dirs   ["src/clj" "resources"]
+  (b/copy-dir {:src-dirs   (existing-dirs ["src/clj"
+                                           "resources"
+                                           "build/classes/kotlin/main"])
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
           :jar-file  jar-file}))

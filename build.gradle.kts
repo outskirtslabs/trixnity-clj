@@ -1,8 +1,21 @@
-plugins {
-    kotlin("jvm") version "2.3.10"
+import org.gradle.api.tasks.testing.Test
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10")
+    }
 }
 
+apply(plugin = "org.jetbrains.kotlin.jvm")
+
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -33,21 +46,21 @@ val clojureRuntimeClasspath = run {
 }
 
 dependencies {
-    implementation("de.connect2x.trixnity:trixnity-client-jvm:5.2.0")
-    implementation("de.connect2x.trixnity:trixnity-client-media-okio-jvm:5.2.0")
-    implementation("de.connect2x.trixnity:trixnity-client-cryptodriver-vodozemac-jvm:5.2.0")
-    implementation("io.ktor:ktor-client-mock-jvm:3.4.1")
+    add("implementation", "de.connect2x.trixnity:trixnity-client-jvm:5.2.0")
+    add("implementation", "de.connect2x.trixnity:trixnity-client-media-okio-jvm:5.2.0")
+    add("implementation", "de.connect2x.trixnity:trixnity-client-cryptodriver-vodozemac-jvm:5.2.0")
+    add("implementation", "io.ktor:ktor-client-mock-jvm:3.4.1")
 
-    implementation("org.clojure:clojure:1.12.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-    runtimeOnly(clojureRuntimeClasspath)
+    add("implementation", "org.clojure:clojure:1.12.4")
+    add("implementation", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    add("runtimeOnly", clojureRuntimeClasspath)
 
-    testImplementation(kotlin("test"))
-    testImplementation("de.connect2x.trixnity:trixnity-test-utils-jvm:5.2.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    add("testImplementation", "org.jetbrains.kotlin:kotlin-test:2.3.10")
+    add("testImplementation", "de.connect2x.trixnity:trixnity-test-utils-jvm:5.2.0")
+    add("testImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
 }
 
-kotlin {
+configure<KotlinJvmProjectExtension> {
     jvmToolchain(25)
     sourceSets {
         getByName("main").kotlin.srcDir("src/kotlin")
@@ -59,7 +72,7 @@ kotlin {
     }
 }
 
-tasks.test {
+tasks.named<Test>("test") {
     useJUnitPlatform()
     jvmArgs("--enable-native-access=ALL-UNNAMED")
 }

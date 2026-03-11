@@ -6,7 +6,22 @@
           [babashka.tasks :refer [shell]])
 
          :init
-         (do (def paths ["src/clj" "dev" "test"]))
+         (do
+           (def paths ["src/clj" "dev" "test"])
+           (defn gradle-task [task]
+             (let [gradle-args (some-> (System/getenv "TRIXNITY_GRADLE_ARGS")
+                                       str/trim
+                                       not-empty
+                                       (str/split (re-pattern "\\s+")))
+                   gradle-java-home (some-> (System/getenv "TRIXNITY_GRADLE_JAVA_HOME")
+                                            str/trim
+                                            not-empty)]
+               (if gradle-java-home
+                 (apply shell
+                        {:extra-env {"JAVA_HOME" gradle-java-home}}
+                        "gradle"
+                        (concat (or gradle-args []) [task]))
+                 (apply shell "gradle" (concat (or gradle-args []) [task]))))))
 
          dev
          {:doc  "Start a local development server"
@@ -20,7 +35,7 @@
          test:kotlin
          {:doc     "Run kotlin tests"
           :depends [bridge:build]
-          :task    (shell "gradle test")}
+          :task    (gradle-task "test")}
 
          poc:run
          {:doc  "Run facade POC entrypoint"
@@ -36,7 +51,7 @@
 
          bridge:build
          {:doc  "Compile the Kotlin bridge classes"
-          :task (shell "gradle classes")}
+          :task (gradle-task "classes")}
 
          build
          {:doc "Build" :depends [bridge:build]}
@@ -80,7 +95,7 @@
 
          jar
          {:override-builtin true
-          :depends          [clean]
+          :depends          [clean bridge:build]
           :doc              "Build an jar"
           :task             (shell "clojure -T:build jar")}
 

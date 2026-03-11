@@ -41,7 +41,7 @@
 (assert version ":version must be set in deps.edn under the :neil alias")
 (assert description ":description must be set in deps.edn under the :neil alias")
 (assert license-id "[:license :id] must be set in deps.edn under the :neil alias")
-(def class-dir "target/classes")
+(def class-dir "target/lib-classes")
 (def basis_ (delay (b/create-basis {:project "deps.edn"})))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 
@@ -74,7 +74,7 @@
 
   (b/copy-dir {:src-dirs   (existing-dirs ["src/clj"
                                            "resources"
-                                           "build/classes/kotlin/main"])
+                                           "target/classes"])
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
           :jar-file  jar-file}))

@@ -21,7 +21,8 @@
     };
   };
 
-  outputs = inputs@{ flakelight, ... }:
+  outputs =
+    inputs@{ flakelight, ... }:
     flakelight ./. {
       inherit inputs;
       pname = "trixnity-clj";
@@ -32,10 +33,38 @@
         inputs.clj-nix.overlays.default
       ];
 
-      package = pkgs:
+      package =
+        pkgs:
         let
-          gradle = pkgs.gradle.override {
-            java = pkgs.jdk21;
+          deps-cache = pkgs.mk-deps-cache {
+            lockfile = ./deps-lock.json;
+          };
+          bridge-classes = "${bridge-package}/share/trixnity-clj-bridge/target/classes";
+          bridge-package = pkgs.maven.buildMavenPackage {
+            pname = "trixnity-clj-bridge";
+            version = "0.0.1";
+            src = ./.;
+            mvnJdk = pkgs.jdk25;
+            buildOffline = true;
+            mvnHash = "sha256-wsULsWywuZyWlWaZ33WuAVpzJAtsmcbBHSuuR87AZ5Q=";
+            manualMvnArtifacts = [
+              "org.jetbrains:annotations:13.0:jar"
+              "org.apache.maven.surefire:surefire-junit-platform:3.5.5:jar"
+            ];
+            preBuild = ''
+              export HOME="$TMPDIR/home"
+              mkdir -p "$HOME"
+              ln -s ${deps-cache}/.gitlibs "$HOME/.gitlibs"
+              export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
+            '';
+            installPhase = ''
+              runHook preInstall
+
+              mkdir -p $out/share/trixnity-clj-bridge
+              cp -r target $out/share/trixnity-clj-bridge/
+
+              runHook postInstall
+            '';
           };
         in
         pkgs.mkCljLib {
@@ -43,30 +72,32 @@
           name = "com.outskirtslabs/trixnity-clj";
           version = "0.0.1";
           nativeBuildInputs = [
-            pkgs.babashka
-            gradle
+            pkgs.coreutils
           ];
           JAVA_HOME = pkgs.jdk25.home;
-          GRADLE_OPTS =
-            "-Dorg.gradle.java.installations.auto-download=false "
-            + "-Dorg.gradle.java.installations.paths=${pkgs.jdk25.home}";
           buildCommand = ''
             cljnix_home="$HOME"
             export HOME="$TMPDIR/home"
             mkdir -p "$HOME"
             ln -s "$cljnix_home/.m2" "$HOME/.m2"
             ln -s "$cljnix_home/.gitlibs" "$HOME/.gitlibs"
-            export JAVA_TOOL_OPTIONS="-Duser.home=$HOME"
-            export TRIXNITY_GRADLE_ARGS="--offline"
-            export TRIXNITY_GRADLE_JAVA_HOME="${pkgs.jdk21.home}"
-            export GRADLE_USER_HOME="$HOME/.gradle"
+            export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
+            export JAVA_CMD="${pkgs.jdk25}/bin/java"
+            mkdir -p kotlin/build
+            if [ -e target/classes ]; then
+              chmod -R u+w target/classes
+              rm -rf target/classes
+            fi
+            mkdir -p target/classes
+            cp -R ${bridge-classes}/. target/classes/
 
-            bb test
-            bb jar
+            clojure -M:dev:kaocha
+            clojure -T:build jar
           '';
         };
 
-      devShell = pkgs:
+      devShell =
+        pkgs:
         pkgs.devshell.mkShell {
           imports = [
             inputs.devenv.capsules.base
@@ -77,25 +108,11 @@
               name = "JAVA_HOME";
               value = pkgs.jdk25.home;
             }
-            {
-              name = "GRADLE_OPTS";
-              value =
-                "-Dorg.gradle.java.installations.auto-download=false "
-                + "-Dorg.gradle.java.installations.paths=${pkgs.jdk25.home}";
-            }
-            {
-              name = "TRIXNITY_GRADLE_JAVA_HOME";
-              value = pkgs.jdk21.home;
-            }
-          ];
-          commands = [
           ];
           packages = [
-            pkgs.jdk21
+            pkgs.deps-lock
             pkgs.jdk25
-            (pkgs.gradle.override {
-              java = pkgs.jdk21;
-            })
+            pkgs.maven
           ];
         };
     };

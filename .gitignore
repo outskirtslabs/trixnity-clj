@@ -21,3 +21,5 @@ build
 /dev-data/
 *.db
 archive
+tmp/
+*.md

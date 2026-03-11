@@ -7,21 +7,7 @@
 
          :init
          (do
-           (def paths ["src/clj" "dev" "test"])
-           (defn gradle-task [task]
-             (let [gradle-args (some-> (System/getenv "TRIXNITY_GRADLE_ARGS")
-                                       str/trim
-                                       not-empty
-                                       (str/split (re-pattern "\\s+")))
-                   gradle-java-home (some-> (System/getenv "TRIXNITY_GRADLE_JAVA_HOME")
-                                            str/trim
-                                            not-empty)]
-               (if gradle-java-home
-                 (apply shell
-                        {:extra-env {"JAVA_HOME" gradle-java-home}}
-                        "gradle"
-                        (concat (or gradle-args []) [task]))
-                 (apply shell "gradle" (concat (or gradle-args []) [task]))))))
+           (def paths ["src/clj" "dev" "test"]))
 
          dev
          {:doc  "Start a local development server"
@@ -34,12 +20,12 @@
 
          test:kotlin
          {:doc     "Run kotlin tests"
-          :depends [bridge:build]
-          :task    (gradle-task "test")}
+          :depends [prep]
+          :task    (shell "mvn -q test")}
 
          poc:run
          {:doc  "Run facade POC entrypoint"
-          :task (apply clojure "-M:dev -m ol.trixnity-poc.main" *command-line-args*)}
+          :task (apply clojure "-M:dev" "-m" "ol.trixnity-poc.main" *command-line-args*)}
 
          facade:test
          {:doc     "Run only POC facade tests"
@@ -50,8 +36,8 @@
                           *command-line-args*)}
 
          bridge:build
-         {:doc  "Compile the Kotlin bridge classes"
-          :task (gradle-task "classes")}
+          {:doc  "Compile the Kotlin bridge classes"
+           :task (shell "mvn -q compile")}
 
          build
          {:doc "Build" :depends [bridge:build]}
@@ -69,11 +55,11 @@
 
          prep
          {:doc  "Prepare Clojure dependencies"
-          :task (apply clojure "-X:deps prep :aliases '[:dev :kaocha]'")}
+          :task (clojure "-Srepro" "-X:deps" "prep" ":aliases" "[:dev :kaocha]")}
 
          deps-tree
          {:doc  "Show dependency tree"
-          :task (clojure "-X:deps tree :aliases '[:dev]'")}
+          :task (clojure "-X:deps" "tree" ":aliases" "[:dev]")}
 
          lint:copy-configs
          {:doc  "Copy clj-kondo configs from dependencies"
@@ -107,4 +93,4 @@
          publish
          {:doc     "Publish the clojure sdk libs to clojars"
           :depends [jar]
-          :task    (clojure "-T:build deploy")}}}
+          :task    (clojure "-T:build" "deploy")}}}

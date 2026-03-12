@@ -3,17 +3,92 @@
    [clojure.test :refer [deftest is]]
    [missionary.core :as m]
    [ol.trixnity.internal :as internal]
-   [ol.trixnity.internal.bridge :as bridge]
-   [ol.trixnity.notification :as sut]
-   [ol.trixnity.schemas :as schemas])
+  [ol.trixnity.internal.bridge :as bridge]
+  [ol.trixnity.notification :as sut]
+  [ol.trixnity.schemas :as schemas])
   (:import
    [de.connect2x.trixnity.clientserverapi.model.sync Sync$Response]
+   [java.io Closeable]
    [java.time Duration]))
+
+(defn- realize-task [task]
+  (m/? task))
 
 (defn- collect-values [flow n]
   (m/? (->> flow
             (m/eduction (take n))
             (m/reduce conj []))))
+
+(defn- resolve-var [ns-sym var-sym]
+  (ns-resolve ns-sym var-sym))
+
+(deftest notification-dismiss-task-surfaces-return-missionary-tasks-test
+  (let [dismiss-var              (resolve-var 'ol.trixnity.notification
+                                              'dismiss)
+        bridge-dismiss-var       (resolve-var 'ol.trixnity.internal.bridge
+                                              'notification-dismiss)
+        dismiss-all-var          (resolve-var 'ol.trixnity.notification
+                                              'dismiss-all)
+        bridge-dismiss-all-var   (resolve-var 'ol.trixnity.internal.bridge
+                                              'notification-dismiss-all)
+        calls                    (atom [])]
+    (is (some? dismiss-var)
+        "ol.trixnity.notification/dismiss is missing")
+    (is (some? bridge-dismiss-var)
+        "ol.trixnity.internal.bridge/notification-dismiss is missing")
+    (is (some? dismiss-all-var)
+        "ol.trixnity.notification/dismiss-all is missing")
+    (is (some? bridge-dismiss-all-var)
+        "ol.trixnity.internal.bridge/notification-dismiss-all is missing")
+    (when (every? some? [dismiss-var
+                         bridge-dismiss-var
+                         dismiss-all-var
+                         bridge-dismiss-all-var])
+      (with-redefs-fn
+        {bridge-dismiss-var
+         (fn [client id on-success _]
+           (swap! calls conj [:dismiss client id])
+           (on-success nil)
+           (reify Closeable
+             (close [_] nil)))
+
+         bridge-dismiss-all-var
+         (fn [client on-success _]
+           (swap! calls conj [:dismiss-all client])
+           (on-success nil)
+           (reify Closeable
+             (close [_] nil)))}
+        #(do
+           (is (nil?
+                (realize-task
+                 ((var-get dismiss-var) :client-handle "n-1"))))
+           (is (nil?
+                (realize-task
+                 ((var-get dismiss-all-var) :client-handle))))))
+      (is (= [[:dismiss :client-handle "n-1"]
+              [:dismiss-all :client-handle]]
+             @calls)))))
+
+(deftest notification-dismiss-validates-id-before-bridge-test
+  (let [dismiss-var            (resolve-var 'ol.trixnity.notification 'dismiss)
+        bridge-dismiss-var     (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-dismiss)
+        called?                (atom false)]
+    (is (some? dismiss-var)
+        "ol.trixnity.notification/dismiss is missing")
+    (is (some? bridge-dismiss-var)
+        "ol.trixnity.internal.bridge/notification-dismiss is missing")
+    (when (and dismiss-var bridge-dismiss-var)
+      (with-redefs-fn
+        {bridge-dismiss-var
+         (fn [& _]
+           (reset! called? true)
+           (throw (ex-info "bridge should not be called" {})))}
+        #(is (try
+               ((var-get dismiss-var) :client-handle 42)
+               false
+               (catch clojure.lang.ExceptionInfo _ true))))
+      (is (false? @called?)))))
 
 (deftest notification-surfaces-stay-thin-test
   (let [calls        (atom {})

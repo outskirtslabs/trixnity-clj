@@ -98,6 +98,22 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun forgetRoom(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        force: Boolean,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.room.forgetRoom(RoomId(roomId), force)
+        null
+    }
+
+    @JvmStatic
     fun sendMessage(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,
@@ -151,6 +167,38 @@ object RoomBridge {
         client.room.sendMessage(RoomId(roomId)) {
             react(EventId(eventId), key)
         }
+    }
+
+    @JvmStatic
+    fun cancelSendMessage(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        transactionId: String,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.room.cancelSendMessage(RoomId(roomId), transactionId)
+        null
+    }
+
+    @JvmStatic
+    fun retrySendMessage(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        transactionId: String,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.room.retrySendMessage(RoomId(roomId), transactionId)
+        null
     }
 
     @JvmStatic
@@ -277,4 +325,21 @@ object RoomBridge {
         transactionId: String,
     ): Flow<Map<Keyword, Any?>?> =
         client.room.getOutbox(RoomId(roomId), transactionId).map(::normalizeRoomOutboxMessage)
+
+    @JvmStatic
+    fun fillTimelineGaps(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventId: String,
+        limit: Long,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.room.fillTimelineGaps(RoomId(roomId), EventId(eventId), limit)
+        null
+    }
 }

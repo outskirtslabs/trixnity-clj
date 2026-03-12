@@ -21,23 +21,32 @@
 (set! *warn-on-reflection* true)
 
 (defn current-active-device-verification
+  "Returns the current active device verification, or nil when none is active."
   [client]
   (bridge/current-active-device-verification client))
 
 (defn active-device-verification
+  "Returns a relieved Missionary flow of the current active device verification."
   [client]
   (->> (internal/observe-flow client (bridge/active-device-verification-flow client))
        (m/relieve {})))
 
 (defn current-active-user-verifications
+  "Returns the current active user verifications as a vector."
   [client]
   (bridge/current-active-user-verifications client))
 
 (defn active-user-verifications
+  "Returns a relieved Missionary flow of the current active user verifications."
   [client]
   (->> (internal/observe-flow client (bridge/active-user-verifications-flow client))
        (m/relieve {})))
 
 (defn get-self-verification-methods
+  "Returns a Missionary flow of available self-verification methods.
+
+  Upstream models this as a state machine that distinguishes unmet
+  preconditions, no-cross-signing-yet, already-cross-signed, and available
+  self-verification methods."
   [client]
   (internal/observe-flow client (bridge/self-verification-methods client)))

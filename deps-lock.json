@@ -114,6 +114,16 @@
       "hash": "sha256-o0Hid1Wzrsp13Vl3jagdiOF5TruKmPIXon/3MpN24Ks="
     },
     {
+      "mvn-path": "cloroutine/cloroutine/13/cloroutine-13.jar",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-wXVUF7lR0tWq/LtaA3YGyJkWOiJ8PHUGITC1pwJ0ODo="
+    },
+    {
+      "mvn-path": "cloroutine/cloroutine/13/cloroutine-13.pom",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-EkIBB8YdCTsk+VReVy78Cfp7Wv+3+mBPQoo7b3Mw1JY="
+    },
+    {
       "mvn-path": "co/touchlab/stately-concurrency-jvm/2.1.0/stately-concurrency-jvm-2.1.0.jar",
       "mvn-repo": "https://repo1.maven.org/maven2/",
       "hash": "sha256-hnOWdYkvscF9a9NtBTR+if8xOVdCG7AaRadDzndOjik="
@@ -1164,6 +1174,16 @@
       "hash": "sha256-B+fEOtVMMuJa8MZjN10cdiwuZE/4Lbb9nCn6LYIaa8g="
     },
     {
+      "mvn-path": "missionary/missionary/b.47/missionary-b.47.jar",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-tOPuOfJ4VMIjSUWkJcoiGgwY6zTHb0bl6A7n9L/AKJE="
+    },
+    {
+      "mvn-path": "missionary/missionary/b.47/missionary-b.47.pom",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-Fl129kLrwGGAmNlxeruLjBdoI5ZXQ7SzqZNyz9tLHAU="
+    },
+    {
       "mvn-path": "mvxcvi/arrangement/2.1.0/arrangement-2.1.0.jar",
       "mvn-repo": "https://repo.clojars.org/",
       "hash": "sha256-83JROF0iDfiVHmjVJVq7UZetvL2PxrPT/KhyojOfOcg="
@@ -1834,6 +1854,16 @@
       "hash": "sha256-RJ/b2nzIjsXeInB2oUBFLoDbsHlSJbSbDJ6UDEuRIRk="
     },
     {
+      "mvn-path": "org/clojure/core.memoize/1.0.253/core.memoize-1.0.253.jar",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-SpEFhRgqsybB0KINNDFb4VY7WlhDfUHAId1/6ZEeHtY="
+    },
+    {
+      "mvn-path": "org/clojure/core.memoize/1.0.253/core.memoize-1.0.253.pom",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-hML6t6Mso8HkDEGm7Mm9U26UezBYDne41dwjKjSSXqw="
+    },
+    {
       "mvn-path": "org/clojure/core.memoize/1.1.266/core.memoize-1.1.266.jar",
       "mvn-repo": "https://repo1.maven.org/maven2/",
       "hash": "sha256-V5KiHW2QofXmjUoQ9lYHqiH2xITrnRpCHO/B+Kwm8Y4="
@@ -2024,6 +2054,16 @@
       "hash": "sha256-pPIf6yOG+/zUKlIgDRTA94u+9omfdIzO/LCkSZ4P3sU="
     },
     {
+      "mvn-path": "org/clojure/tools.analyzer.jvm/1.2.3/tools.analyzer.jvm-1.2.3.jar",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-hjMu9int5Q4a2RDfuDXkzzQnBzz6spB+UrmrL7L2FBY="
+    },
+    {
+      "mvn-path": "org/clojure/tools.analyzer.jvm/1.2.3/tools.analyzer.jvm-1.2.3.pom",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-2Pj5gFOW1A7yV95DQN/P6jGYKEhaqO+OXZFzthCwIws="
+    },
+    {
       "mvn-path": "org/clojure/tools.analyzer.jvm/1.3.2/tools.analyzer.jvm-1.3.2.jar",
       "mvn-repo": "https://repo1.maven.org/maven2/",
       "hash": "sha256-2KLVkgWiEoHzBfPVQ5/8MCGCwwf5vpYqds6BSmYgaT0="
@@ -2032,6 +2072,16 @@
       "mvn-path": "org/clojure/tools.analyzer.jvm/1.3.2/tools.analyzer.jvm-1.3.2.pom",
       "mvn-repo": "https://repo1.maven.org/maven2/",
       "hash": "sha256-5dqkmyeBCTnjogdvW2GDf/MdIi2W/7YieNRhn919MMg="
+    },
+    {
+      "mvn-path": "org/clojure/tools.analyzer/1.1.1/tools.analyzer-1.1.1.jar",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-66Fn/KEXn7FWqOOL3C6dSd/0keUVCWW1SDm5Uvzu0GA="
+    },
+    {
+      "mvn-path": "org/clojure/tools.analyzer/1.1.1/tools.analyzer-1.1.1.pom",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-wnhQZ2xYc3An6H9k2yUte5Nr/+mGHukCL8/I6jtNbig="
     },
     {
       "mvn-path": "org/clojure/tools.analyzer/1.2.0/tools.analyzer-1.2.0.jar",
@@ -2537,6 +2587,16 @@
       "mvn-path": "org/ow2/ow2/1.5/ow2-1.5.pom",
       "mvn-repo": "https://repo1.maven.org/maven2/",
       "hash": "sha256-D4obEW52C4/mOJxRuE5LB6cPwRCC1Pk25FO1g91QtDs="
+    },
+    {
+      "mvn-path": "org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-91yll3ibPaxY9hhXuawuEDSmj6Zy2zUFWo+0UJ4yXyg="
+    },
+    {
+      "mvn-path": "org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.pom",
+      "mvn-repo": "https://repo1.maven.org/maven2/",
+      "hash": "sha256-VLoj2HotQ4VAyZ74eUoIVvxXOiVrSYZ4KDw8Z+8Yrag="
     },
     {
       "mvn-path": "org/slf4j/jcl-over-slf4j/1.7.36/jcl-over-slf4j-1.7.36.jar",

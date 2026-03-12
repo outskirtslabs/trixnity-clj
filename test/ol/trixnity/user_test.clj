@@ -3,16 +3,80 @@
    [clojure.test :refer [deftest is]]
    [missionary.core :as m]
    [ol.trixnity.internal :as internal]
-   [ol.trixnity.internal.bridge :as bridge]
-   [ol.trixnity.schemas :as schemas]
-   [ol.trixnity.user :as sut])
+  [ol.trixnity.internal.bridge :as bridge]
+  [ol.trixnity.schemas :as schemas]
+  [ol.trixnity.user :as sut])
   (:import
-   [de.connect2x.trixnity.core.model.events EmptyEventContent]))
+   [de.connect2x.trixnity.core.model.events EmptyEventContent]
+   [java.io Closeable]))
+
+(defn- realize-task [task]
+  (m/? task))
 
 (defn- collect-values [flow n]
   (m/? (->> flow
             (m/eduction (take n))
             (m/reduce conj []))))
+
+(defn- resolve-var [ns-sym var-sym]
+  (ns-resolve ns-sym var-sym))
+
+(deftest load-members-task-surface-returns-a-missionary-task-test
+  (let [load-members-var        (resolve-var 'ol.trixnity.user 'load-members)
+        bridge-load-members-var (resolve-var 'ol.trixnity.internal.bridge
+                                             'load-members)
+        calls                   (atom [])]
+    (is (some? load-members-var)
+        "ol.trixnity.user/load-members is missing")
+    (is (some? bridge-load-members-var)
+        "ol.trixnity.internal.bridge/load-members is missing")
+    (when (and load-members-var bridge-load-members-var)
+      (with-redefs-fn
+        {bridge-load-members-var
+         (fn [client room-id wait on-success _]
+           (swap! calls conj [client room-id wait])
+           (on-success nil)
+           (reify Closeable
+             (close [_] nil)))}
+        #(do
+           (is (nil?
+                (realize-task
+                 ((var-get load-members-var)
+                  :client-handle
+                  "!room:example.org"))))
+           (is (nil?
+                (realize-task
+                 ((var-get load-members-var)
+                  :client-handle
+                  "!room:example.org"
+                  {::schemas/wait false}))))))
+      (is (= [[:client-handle "!room:example.org" true]
+              [:client-handle "!room:example.org" false]]
+             @calls)))))
+
+(deftest load-members-validates-wait-option-before-bridge-test
+  (let [load-members-var        (resolve-var 'ol.trixnity.user 'load-members)
+        bridge-load-members-var (resolve-var 'ol.trixnity.internal.bridge
+                                             'load-members)
+        called?                 (atom false)]
+    (is (some? load-members-var)
+        "ol.trixnity.user/load-members is missing")
+    (is (some? bridge-load-members-var)
+        "ol.trixnity.internal.bridge/load-members is missing")
+    (when (and load-members-var bridge-load-members-var)
+      (with-redefs-fn
+        {bridge-load-members-var
+         (fn [& _]
+           (reset! called? true)
+           (throw (ex-info "bridge should not be called" {})))}
+        #(is (try
+               ((var-get load-members-var)
+                :client-handle
+                "!room:example.org"
+                {::schemas/wait :later})
+               false
+               (catch clojure.lang.ExceptionInfo _ true))))
+      (is (false? @called?)))))
 
 (deftest user-surfaces-stay-thin-test
   (let [calls (atom {})

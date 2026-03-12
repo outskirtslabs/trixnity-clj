@@ -74,6 +74,11 @@
    ::mx/media-path    (some-> (option-value options ::mx/media-path) str)})
 
 (defn open-handle!
+  "Opens a low-level sqlite4clj repository handle for `path`.
+
+  Most callers should prefer [[sqlite4clj-config]] with
+  [[ol.trixnity.client/open]]. This is the lower-level escape hatch used by the
+  built-in repository assembly."
   [path ^Json json]
   (common/open! path json))
 
@@ -782,6 +787,11 @@
     (deleteAll [_ _] (delete-all! handle "migration"))))
 
 (defn create-repositories
+  "Builds the repository map expected by the Kotlin bridge from `handle`.
+
+  This is primarily a low-level integration seam for custom client assembly.
+  Most callers should use [[sqlite4clj-config]] instead of constructing this
+  map directly."
   [^Sqlite4cljRepositoryHandle handle ^EventContentSerializerMappings mappings]
   {:account                       (create-account-repository handle)
    :authentication                (create-authentication-repository handle)

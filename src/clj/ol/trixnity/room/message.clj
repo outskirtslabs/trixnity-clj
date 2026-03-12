@@ -30,7 +30,10 @@
                    (assoc ::mx/formatted-body (::mx/formatted-body opts))))))
 
 (defn reply-to
-  "Associates reply metadata from a normalized event map."
+  "Associates reply metadata from normalized event `ev` onto `message`.
+
+  When `ev` already carries relation metadata, that relation is copied into the
+  reply target so upstream threading semantics are preserved."
   [message ev]
   (mx/validate!
                 ::mx/MessageSpec

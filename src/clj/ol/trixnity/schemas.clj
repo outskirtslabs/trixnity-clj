@@ -43,6 +43,7 @@
        (.isAssignableFrom expected ^Class value)))
 
 (defn schemas
+  "Returns the project Malli schema map for `opts`."
   [_]
   {::homeserver-url                     :string
    ::username                           :string
@@ -72,6 +73,9 @@
    ::duration                           [:fn #(instance? Duration %)]
    ::timeout                            ::duration
    ::decryption-timeout                 ::duration
+   ::wait                               :boolean
+   ::force                              :boolean
+   ::limit                              pos-int?
    ::fetch-timeout                      ::duration
    ::fetch-size                         pos-int?
    ::allow-replace-content              :boolean
@@ -178,6 +182,18 @@
 
    ::JoinOpts
    ::OneShotOpts
+
+   ::LoadMembersOpts
+   [:map
+    [::wait {:optional true} ::wait]]
+
+   ::ForgetRoomOpts
+   [:map
+    [::force {:optional true} ::force]]
+
+   ::FillTimelineGapsOpts
+   [:map
+    [::limit {:optional true} ::limit]]
 
    ::SendOpts
    ::OneShotOpts
@@ -384,18 +400,23 @@
     [::media-path ::media-path]]})
 
 (defn registry
+  "Builds a Malli registry containing the project schemas and default schemas."
   [opts]
   (merge (m/default-schemas)
          (mu/schemas)
          (schemas opts)))
 
 (def schema-registry
+  "Default Malli registry used by public API validation."
   (registry {}))
 
 (gr.reg/merge-schemas! (merge (mu/schemas)
                               (schemas {})))
 
 (defn validate!
+  "Validates `data` against `schema-id` and returns `data` on success.
+
+  Throws `ExceptionInfo` with humanized Malli errors on validation failure."
   ([schema-id data]
    (validate! schema-registry schema-id data))
   ([registry schema-id data]

@@ -106,6 +106,165 @@
       (is (= [:client-handle "!room:example.org" timeout]
              @calls)))))
 
+(deftest room-task-surface-additions-return-missionary-tasks-test
+  (let [forget-room-var              (resolve-var 'ol.trixnity.room 'forget-room)
+        bridge-forget-room-var       (resolve-var 'ol.trixnity.internal.bridge
+                                                  'forget-room)
+        cancel-send-message-var      (resolve-var 'ol.trixnity.room
+                                                  'cancel-send-message)
+        bridge-cancel-message-var    (resolve-var 'ol.trixnity.internal.bridge
+                                                  'cancel-send-message)
+        retry-send-message-var       (resolve-var 'ol.trixnity.room
+                                                  'retry-send-message)
+        bridge-retry-message-var     (resolve-var 'ol.trixnity.internal.bridge
+                                                  'retry-send-message)
+        fill-timeline-gaps-var       (resolve-var 'ol.trixnity.room
+                                                  'fill-timeline-gaps)
+        bridge-fill-timeline-var     (resolve-var 'ol.trixnity.internal.bridge
+                                                  'fill-timeline-gaps)
+        calls                        (atom [])]
+    (is (some? forget-room-var)
+        "ol.trixnity.room/forget-room is missing")
+    (is (some? bridge-forget-room-var)
+        "ol.trixnity.internal.bridge/forget-room is missing")
+    (is (some? cancel-send-message-var)
+        "ol.trixnity.room/cancel-send-message is missing")
+    (is (some? bridge-cancel-message-var)
+        "ol.trixnity.internal.bridge/cancel-send-message is missing")
+    (is (some? retry-send-message-var)
+        "ol.trixnity.room/retry-send-message is missing")
+    (is (some? bridge-retry-message-var)
+        "ol.trixnity.internal.bridge/retry-send-message is missing")
+    (is (some? fill-timeline-gaps-var)
+        "ol.trixnity.room/fill-timeline-gaps is missing")
+    (is (some? bridge-fill-timeline-var)
+        "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
+    (when (every? some? [forget-room-var
+                         bridge-forget-room-var
+                         cancel-send-message-var
+                         bridge-cancel-message-var
+                         retry-send-message-var
+                         bridge-retry-message-var
+                         fill-timeline-gaps-var
+                         bridge-fill-timeline-var])
+      (with-redefs-fn
+        {bridge-forget-room-var
+         (fn [client room-id force on-success _]
+           (swap! calls conj [:forget client room-id force])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-cancel-message-var
+         (fn [client room-id transaction-id on-success _]
+           (swap! calls conj [:cancel client room-id transaction-id])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-retry-message-var
+         (fn [client room-id transaction-id on-success _]
+           (swap! calls conj [:retry client room-id transaction-id])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-fill-timeline-var
+         (fn [client room-id event-id limit on-success _]
+           (swap! calls conj [:fill client room-id event-id limit])
+           (on-success nil)
+           (->StubCloseable (atom 0)))}
+        (fn []
+          (is (nil?
+               (realize-task
+                ((var-get forget-room-var)
+                 :client-handle
+                 "!room:example.org"))))
+          (is (nil?
+               (realize-task
+                ((var-get forget-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/force true}))))
+          (is (nil?
+               (realize-task
+                ((var-get cancel-send-message-var)
+                 :client-handle
+                 "!room:example.org"
+                 "txn-1"))))
+          (is (nil?
+               (realize-task
+                ((var-get retry-send-message-var)
+                 :client-handle
+                 "!room:example.org"
+                 "txn-2"))))
+          (is (nil?
+               (realize-task
+                ((var-get fill-timeline-gaps-var)
+                 :client-handle
+                 "!room:example.org"
+                 "$event"))))
+          (is (nil?
+               (realize-task
+                ((var-get fill-timeline-gaps-var)
+                 :client-handle
+                 "!room:example.org"
+                 "$event"
+                 {::schemas/limit 7}))))))
+      (is (= [[:forget :client-handle "!room:example.org" false]
+              [:forget :client-handle "!room:example.org" true]
+              [:cancel :client-handle "!room:example.org" "txn-1"]
+              [:retry :client-handle "!room:example.org" "txn-2"]
+              [:fill :client-handle "!room:example.org" "$event" 20]
+              [:fill :client-handle "!room:example.org" "$event" 7]]
+             @calls)))))
+
+(deftest room-task-surface-additions-validate-options-before-bridge-test
+  (let [forget-room-var          (resolve-var 'ol.trixnity.room 'forget-room)
+        bridge-forget-room-var   (resolve-var 'ol.trixnity.internal.bridge
+                                              'forget-room)
+        fill-timeline-gaps-var   (resolve-var 'ol.trixnity.room
+                                              'fill-timeline-gaps)
+        bridge-fill-timeline-var (resolve-var 'ol.trixnity.internal.bridge
+                                              'fill-timeline-gaps)
+        calls                    (atom [])]
+    (is (some? forget-room-var)
+        "ol.trixnity.room/forget-room is missing")
+    (is (some? bridge-forget-room-var)
+        "ol.trixnity.internal.bridge/forget-room is missing")
+    (is (some? fill-timeline-gaps-var)
+        "ol.trixnity.room/fill-timeline-gaps is missing")
+    (is (some? bridge-fill-timeline-var)
+        "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
+    (when (every? some? [forget-room-var
+                         bridge-forget-room-var
+                         fill-timeline-gaps-var
+                         bridge-fill-timeline-var])
+      (with-redefs-fn
+        {bridge-forget-room-var
+         (fn [& _]
+           (swap! calls conj :forget)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-fill-timeline-var
+         (fn [& _]
+           (swap! calls conj :fill)
+           (throw (ex-info "bridge should not be called" {})))}
+        (fn []
+          (is (try
+                ((var-get forget-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/force :yes})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get fill-timeline-gaps-var)
+                 :client-handle
+                 "!room:example.org"
+                 "$event"
+                 {::schemas/limit 0})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))))
+      (is (empty? @calls)))))
+
 (deftest room-and-state-surfaces-stay-thin-test
   (let [calls        (atom {})
         room-value   {::schemas/room-id "!room:example.org"}

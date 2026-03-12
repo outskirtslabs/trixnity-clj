@@ -7,9 +7,39 @@ import de.connect2x.trixnity.clientserverapi.model.sync.Sync
 import de.connect2x.trixnity.core.model.RoomId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.Closeable
 import kotlin.time.Duration.Companion.milliseconds
 
 object NotificationBridge {
+    @JvmStatic
+    fun dismiss(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        id: String,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.notification.dismiss(id)
+        null
+    }
+
+    @JvmStatic
+    fun dismissAll(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.notification.dismissAll()
+        null
+    }
+
     @JvmStatic
     @Deprecated("use getAll/getById/getAllUpdates instead")
     fun notifications(

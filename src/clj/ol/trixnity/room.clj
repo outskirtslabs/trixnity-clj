@@ -59,6 +59,13 @@
              timeline-event)))
 
 (defn create-room
+  "Creates a room and returns a Missionary task that resolves to the new room id.
+
+  Supported opts:
+
+  | key              | description                             |
+  |------------------|-----------------------------------------|
+  | `::mx/room-name` | Explicit room name used during creation |"
   [client opts]
   (let [opts (mx/validate! ::mx/CreateRoomOpts opts)]
     (internal/suspend-task bridge/create-room
@@ -66,6 +73,13 @@
                            (get opts ::mx/room-name))))
 
 (defn invite-user
+  "Invites `user-id` to `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/timeout` | Maximum time to wait for the invite request |"
   ([client room-id user-id]
    (invite-user client room-id user-id {}))
   ([client room-id user-id opts]
@@ -79,6 +93,13 @@
                             (get opts ::mx/timeout)))))
 
 (defn join-room
+  "Joins `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/timeout` | Maximum time to wait for the join request |"
   ([client room-id]
    (join-room client room-id {}))
   ([client room-id opts]
@@ -89,7 +110,34 @@
                             room-id
                             (get opts ::mx/timeout)))))
 
+(defn forget-room
+  "Forgets `room-id` locally and returns a Missionary task.
+
+  Upstream notes that this is intended for rooms in `LEAVE` membership.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/force` | Force forgetting even when the usual upstream preconditions are not met |"
+  ([client room-id]
+   (forget-room client room-id {}))
+  ([client room-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (let [opts (mx/validate! ::mx/ForgetRoomOpts opts)]
+     (internal/suspend-task bridge/forget-room
+                            client
+                            room-id
+                            (get opts ::mx/force false)))))
+
 (defn send-message
+  "Queues `message` for `room-id` and returns a Missionary task of the transaction id.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/timeout` | Maximum time to wait for the send operation |"
   ([client room-id message]
    (send-message client room-id message {}))
   ([client room-id message opts]
@@ -103,6 +151,7 @@
                             (get opts ::mx/timeout)))))
 
 (defn send-reaction
+  "Sends a reaction to event `ev` in `room-id` and returns a Missionary task."
   ([client room-id ev key]
    (send-reaction client room-id ev key {}))
   ([client room-id ev key opts]
@@ -117,29 +166,57 @@
                             key
                             (get opts ::mx/timeout)))))
 
+(defn cancel-send-message
+  "Cancels an outbox message identified by `transaction-id` and returns a Missionary task."
+  [client room-id transaction-id]
+  (mx/validate! ::mx/room-id room-id)
+  (mx/validate! ::mx/transaction-id transaction-id)
+  (internal/suspend-task bridge/cancel-send-message
+                         client
+                         room-id
+                         transaction-id))
+
+(defn retry-send-message
+  "Retries an outbox message identified by `transaction-id` and returns a Missionary task."
+  [client room-id transaction-id]
+  (mx/validate! ::mx/room-id room-id)
+  (mx/validate! ::mx/transaction-id transaction-id)
+  (internal/suspend-task bridge/retry-send-message
+                         client
+                         room-id
+                         transaction-id))
+
 (defn get-by-id
+  "Returns a Missionary flow of the room for `room-id`, or nil when unavailable."
   [client room-id]
   (mx/validate! ::mx/room-id room-id)
   (internal/observe-flow client (bridge/room-by-id client room-id)))
 
 (defn get-all
+  "Returns a Missionary flow of room flows keyed by room id."
   [client]
   (internal/observe-keyed-flow-map client (bridge/rooms client)))
 
 (defn get-all-flat
+  "Returns a Missionary flow of flattened room snapshots."
   [client]
   (internal/observe-flow client (bridge/rooms-flat client)))
 
 (defn current-users-typing
+  "Returns the current typing-state snapshot keyed by room id."
   [client]
   (bridge/current-users-typing client))
 
 (defn users-typing
+  "Returns a relieved Missionary flow of typing-state snapshots keyed by room id."
   [client]
   (->> (internal/observe-flow client (bridge/users-typing-flow client))
        (m/relieve {})))
 
 (defn get-account-data
+  "Returns a Missionary flow of room account-data content.
+
+  When `key` is omitted, the empty-string key is used."
   ([client room-id event-content-class]
    (get-account-data client room-id event-content-class ""))
   ([client room-id event-content-class key]
@@ -153,6 +230,9 @@
     (bridge/account-data client room-id event-content-class key))))
 
 (defn get-state
+  "Returns a Missionary flow of room state for `event-content-class`.
+
+  When `state-key` is omitted, the empty-string state key is used."
   ([client room-id event-content-class]
    (get-state client room-id event-content-class ""))
   ([client room-id event-content-class state-key]
@@ -166,6 +246,7 @@
     (bridge/state client room-id event-content-class state-key))))
 
 (defn get-all-state
+  "Returns a Missionary flow of state-event flows keyed by state key."
   [client room-id event-content-class]
   (mx/validate! ::mx/room-id room-id)
   (mx/validate!
@@ -176,6 +257,14 @@
    (bridge/all-state client room-id event-content-class)))
 
 (defn get-outbox
+  "Returns Missionary flows over room outbox state.
+
+  Arities:
+
+  - `(get-outbox client)` returns all outbox entries as a list of inner flows
+  - `(get-outbox client room-id)` scopes that list to one room
+  - `(get-outbox client room-id transaction-id)` returns the single outbox
+    entry flow for that transaction id"
   ([client]
    (internal/observe-flow-list client (bridge/outbox client)))
   ([client room-id]
@@ -187,13 +276,49 @@
    (internal/observe-flow client (bridge/outbox-message client room-id transaction-id))))
 
 (defn get-outbox-flat
+  "Returns flattened Missionary flows over room outbox state.
+
+  With `room-id`, scopes the flattened outbox view to a single room."
   ([client]
    (internal/observe-flow client (bridge/outbox-flat client)))
   ([client room-id]
    (mx/validate! ::mx/room-id room-id)
    (internal/observe-flow client (bridge/outbox-by-room-flat client room-id))))
 
+(defn fill-timeline-gaps
+  "Fills timeline gaps around `event-id` in `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/limit` | Maximum number of events to request while filling gaps (default `20`) |"
+  ([client room-id event-id]
+   (fill-timeline-gaps client room-id event-id {}))
+  ([client room-id event-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/event-id event-id)
+   (let [opts (mx/validate! ::mx/FillTimelineGapsOpts opts)]
+     (internal/suspend-task bridge/fill-timeline-gaps
+                            client
+                            room-id
+                            event-id
+                            (long (get opts ::mx/limit 20))))))
+
 (defn get-timeline-event
+  "Returns a Missionary flow of the timeline event for `event-id`.
+
+  Upstream notes that this lookup may traverse locally stored events and fill
+  remote gaps when the event is not available locally.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/decryption-timeout` | Timeout used while decrypting timeline events
+  | `::mx/fetch-timeout` | Timeout for remote fetches when the event is missing locally
+  | `::mx/fetch-size` | Maximum number of events fetched from the server at once
+  | `::mx/allow-replace-content` | Replace event content when an `m.replace` relation is present |"
   ([client room-id event-id]
    (get-timeline-event client room-id event-id {}))
   ([client room-id event-id opts]
@@ -213,6 +338,9 @@
        allow-replace-content)))))
 
 (defn get-previous-timeline-event
+  "Returns a Missionary flow of the previous timeline event relative to `timeline-event`.
+
+  Returns nil when upstream cannot traverse backward from the supplied event."
   ([client timeline-event]
    (get-previous-timeline-event client timeline-event {}))
   ([client timeline-event opts]
@@ -228,6 +356,9 @@
               (internal/observe-flow client)))))
 
 (defn get-next-timeline-event
+  "Returns a Missionary flow of the next timeline event relative to `timeline-event`.
+
+  Returns nil when upstream cannot traverse forward from the supplied event."
   ([client timeline-event]
    (get-next-timeline-event client timeline-event {}))
   ([client timeline-event opts]
@@ -243,6 +374,7 @@
               (internal/observe-flow client)))))
 
 (defn get-last-timeline-event
+  "Returns a Missionary outer flow whose values are flows of the latest timeline event."
   ([client room-id]
    (get-last-timeline-event client room-id {}))
   ([client room-id opts]
@@ -260,6 +392,18 @@
        allow-replace-content)))))
 
 (defn get-timeline-events
+  "Returns Missionary flows over timeline events.
+
+  Arities:
+
+  - `(get-timeline-events client response opts)` extracts timeline events from
+    a sync `response`
+  - `(get-timeline-events client room-id start-from direction opts)` traverses
+    a room timeline from `start-from` in `:backwards` or `:forwards`
+
+  The room traversal arity follows upstream behavior: it emits flows of events,
+  may fetch missing events from the server, and can be bounded with
+  `::mx/min-size` and `::mx/max-size`."
   ([client response]
    (get-timeline-events client response {}))
   ([client response opts]
@@ -293,6 +437,10 @@
        max-size)))))
 
 (defn get-last-timeline-events
+  "Returns a Missionary flow whose values are flows of flows for the latest timeline events.
+
+  This mirrors upstream's nested-flow shape for continuously updated room-end
+  traversal."
   ([client room-id]
    (get-last-timeline-events client room-id {}))
   ([client room-id opts]
@@ -312,6 +460,9 @@
        max-size)))))
 
 (defn get-timeline-events-list
+  "Returns a Missionary flow of timeline-event lists starting from `start-from`.
+
+  `max-size` and `min-size` bound the list-shaped traversal directly."
   ([client room-id start-from direction max-size min-size]
    (get-timeline-events-list client room-id start-from direction max-size min-size {}))
   ([client room-id start-from direction max-size min-size opts]
@@ -337,6 +488,7 @@
        allow-replace-content)))))
 
 (defn get-last-timeline-events-list
+  "Returns a Missionary flow of the latest timeline events as lists."
   ([client room-id max-size min-size]
    (get-last-timeline-events-list client room-id max-size min-size {}))
   ([client room-id max-size min-size opts]
@@ -358,6 +510,7 @@
        allow-replace-content)))))
 
 (defn get-timeline-events-around
+  "Returns a Missionary flow of timeline-event lists centered around `start-from`."
   ([client room-id start-from max-size-before max-size-after]
    (get-timeline-events-around client room-id start-from max-size-before max-size-after {}))
   ([client room-id start-from max-size-before max-size-after opts]
@@ -381,6 +534,17 @@
        allow-replace-content)))))
 
 (defn get-timeline-events-from-now-on
+  "Returns a Missionary flow of timeline events received after subscription starts.
+
+  Upstream notes that timeline gaps are not filled automatically for this live
+  stream.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/decryption-timeout` | Timeout used while decrypting live events
+  | `::mx/sync-response-buffer-size` | Number of sync responses buffered while events are consumed |"
   ([client]
    (get-timeline-events-from-now-on client {}))
   ([client opts]
@@ -393,6 +557,7 @@
        (::mx/sync-response-buffer-size opts))))))
 
 (defn get-timeline-event-relations
+  "Returns a Missionary flow of related timeline-event flows keyed by related event id."
   [client room-id event-id relation-type]
   (mx/validate! ::mx/room-id room-id)
   (mx/validate! ::mx/event-id event-id)

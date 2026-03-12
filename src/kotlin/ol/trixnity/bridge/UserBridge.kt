@@ -9,8 +9,25 @@ import de.connect2x.trixnity.core.model.events.GlobalAccountDataEventContent
 import de.connect2x.trixnity.core.model.events.RoomEventContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.Closeable
 
 object UserBridge {
+    @JvmStatic
+    fun loadMembers(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        wait: Boolean,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.user.loadMembers(RoomId(roomId), wait)
+        null
+    }
+
     @JvmStatic
     fun all(
         client: de.connect2x.trixnity.client.MatrixClient,

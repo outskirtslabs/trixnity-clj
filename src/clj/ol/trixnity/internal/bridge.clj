@@ -83,11 +83,20 @@
 (defn join-room [^MatrixClient client room-id ^Duration timeout on-success on-failure]
   (RoomBridge/joinRoom client room-id timeout on-success on-failure))
 
+(defn forget-room [^MatrixClient client room-id force on-success on-failure]
+  (RoomBridge/forgetRoom client room-id force on-success on-failure))
+
 (defn send-message [^MatrixClient client room-id message ^Duration timeout on-success on-failure]
   (RoomBridge/sendMessage client room-id message timeout on-success on-failure))
 
 (defn send-reaction [^MatrixClient client room-id event-id key ^Duration timeout on-success on-failure]
   (RoomBridge/sendReaction client room-id event-id key timeout on-success on-failure))
+
+(defn cancel-send-message [^MatrixClient client room-id transaction-id on-success on-failure]
+  (RoomBridge/cancelSendMessage client room-id transaction-id on-success on-failure))
+
+(defn retry-send-message [^MatrixClient client room-id transaction-id on-success on-failure]
+  (RoomBridge/retrySendMessage client room-id transaction-id on-success on-failure))
 
 (defn room-by-id [^MatrixClient client room-id]
   (RoomBridge/roomById client room-id))
@@ -121,6 +130,9 @@
 
 (defn outbox-message [^MatrixClient client room-id transaction-id]
   (RoomBridge/outboxMessage client room-id transaction-id))
+
+(defn fill-timeline-gaps [^MatrixClient client room-id event-id limit on-success on-failure]
+  (RoomBridge/fillTimelineGaps client room-id event-id limit on-success on-failure))
 
 (defn timeline-events-from-now-on
   [^MatrixClient client decryption-timeout-ms sync-response-buffer-size]
@@ -244,6 +256,9 @@
 (defn user-all [^MatrixClient client room-id]
   (UserBridge/all client room-id))
 
+(defn load-members [^MatrixClient client room-id wait on-success on-failure]
+  (UserBridge/loadMembers client room-id wait on-success on-failure))
+
 (defn user-by-id [^MatrixClient client room-id user-id]
   (UserBridge/byId client room-id user-id))
 
@@ -315,6 +330,12 @@
 
 (defn notification-all-updates [^MatrixClient client]
   (NotificationBridge/allUpdates client))
+
+(defn notification-dismiss [^MatrixClient client id on-success on-failure]
+  (NotificationBridge/dismiss client id on-success on-failure))
+
+(defn notification-dismiss-all [^MatrixClient client on-success on-failure]
+  (NotificationBridge/dismissAll client on-success on-failure))
 
 (defn current-active-device-verification [^MatrixClient client]
   (VerificationBridge/currentActiveDeviceVerification client))

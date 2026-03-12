@@ -1,0 +1,293 @@
+= ol.trixnity.notification
+
+Notification snapshots and notification update flows.
+
+## Upstream Mapping
+
+This namespace maps to Trixnity's `NotificationService`.
+
+The public wrappers here cover:
+
+- observing the full notification set in keyed or flat shapes
+- looking up individual notifications and unread counts
+- consuming live notification updates
+- a deprecated bridge for notification extraction from sync responses
+
+Use xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`] for room timeline access and
+xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`] for client lifecycle.
+
+[#get-notifications]
+== get-notifications
+
+[source,clojure]
+----
+(get-notifications client)
+(get-notifications client response-or-opts)
+(get-notifications client response opts)
+----
+
+
+_deprecated_
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L26-L47[source,window=_blank]
+
+'''
+
+[#get-notifications]
+== get-notifications
+
+[source,clojure]
+----
+(get-notifications client)
+(get-notifications client response-or-opts)
+(get-notifications client response opts)
+----
+
+
+_deprecated_
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L26-L47[source,window=_blank]
+
+'''
+
+[#get-all]
+== get-all
+
+[source,clojure]
+----
+(get-all client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L49-L51[source,window=_blank]
+
+'''
+
+[#get-all]
+== get-all
+
+[source,clojure]
+----
+(get-all client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L49-L51[source,window=_blank]
+
+'''
+
+[#get-all-flat]
+== get-all-flat
+
+[source,clojure]
+----
+(get-all-flat client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L53-L55[source,window=_blank]
+
+'''
+
+[#get-all-flat]
+== get-all-flat
+
+[source,clojure]
+----
+(get-all-flat client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L53-L55[source,window=_blank]
+
+'''
+
+[#get-by-id]
+== get-by-id
+
+[source,clojure]
+----
+(get-by-id client id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L57-L60[source,window=_blank]
+
+'''
+
+[#get-by-id]
+== get-by-id
+
+[source,clojure]
+----
+(get-by-id client id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L57-L60[source,window=_blank]
+
+'''
+
+[#get-count]
+== get-count
+
+[source,clojure]
+----
+(get-count client)
+(get-count client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L62-L67[source,window=_blank]
+
+'''
+
+[#get-count]
+== get-count
+
+[source,clojure]
+----
+(get-count client)
+(get-count client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L62-L67[source,window=_blank]
+
+'''
+
+[#is-unread]
+== is-unread
+
+[source,clojure]
+----
+(is-unread client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L69-L72[source,window=_blank]
+
+'''
+
+[#is-unread]
+== is-unread
+
+[source,clojure]
+----
+(is-unread client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L69-L72[source,window=_blank]
+
+'''
+
+[#dismiss]
+== dismiss
+
+[source,clojure]
+----
+(dismiss client id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L74-L77[source,window=_blank]
+
+'''
+
+[#dismiss]
+== dismiss
+
+[source,clojure]
+----
+(dismiss client id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L74-L77[source,window=_blank]
+
+'''
+
+[#dismiss-all]
+== dismiss-all
+
+[source,clojure]
+----
+(dismiss-all client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L79-L81[source,window=_blank]
+
+'''
+
+[#dismiss-all]
+== dismiss-all
+
+[source,clojure]
+----
+(dismiss-all client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L79-L81[source,window=_blank]
+
+'''
+
+[#get-all-updates]
+== get-all-updates
+
+[source,clojure]
+----
+(get-all-updates client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L83-L85[source,window=_blank]
+
+'''
+
+[#get-all-updates]
+== get-all-updates
+
+[source,clojure]
+----
+(get-all-updates client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/notification.clj#L83-L85[source,window=_blank]

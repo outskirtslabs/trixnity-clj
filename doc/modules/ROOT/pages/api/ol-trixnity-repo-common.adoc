@@ -1,0 +1,929 @@
+= ol.trixnity.repo.common
+
+[#db]
+== db
+
+[source,clojure]
+----
+(db handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L48-L50[source,window=_blank]
+
+'''
+
+[#db]
+== db
+
+[source,clojure]
+----
+(db handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L48-L50[source,window=_blank]
+
+'''
+
+[#json]
+== json
+
+[source,clojure]
+----
+(json handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L52-L54[source,window=_blank]
+
+'''
+
+[#json]
+== json
+
+[source,clojure]
+----
+(json handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L52-L54[source,window=_blank]
+
+'''
+
+[#writer-pool]
+== writer-pool
+
+[source,clojure]
+----
+(writer-pool handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L56-L58[source,window=_blank]
+
+'''
+
+[#writer-pool]
+== writer-pool
+
+[source,clojure]
+----
+(writer-pool handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L56-L58[source,window=_blank]
+
+'''
+
+[#reader-pool]
+== reader-pool
+
+[source,clojure]
+----
+(reader-pool handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L60-L62[source,window=_blank]
+
+'''
+
+[#reader-pool]
+== reader-pool
+
+[source,clojure]
+----
+(reader-pool handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L60-L62[source,window=_blank]
+
+'''
+
+[#borrow-reader-conn-BANG-]
+== borrow-reader-conn!
+
+[source,clojure]
+----
+(borrow-reader-conn! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L64-L66[source,window=_blank]
+
+'''
+
+[#borrow-reader-conn-BANG-]
+== borrow-reader-conn!
+
+[source,clojure]
+----
+(borrow-reader-conn! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L64-L66[source,window=_blank]
+
+'''
+
+[#borrow-writer-conn-BANG-]
+== borrow-writer-conn!
+
+[source,clojure]
+----
+(borrow-writer-conn! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L68-L70[source,window=_blank]
+
+'''
+
+[#borrow-writer-conn-BANG-]
+== borrow-writer-conn!
+
+[source,clojure]
+----
+(borrow-writer-conn! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L68-L70[source,window=_blank]
+
+'''
+
+[#release-reader-conn-BANG-]
+== release-reader-conn!
+
+[source,clojure]
+----
+(release-reader-conn! handle conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L72-L75[source,window=_blank]
+
+'''
+
+[#release-reader-conn-BANG-]
+== release-reader-conn!
+
+[source,clojure]
+----
+(release-reader-conn! handle conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L72-L75[source,window=_blank]
+
+'''
+
+[#release-writer-conn-BANG-]
+== release-writer-conn!
+
+[source,clojure]
+----
+(release-writer-conn! handle conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L77-L80[source,window=_blank]
+
+'''
+
+[#release-writer-conn-BANG-]
+== release-writer-conn!
+
+[source,clojure]
+----
+(release-writer-conn! handle conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L77-L80[source,window=_blank]
+
+'''
+
+[#begin-deferred-BANG-]
+== begin-deferred!
+
+[source,clojure]
+----
+(begin-deferred! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L82-L85[source,window=_blank]
+
+'''
+
+[#begin-deferred-BANG-]
+== begin-deferred!
+
+[source,clojure]
+----
+(begin-deferred! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L82-L85[source,window=_blank]
+
+'''
+
+[#begin-immediate-BANG-]
+== begin-immediate!
+
+[source,clojure]
+----
+(begin-immediate! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L87-L90[source,window=_blank]
+
+'''
+
+[#begin-immediate-BANG-]
+== begin-immediate!
+
+[source,clojure]
+----
+(begin-immediate! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L87-L90[source,window=_blank]
+
+'''
+
+[#commit-BANG-]
+== commit!
+
+[source,clojure]
+----
+(commit! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L92-L95[source,window=_blank]
+
+'''
+
+[#commit-BANG-]
+== commit!
+
+[source,clojure]
+----
+(commit! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L92-L95[source,window=_blank]
+
+'''
+
+[#rollback-BANG-]
+== rollback!
+
+[source,clojure]
+----
+(rollback! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L97-L100[source,window=_blank]
+
+'''
+
+[#rollback-BANG-]
+== rollback!
+
+[source,clojure]
+----
+(rollback! conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L97-L100[source,window=_blank]
+
+'''
+
+[#current-read-conn]
+== current-read-conn
+
+[source,clojure]
+----
+(current-read-conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L102-L104[source,window=_blank]
+
+'''
+
+[#current-read-conn]
+== current-read-conn
+
+[source,clojure]
+----
+(current-read-conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L102-L104[source,window=_blank]
+
+'''
+
+[#current-write-conn]
+== current-write-conn
+
+[source,clojure]
+----
+(current-write-conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L106-L108[source,window=_blank]
+
+'''
+
+[#current-write-conn]
+== current-write-conn
+
+[source,clojure]
+----
+(current-write-conn)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L106-L108[source,window=_blank]
+
+'''
+
+[#q-read]
+== q-read
+
+[source,clojure]
+----
+(q-read handle query)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L110-L115[source,window=_blank]
+
+'''
+
+[#q-read]
+== q-read
+
+[source,clojure]
+----
+(q-read handle query)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L110-L115[source,window=_blank]
+
+'''
+
+[#q-write]
+== q-write
+
+[source,clojure]
+----
+(q-write handle query)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L117-L121[source,window=_blank]
+
+'''
+
+[#q-write]
+== q-write
+
+[source,clojure]
+----
+(q-write handle query)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L117-L121[source,window=_blank]
+
+'''
+
+[#open-BANG-]
+== open!
+
+[source,clojure]
+----
+(open! path json)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L123-L125[source,window=_blank]
+
+'''
+
+[#open-BANG-]
+== open!
+
+[source,clojure]
+----
+(open! path json)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L123-L125[source,window=_blank]
+
+'''
+
+[#ensure-schema-BANG-]
+== ensure-schema!
+
+[source,clojure]
+----
+(ensure-schema! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L127-L131[source,window=_blank]
+
+'''
+
+[#ensure-schema-BANG-]
+== ensure-schema!
+
+[source,clojure]
+----
+(ensure-schema! handle)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L127-L131[source,window=_blank]
+
+'''
+
+[#encode-json]
+== encode-json
+
+[source,clojure]
+----
+(encode-json json serializer value)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L133-L135[source,window=_blank]
+
+'''
+
+[#encode-json]
+== encode-json
+
+[source,clojure]
+----
+(encode-json json serializer value)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L133-L135[source,window=_blank]
+
+'''
+
+[#decode-json]
+== decode-json
+
+[source,clojure]
+----
+(decode-json json serializer value)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L137-L139[source,window=_blank]
+
+'''
+
+[#decode-json]
+== decode-json
+
+[source,clojure]
+----
+(decode-json json serializer value)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L137-L139[source,window=_blank]
+
+'''
+
+[#first-row]
+== first-row
+
+[source,clojure]
+----
+(first-row rows)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L141-L144[source,window=_blank]
+
+'''
+
+[#first-row]
+== first-row
+
+[source,clojure]
+----
+(first-row rows)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L141-L144[source,window=_blank]
+
+'''
+
+[#maybe-rows]
+== maybe-rows
+
+[source,clojure]
+----
+(maybe-rows rows)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L146-L148[source,window=_blank]
+
+'''
+
+[#maybe-rows]
+== maybe-rows
+
+[source,clojure]
+----
+(maybe-rows rows)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L146-L148[source,window=_blank]
+
+'''
+
+[#in-placeholders]
+== in-placeholders
+
+[source,clojure]
+----
+(in-placeholders n)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L150-L152[source,window=_blank]
+
+'''
+
+[#in-placeholders]
+== in-placeholders
+
+[source,clojure]
+----
+(in-placeholders n)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L150-L152[source,window=_blank]
+
+'''
+
+[#minimal-get]
+== minimal-get
+
+[source,clojure]
+----
+(minimal-get handle table repo-key serializer)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L154-L160[source,window=_blank]
+
+'''
+
+[#minimal-get]
+== minimal-get
+
+[source,clojure]
+----
+(minimal-get handle table repo-key serializer)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L154-L160[source,window=_blank]
+
+'''
+
+[#minimal-save-BANG-]
+== minimal-save!
+
+[source,clojure]
+----
+(minimal-save! handle table repo-key payload)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L162-L169[source,window=_blank]
+
+'''
+
+[#minimal-save-BANG-]
+== minimal-save!
+
+[source,clojure]
+----
+(minimal-save! handle table repo-key payload)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L162-L169[source,window=_blank]
+
+'''
+
+[#minimal-delete-BANG-]
+== minimal-delete!
+
+[source,clojure]
+----
+(minimal-delete! handle table repo-key)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L171-L176[source,window=_blank]
+
+'''
+
+[#minimal-delete-BANG-]
+== minimal-delete!
+
+[source,clojure]
+----
+(minimal-delete! handle table repo-key)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L171-L176[source,window=_blank]
+
+'''
+
+[#delete-all-BANG-]
+== delete-all!
+
+[source,clojure]
+----
+(delete-all! handle table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L178-L182[source,window=_blank]
+
+'''
+
+[#delete-all-BANG-]
+== delete-all!
+
+[source,clojure]
+----
+(delete-all! handle table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L178-L182[source,window=_blank]
+
+'''
+
+[#full-get-all]
+== full-get-all
+
+[source,clojure]
+----
+(full-get-all handle table serializer)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L184-L189[source,window=_blank]
+
+'''
+
+[#full-get-all]
+== full-get-all
+
+[source,clojure]
+----
+(full-get-all handle table serializer)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L184-L189[source,window=_blank]
+
+'''
+
+[#room-id-str]
+== room-id-str
+
+[source,clojure]
+----
+(room-id-str room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L191-L193[source,window=_blank]
+
+'''
+
+[#room-id-str]
+== room-id-str
+
+[source,clojure]
+----
+(room-id-str room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L191-L193[source,window=_blank]
+
+'''
+
+[#user-id-str]
+== user-id-str
+
+[source,clojure]
+----
+(user-id-str user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L195-L197[source,window=_blank]
+
+'''
+
+[#user-id-str]
+== user-id-str
+
+[source,clojure]
+----
+(user-id-str user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L195-L197[source,window=_blank]
+
+'''
+
+[#event-id-str]
+== event-id-str
+
+[source,clojure]
+----
+(event-id-str event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo/common.clj#L199-L201[source,window=_blank]
+
+'''
+
+[#event-id-str]
+== event-id-str
+
+[source,clojure]
+----
+(event-id-str event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo/common.clj#L199-L201[source,window=_blank]

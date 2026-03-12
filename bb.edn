@@ -1,9 +1,13 @@
-{:deps  {}
+{:deps  {outskirtslabs/bb-tasks
+         {:git/url "https://github.com/outskirtslabs/bb-tasks"
+          :git/sha "9f7ba90a41f50a5de16075ec27793657532151af"}}
+ :pods  {clj-kondo/clj-kondo {:version "2026.01.19"}}
  :paths []
  :tasks {:requires
          ([clojure.string :as str]
           [clojure.pprint :refer [print-table]]
-          [babashka.tasks :refer [shell]])
+          [babashka.tasks :refer [shell]]
+          [ol.bb-tasks.gen-docs :as gen-docs])
 
          :init
          (do
@@ -86,6 +90,10 @@
          ci
          {:doc     "Run CI checks: test, format check, and lint"
           :depends [test fmt:check lint]}
+
+         gen-docs
+         {:doc  "Generate all Antora documentation"
+          :task (gen-docs/generate!)}
 
          jar
          {:override-builtin true

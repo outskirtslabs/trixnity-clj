@@ -1,0 +1,77 @@
+= ol.trixnity.room.message
+
+Helpers for constructing normalized room message payloads.
+
+This namespace provides small builders for the message-spec maps accepted by
+xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+The helpers here focus on common text-message cases:
+
+- <<text,`text`>> builds a normalized text message payload
+- <<reply-to,`reply-to`>> attaches reply metadata from a normalized event map
+
+Use xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`] to inspect the events you are replying to.
+
+[#text]
+== text
+
+[source,clojure]
+----
+(text body)
+(text body opts)
+----
+
+Builds a text message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L19-L30[source,window=_blank]
+
+'''
+
+[#text]
+== text
+
+[source,clojure]
+----
+(text body)
+(text body opts)
+----
+
+Builds a text message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room/message.clj#L19-L30[source,window=_blank]
+
+'''
+
+[#reply-to]
+== reply-to
+
+[source,clojure]
+----
+(reply-to message ev)
+----
+
+Associates reply metadata from a normalized event map.
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L32-L42[source,window=_blank]
+
+'''
+
+[#reply-to]
+== reply-to
+
+[source,clojure]
+----
+(reply-to message ev)
+----
+
+Associates reply metadata from a normalized event map.
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room/message.clj#L32-L42[source,window=_blank]

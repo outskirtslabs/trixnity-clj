@@ -1,0 +1,164 @@
+= ol.trixnity.verification
+
+Verification state snapshots and active verification flows.
+
+## Upstream Mapping
+
+This namespace maps to Trixnity's `VerificationService`.
+
+The public wrappers here cover:
+
+- the current active device verification and its relieved flow
+- the current active user verifications and their relieved flow
+- self-verification method discovery
+
+Use xref:api/ol-trixnity-key.adoc[`ol.trixnity.key`] for trust and key-management APIs that often
+accompany verification workflows.
+
+[#current-active-device-verification]
+== current-active-device-verification
+
+[source,clojure]
+----
+(current-active-device-verification client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L23-L25[source,window=_blank]
+
+'''
+
+[#current-active-device-verification]
+== current-active-device-verification
+
+[source,clojure]
+----
+(current-active-device-verification client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/verification.clj#L23-L25[source,window=_blank]
+
+'''
+
+[#active-device-verification]
+== active-device-verification
+
+[source,clojure]
+----
+(active-device-verification client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L27-L30[source,window=_blank]
+
+'''
+
+[#active-device-verification]
+== active-device-verification
+
+[source,clojure]
+----
+(active-device-verification client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/verification.clj#L27-L30[source,window=_blank]
+
+'''
+
+[#current-active-user-verifications]
+== current-active-user-verifications
+
+[source,clojure]
+----
+(current-active-user-verifications client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L32-L34[source,window=_blank]
+
+'''
+
+[#current-active-user-verifications]
+== current-active-user-verifications
+
+[source,clojure]
+----
+(current-active-user-verifications client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/verification.clj#L32-L34[source,window=_blank]
+
+'''
+
+[#active-user-verifications]
+== active-user-verifications
+
+[source,clojure]
+----
+(active-user-verifications client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L36-L39[source,window=_blank]
+
+'''
+
+[#active-user-verifications]
+== active-user-verifications
+
+[source,clojure]
+----
+(active-user-verifications client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/verification.clj#L36-L39[source,window=_blank]
+
+'''
+
+[#get-self-verification-methods]
+== get-self-verification-methods
+
+[source,clojure]
+----
+(get-self-verification-methods client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L41-L43[source,window=_blank]
+
+'''
+
+[#get-self-verification-methods]
+== get-self-verification-methods
+
+[source,clojure]
+----
+(get-self-verification-methods client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/verification.clj#L41-L43[source,window=_blank]

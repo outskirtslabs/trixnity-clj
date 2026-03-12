@@ -1,0 +1,17 @@
+{:manifest/version 1,
+ :project
+ {:id "ol.trixnity",
+  :coord "com.outskirtslabs/trixnity-clj",
+  :description "A Clojure adapter for Trixnity, a Matrix SDK.",
+  :license "Apache-2.0",
+  :platforms [:clj],
+  :status :experimental,
+  :created "2026-03-12",
+  :version "0.0.1"},
+ :docs
+ {:component "ol.trixnity",
+  :title "ol.trixnity",
+  :version "next",
+  :prerelease true,
+  :start-path "doc"},
+ :repo {:url "https://github.com/outskirtslabs/trixnity-clj"}}

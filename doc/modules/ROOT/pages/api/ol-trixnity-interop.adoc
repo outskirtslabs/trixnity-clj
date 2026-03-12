@@ -1,0 +1,209 @@
+= ol.trixnity.interop
+
+[#open-client]
+== open-client
+
+[source,clojure]
+----
+(open-client request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L13-L17[source,window=_blank]
+
+'''
+
+[#current-user-id]
+== current-user-id
+
+[source,clojure]
+----
+(current-user-id request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L19-L23[source,window=_blank]
+
+'''
+
+[#sync-state]
+== sync-state
+
+[source,clojure]
+----
+(sync-state request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L25-L29[source,window=_blank]
+
+'''
+
+[#start-sync]
+== start-sync
+
+[source,clojure]
+----
+(start-sync request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L31-L35[source,window=_blank]
+
+'''
+
+[#await-running]
+== await-running
+
+[source,clojure]
+----
+(await-running request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L37-L41[source,window=_blank]
+
+'''
+
+[#stop-sync]
+== stop-sync
+
+[source,clojure]
+----
+(stop-sync request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L43-L47[source,window=_blank]
+
+'''
+
+[#close-client]
+== close-client
+
+[source,clojure]
+----
+(close-client request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L49-L53[source,window=_blank]
+
+'''
+
+[#create-room]
+== create-room
+
+[source,clojure]
+----
+(create-room request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L55-L59[source,window=_blank]
+
+'''
+
+[#invite-user]
+== invite-user
+
+[source,clojure]
+----
+(invite-user request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L61-L65[source,window=_blank]
+
+'''
+
+[#send-message]
+== send-message
+
+[source,clojure]
+----
+(send-message request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L67-L71[source,window=_blank]
+
+'''
+
+[#send-reaction]
+== send-reaction
+
+[source,clojure]
+----
+(send-reaction request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L73-L77[source,window=_blank]
+
+'''
+
+[#subscribe-timeline]
+== subscribe-timeline
+
+[source,clojure]
+----
+(subscribe-timeline request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L79-L85[source,window=_blank]
+
+'''
+
+[#observe-room-by-id]
+== observe-room-by-id
+
+[source,clojure]
+----
+(observe-room-by-id request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L87-L93[source,window=_blank]
+
+'''
+
+[#observe-rooms]
+== observe-rooms
+
+[source,clojure]
+----
+(observe-rooms request)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/interop.clj#L95-L101[source,window=_blank]

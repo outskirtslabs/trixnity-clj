@@ -1,0 +1,501 @@
+= ol.trixnity.user
+
+Room user state, receipts, presence, and permission checks.
+
+## Upstream Mapping
+
+This namespace wraps the user-oriented room APIs exposed by Trixnity's
+`RoomService`.
+
+The public wrappers here cover:
+
+- room member lookup by id or as keyed flow maps
+- per-user receipt and power-level observation
+- permission checks for invites, bans, kicks, redactions, power changes, and
+  sending events
+- user presence and global account-data queries
+
+Use xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`] for room lifecycle and timeline access, and
+xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`] for client-wide state.
+
+[#load-members]
+== load-members
+
+[source,clojure]
+----
+(load-members client room-id)
+(load-members client room-id opts)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L26-L35[source,window=_blank]
+
+'''
+
+[#load-members]
+== load-members
+
+[source,clojure]
+----
+(load-members client room-id)
+(load-members client room-id opts)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L26-L35[source,window=_blank]
+
+'''
+
+[#get-all]
+== get-all
+
+[source,clojure]
+----
+(get-all client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L37-L40[source,window=_blank]
+
+'''
+
+[#get-all]
+== get-all
+
+[source,clojure]
+----
+(get-all client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L37-L40[source,window=_blank]
+
+'''
+
+[#get-by-id]
+== get-by-id
+
+[source,clojure]
+----
+(get-by-id client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L42-L46[source,window=_blank]
+
+'''
+
+[#get-by-id]
+== get-by-id
+
+[source,clojure]
+----
+(get-by-id client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L42-L46[source,window=_blank]
+
+'''
+
+[#get-all-receipts]
+== get-all-receipts
+
+[source,clojure]
+----
+(get-all-receipts client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L48-L51[source,window=_blank]
+
+'''
+
+[#get-all-receipts]
+== get-all-receipts
+
+[source,clojure]
+----
+(get-all-receipts client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L48-L51[source,window=_blank]
+
+'''
+
+[#get-receipts-by-id]
+== get-receipts-by-id
+
+[source,clojure]
+----
+(get-receipts-by-id client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L53-L57[source,window=_blank]
+
+'''
+
+[#get-receipts-by-id]
+== get-receipts-by-id
+
+[source,clojure]
+----
+(get-receipts-by-id client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L53-L57[source,window=_blank]
+
+'''
+
+[#get-power-level]
+== get-power-level
+
+[source,clojure]
+----
+(get-power-level client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L59-L63[source,window=_blank]
+
+'''
+
+[#get-power-level]
+== get-power-level
+
+[source,clojure]
+----
+(get-power-level client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L59-L63[source,window=_blank]
+
+'''
+
+[#can-kick-user]
+== can-kick-user
+
+[source,clojure]
+----
+(can-kick-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L65-L69[source,window=_blank]
+
+'''
+
+[#can-kick-user]
+== can-kick-user
+
+[source,clojure]
+----
+(can-kick-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L65-L69[source,window=_blank]
+
+'''
+
+[#can-ban-user]
+== can-ban-user
+
+[source,clojure]
+----
+(can-ban-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L71-L75[source,window=_blank]
+
+'''
+
+[#can-ban-user]
+== can-ban-user
+
+[source,clojure]
+----
+(can-ban-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L71-L75[source,window=_blank]
+
+'''
+
+[#can-unban-user]
+== can-unban-user
+
+[source,clojure]
+----
+(can-unban-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L77-L81[source,window=_blank]
+
+'''
+
+[#can-unban-user]
+== can-unban-user
+
+[source,clojure]
+----
+(can-unban-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L77-L81[source,window=_blank]
+
+'''
+
+[#can-invite-user]
+== can-invite-user
+
+[source,clojure]
+----
+(can-invite-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L83-L87[source,window=_blank]
+
+'''
+
+[#can-invite-user]
+== can-invite-user
+
+[source,clojure]
+----
+(can-invite-user client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L83-L87[source,window=_blank]
+
+'''
+
+[#can-invite]
+== can-invite
+
+[source,clojure]
+----
+(can-invite client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L89-L92[source,window=_blank]
+
+'''
+
+[#can-invite]
+== can-invite
+
+[source,clojure]
+----
+(can-invite client room-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L89-L92[source,window=_blank]
+
+'''
+
+[#can-redact-event]
+== can-redact-event
+
+[source,clojure]
+----
+(can-redact-event client room-id event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L94-L98[source,window=_blank]
+
+'''
+
+[#can-redact-event]
+== can-redact-event
+
+[source,clojure]
+----
+(can-redact-event client room-id event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L94-L98[source,window=_blank]
+
+'''
+
+[#can-set-power-level-to-max]
+== can-set-power-level-to-max
+
+[source,clojure]
+----
+(can-set-power-level-to-max client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L100-L104[source,window=_blank]
+
+'''
+
+[#can-set-power-level-to-max]
+== can-set-power-level-to-max
+
+[source,clojure]
+----
+(can-set-power-level-to-max client room-id user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L100-L104[source,window=_blank]
+
+'''
+
+[#can-send-event]
+== can-send-event
+
+[source,clojure]
+----
+(can-send-event client room-id event-class-or-content)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L106-L119[source,window=_blank]
+
+'''
+
+[#can-send-event]
+== can-send-event
+
+[source,clojure]
+----
+(can-send-event client room-id event-class-or-content)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L106-L119[source,window=_blank]
+
+'''
+
+[#get-presence]
+== get-presence
+
+[source,clojure]
+----
+(get-presence client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L121-L124[source,window=_blank]
+
+'''
+
+[#get-presence]
+== get-presence
+
+[source,clojure]
+----
+(get-presence client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L121-L124[source,window=_blank]
+
+'''
+
+[#get-account-data]
+== get-account-data
+
+[source,clojure]
+----
+(get-account-data client event-content-class)
+(get-account-data client event-content-class key)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L126-L134[source,window=_blank]
+
+'''
+
+[#get-account-data]
+== get-account-data
+
+[source,clojure]
+----
+(get-account-data client event-content-class)
+(get-account-data client event-content-class key)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/user.clj#L126-L134[source,window=_blank]

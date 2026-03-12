@@ -1,0 +1,7 @@
+---
+name: ol.trixnity
+title: ol.trixnity
+version: next
+prerelease: true
+nav:
+  - modules/ROOT/nav.adoc

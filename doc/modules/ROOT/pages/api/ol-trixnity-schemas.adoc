@@ -1,0 +1,131 @@
+= ol.trixnity.schemas
+
+Malli schema registry for ol.trixnity
+
+Public namespaces validate arguments and normalize bridge-shaped data through
+the schemas defined here before crossing into
+xref:api/ol-trixnity-internal-bridge.adoc[`ol.trixnity.internal.bridge`].
+
+The registry includes:
+
+- public request and options maps for client, room, notification, and key
+  operations
+- normalized event, profile, room, notification, verification, and trust
+  data shapes
+- helper functions for building a registry and enforcing schema validation
+
+Most callers use these namespaced keys indirectly through the higher-level
+public APIs. Reach for this namespace directly when constructing config or
+payload maps by hand.
+
+[#schemas]
+== schemas
+
+[source,clojure]
+----
+(schemas _)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L45-L399[source,window=_blank]
+
+'''
+
+[#schemas]
+== schemas
+
+[source,clojure]
+----
+(schemas _)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L45-L399[source,window=_blank]
+
+'''
+
+[#registry]
+== registry
+
+[source,clojure]
+----
+(registry opts)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L401-L405[source,window=_blank]
+
+'''
+
+[#registry]
+== registry
+
+[source,clojure]
+----
+(registry opts)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L401-L405[source,window=_blank]
+
+'''
+
+[#schema-registry]
+== schema-registry
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L407-L408[source,window=_blank]
+
+'''
+
+[#schema-registry]
+== schema-registry
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L407-L408[source,window=_blank]
+
+'''
+
+[#validate-BANG-]
+== validate!
+
+[source,clojure]
+----
+(validate! schema-id data)
+(validate! registry schema-id data)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L413-L424[source,window=_blank]
+
+'''
+
+[#validate-BANG-]
+== validate!
+
+[source,clojure]
+----
+(validate! schema-id data)
+(validate! registry schema-id data)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L413-L424[source,window=_blank]

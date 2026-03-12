@@ -1,0 +1,369 @@
+= ol.trixnity.event
+
+Accessors and predicates for normalized event maps.
+
+This namespace provides convenience accessors over
+the normalized event shapes defined in xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`] without
+exposing callers to raw bridge internals.
+
+Use these helpers when consuming timeline events, notifications, or reply
+metadata from xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`], xref:api/ol-trixnity-notification.adoc[`ol.trixnity.notification`], and
+xref:api/ol-trixnity-room-message.adoc[`ol.trixnity.room.message`].
+
+[#type]
+== type
+
+[source,clojure]
+----
+(type event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L17-L18[source,window=_blank]
+
+'''
+
+[#type]
+== type
+
+[source,clojure]
+----
+(type event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L17-L18[source,window=_blank]
+
+'''
+
+[#room-id]
+== room-id
+
+[source,clojure]
+----
+(room-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L20-L21[source,window=_blank]
+
+'''
+
+[#room-id]
+== room-id
+
+[source,clojure]
+----
+(room-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L20-L21[source,window=_blank]
+
+'''
+
+[#event-id]
+== event-id
+
+[source,clojure]
+----
+(event-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L23-L24[source,window=_blank]
+
+'''
+
+[#event-id]
+== event-id
+
+[source,clojure]
+----
+(event-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L23-L24[source,window=_blank]
+
+'''
+
+[#sender]
+== sender
+
+[source,clojure]
+----
+(sender event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L26-L27[source,window=_blank]
+
+'''
+
+[#sender]
+== sender
+
+[source,clojure]
+----
+(sender event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L26-L27[source,window=_blank]
+
+'''
+
+[#sender-display-name]
+== sender-display-name
+
+[source,clojure]
+----
+(sender-display-name event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L29-L30[source,window=_blank]
+
+'''
+
+[#sender-display-name]
+== sender-display-name
+
+[source,clojure]
+----
+(sender-display-name event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L29-L30[source,window=_blank]
+
+'''
+
+[#body]
+== body
+
+[source,clojure]
+----
+(body event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L32-L33[source,window=_blank]
+
+'''
+
+[#body]
+== body
+
+[source,clojure]
+----
+(body event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L32-L33[source,window=_blank]
+
+'''
+
+[#key]
+== key
+
+[source,clojure]
+----
+(key event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L35-L36[source,window=_blank]
+
+'''
+
+[#key]
+== key
+
+[source,clojure]
+----
+(key event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L35-L36[source,window=_blank]
+
+'''
+
+[#relates-to]
+== relates-to
+
+[source,clojure]
+----
+(relates-to event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L38-L39[source,window=_blank]
+
+'''
+
+[#relates-to]
+== relates-to
+
+[source,clojure]
+----
+(relates-to event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L38-L39[source,window=_blank]
+
+'''
+
+[#relation-event-id]
+== relation-event-id
+
+[source,clojure]
+----
+(relation-event-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L41-L42[source,window=_blank]
+
+'''
+
+[#relation-event-id]
+== relation-event-id
+
+[source,clojure]
+----
+(relation-event-id event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L41-L42[source,window=_blank]
+
+'''
+
+[#raw]
+== raw
+
+[source,clojure]
+----
+(raw event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L44-L45[source,window=_blank]
+
+'''
+
+[#raw]
+== raw
+
+[source,clojure]
+----
+(raw event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L44-L45[source,window=_blank]
+
+'''
+
+[#text-QMARK-]
+== text?
+
+[source,clojure]
+----
+(text? event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L47-L48[source,window=_blank]
+
+'''
+
+[#text-QMARK-]
+== text?
+
+[source,clojure]
+----
+(text? event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L47-L48[source,window=_blank]
+
+'''
+
+[#reaction-QMARK-]
+== reaction?
+
+[source,clojure]
+----
+(reaction? event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L50-L51[source,window=_blank]
+
+'''
+
+[#reaction-QMARK-]
+== reaction?
+
+[source,clojure]
+----
+(reaction? event)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L50-L51[source,window=_blank]

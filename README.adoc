@@ -1,0 +1,104 @@
+= ol.trixnity
+
+____
+A Clojure adapter for Trixnity, a Matrix SDK. Write Matrix apps and bots in Clojure.
+____
+
+image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc,link=https://docs.outskirtslabs.com/ol.trixnity/next/]
+image:https://img.shields.io/badge/status-experimental-red.svg[status: experimental,link=https://docs.outskirtslabs.com/open-source-vital-signs#experimental]
+
+https://trixnity.connect2x.de/[Trixnity] is a Kotlin Multiplatform library for building Matrix applications. It covers the full Matrix client-server API surface, including room management, sync, and end-to-end encryption. Despite flying under the radar, Trixnity already powers a large chunk of Germany's TI-Messenger healthcare infrastructure, reaching tens of millions of potential users.
+
+Trixnity targets the JVM, which means Clojure can call into it directly, but the interop is still rough. Nearly every interesting API is either a Kotlin suspend function or returns a `Flow` or `StateFlow`, so even basic client work quickly turns into coroutine plumbing: scopes, dispatchers, cancellation, and stream observation.
+
+The flow-heavy parts are especially awkward because they are long-lived Kotlin stream types, not something Clojure can consume idiomatically. So things like sync state, timeline updates, and other live observations need extra translation. Kotlin's compiler also mangles names in the compiled bytecode, which makes direct interop harder when reading the upstream docs.
+
+`trixnity-clj` wraps Trixnity with a small Kotlin bridge and exposes the concurrency model using https://github.com/leonoel/missionary/[Missionary]. Kotlin suspend functions become Missionary tasks. Kotlin `Flow` and `StateFlow` surfaces become Missionary flows. `StateFlow` properties are exposed as a synchronous `current-*` getter plus a relieved Missionary flow.
+
+Project status: *https://docs.outskirtslabs.com/open-source-vital-signs#experimental[Experimental]*.
+
+== Repository Backend
+
+In Trixnity, a repository module is the persistence backend for all the client state it needs to keep around: sync tokens, rooms, timelines, outbox entries, encryption keys, notifications, and the rest of the Matrix baggage.
+
+Upstream ships several of these across platforms. If you want durable storage on the JVM, the stock option is the https://gitlab.com/trixnity/trixnity/-/tree/main/trixnity-client/trixnity-client-repository-exposed[Exposed repository module], which means JetBrains's ORM Exposed layered on top of JDBC.
+
+Maybe that sparks joy for somebody. It does not spark joy for me.
+
+For the kind of bots and small clients I am building, running SQLite through JDBC makes write serialization harder than it should be, which means more `busy_timeout` pain.
+
+And god forbid anyone suggest dragging Hikari into that mess.
+
+So this library includes its own repository implementation backed by https://github.com/andersmurphy/sqlite4clj[sqlite4clj], and that is the default setup.
+
+The storage layer is just plain SQLite, explicit SQL, and a lot less nonsense.
+
+Shout out to Anders Murphy for building https://github.com/andersmurphy/sqlite4clj[sqlite4clj], and making the SQLite story in Clojure 100% less deranged.
+
+== Example Usage
+
+Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj[`ol.trixnity.repo`] to configure the built-in sqlite4clj repository, then open a client with https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj[`ol.trixnity.client/open`]:
+
+[source,clojure]
+----
+(ns my.bot
+  (:require
+   [missionary.core :as m]
+   [ol.trixnity.client :as client]
+   [ol.trixnity.event :as event]
+   [ol.trixnity.repo :as repo]
+   [ol.trixnity.room :as room]
+   [ol.trixnity.room.message :as msg]
+   [ol.trixnity.schemas :as mx])
+  (:import
+   [java.time Duration]))
+
+(defn run-bot []
+  (let [client (m/? (client/open
+                     (merge
+                      {::mx/homeserver-url "https://matrix.example.org"
+                       ::mx/username       "bot"
+                       ::mx/password       "secret"}
+                      (repo/sqlite4clj-config
+                       {:database-path "./var/trixnity.sqlite"
+                        :media-path    "./var/media"}))))]
+    (m/? (client/start-sync client))
+    (m/? (client/await-running client
+                               {::mx/timeout (Duration/ofSeconds 30)}))
+    (future
+      (m/? (m/reduce
+            (fn [_ ev]
+              (when (event/text? ev)
+                (m/? (room/send-message
+                      client
+                      (event/room-id ev)
+                      (-> (msg/text "pong")
+                          (msg/reply-to ev))
+                      {::mx/timeout (Duration/ofSeconds 5)})))
+              nil)
+            nil
+            (room/get-timeline-events-from-now-on
+             client
+             {::mx/decryption-timeout (Duration/ofSeconds 8)}))))
+    {:client client}))
+----
+
+If you want a different repository implementation, construct a `MatrixClient` yourself and pass it to `client/open` as `::mx/client`.
+
+== Documentation
+
+* https://docs.outskirtslabs.com/ol.trixnity/next/[Docs]
+* https://docs.outskirtslabs.com/ol.trixnity/next/api[API Reference]
+* https://github.com/outskirtslabs/trixnity-clj/issues[Support via GitHub Issues]
+
+== Examples
+
+Several examples are available in link:examples/[examples]:
+
+* link:examples/basic-bot/[basic-bot] - A minimal end-to-end bot that opens a client, starts sync, joins invited rooms, and replies to live timeline events.
+
+== License
+
+Copyright (C) 2026 Casey Link
+
+Distributed under the https://spdx.org/licenses/Apache-2.0.html[Apache-2.0] just like Trixnity itself.

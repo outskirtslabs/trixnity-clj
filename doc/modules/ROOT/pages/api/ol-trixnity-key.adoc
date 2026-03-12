@@ -1,0 +1,228 @@
+= ol.trixnity.key
+
+Encryption-key state, backup state, and trust-level queries.
+
+## Upstream Mapping
+
+This namespace maps to Trixnity's `KeyService` and `KeyBackupService`.
+
+The public wrappers here cover:
+
+- current and flow-based backup bootstrap state
+- current and flow-based backup-version observation
+- trust-level queries for users, devices, and timeline events
+- device-key and cross-signing-key lookup
+
+Use xref:api/ol-trixnity-verification.adoc[`ol.trixnity.verification`] for active verification workflows and
+xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`] when you need room timeline events to pair with
+trust-level checks.
+
+[#current-bootstrap-running]
+== current-bootstrap-running
+
+[source,clojure]
+----
+(current-bootstrap-running client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L27-L29[source,window=_blank]
+
+'''
+
+[#current-bootstrap-running]
+== current-bootstrap-running
+
+[source,clojure]
+----
+(current-bootstrap-running client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L27-L29[source,window=_blank]
+
+'''
+
+[#bootstrap-running]
+== bootstrap-running
+
+[source,clojure]
+----
+(bootstrap-running client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L31-L34[source,window=_blank]
+
+'''
+
+[#bootstrap-running]
+== bootstrap-running
+
+[source,clojure]
+----
+(bootstrap-running client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L31-L34[source,window=_blank]
+
+'''
+
+[#current-backup-version]
+== current-backup-version
+
+[source,clojure]
+----
+(current-backup-version client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L36-L38[source,window=_blank]
+
+'''
+
+[#current-backup-version]
+== current-backup-version
+
+[source,clojure]
+----
+(current-backup-version client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L36-L38[source,window=_blank]
+
+'''
+
+[#backup-version]
+== backup-version
+
+[source,clojure]
+----
+(backup-version client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L40-L43[source,window=_blank]
+
+'''
+
+[#backup-version]
+== backup-version
+
+[source,clojure]
+----
+(backup-version client)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L40-L43[source,window=_blank]
+
+'''
+
+[#get-trust-level]
+== get-trust-level
+
+[source,clojure]
+----
+(get-trust-level client user-id)
+(get-trust-level client user-id-or-room-id device-id-or-event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L45-L58[source,window=_blank]
+
+'''
+
+[#get-trust-level]
+== get-trust-level
+
+[source,clojure]
+----
+(get-trust-level client user-id)
+(get-trust-level client user-id-or-room-id device-id-or-event-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L45-L58[source,window=_blank]
+
+'''
+
+[#get-device-keys]
+== get-device-keys
+
+[source,clojure]
+----
+(get-device-keys client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L60-L63[source,window=_blank]
+
+'''
+
+[#get-device-keys]
+== get-device-keys
+
+[source,clojure]
+----
+(get-device-keys client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L60-L63[source,window=_blank]
+
+'''
+
+[#get-cross-signing-keys]
+== get-cross-signing-keys
+
+[source,clojure]
+----
+(get-cross-signing-keys client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L65-L68[source,window=_blank]
+
+'''
+
+[#get-cross-signing-keys]
+== get-cross-signing-keys
+
+[source,clojure]
+----
+(get-cross-signing-keys client user-id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L65-L68[source,window=_blank]

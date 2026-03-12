@@ -1,0 +1,149 @@
+= ol.trixnity.repo
+
+Built-in repository helpers for the sqlite4clj-backed repository setup.
+
+Most callers do not need to interact with the raw repository handle or the
+Kotlin bridge types directly. Use <<sqlite4clj-config,`sqlite4clj-config`>> with
+xref:api/ol-trixnity-client.adoc#open[`ol.trixnity.client/open`].
+
+Advanced callers can still build a `MatrixClient` with some other repository
+implementation and pass that client to xref:api/ol-trixnity-client.adoc#open[`ol.trixnity.client/open`] via
+`::mx/client`.
+
+[#sqlite4clj-config]
+== sqlite4clj-config
+
+[source,clojure]
+----
+(sqlite4clj-config options)
+----
+
+Returns config entries for the built-in sqlite4clj repository and okio media store.
+
+Prefer the namespaced keys from xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]. Plain keywords are
+still accepted here as a convenience when normalizing app config.
+
+Options:
+
+| key | description
+|-----|-------------
+| `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`
+| `::mx/media-path` | Directory used by the okio-backed media store
+
+Example:
+
+[source,clojure]
+----
+(m/? (client/open
+      (merge
+       {::mx/homeserver-url "https://matrix.example.org"
+        ::mx/username "bot"
+        ::mx/password "secret"}
+       (repo/sqlite4clj-config
+        {::mx/database-path "./var/trixnity.sqlite"
+         ::mx/media-path "./var/media"}))))
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L47-L74[source,window=_blank]
+
+'''
+
+[#sqlite4clj-config]
+== sqlite4clj-config
+
+[source,clojure]
+----
+(sqlite4clj-config options)
+----
+
+Returns config entries for the built-in sqlite4clj repository and okio media store.
+
+Prefer the namespaced keys from xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]. Plain keywords are
+still accepted here as a convenience when normalizing app config.
+
+Options:
+
+| key | description
+|-----|-------------
+| `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`
+| `::mx/media-path` | Directory used by the okio-backed media store
+
+Example:
+
+[source,clojure]
+----
+(m/? (client/open
+      (merge
+       {::mx/homeserver-url "https://matrix.example.org"
+        ::mx/username "bot"
+        ::mx/password "secret"}
+       (repo/sqlite4clj-config
+        {::mx/database-path "./var/trixnity.sqlite"
+         ::mx/media-path "./var/media"}))))
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L47-L74[source,window=_blank]
+
+'''
+
+[#open-handle-BANG-]
+== open-handle!
+
+[source,clojure]
+----
+(open-handle! path json)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L76-L78[source,window=_blank]
+
+'''
+
+[#open-handle-BANG-]
+== open-handle!
+
+[source,clojure]
+----
+(open-handle! path json)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L76-L78[source,window=_blank]
+
+'''
+
+[#create-repositories]
+== create-repositories
+
+[source,clojure]
+----
+(create-repositories handle mappings)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L784-L817[source,window=_blank]
+
+'''
+
+[#create-repositories]
+== create-repositories
+
+[source,clojure]
+----
+(create-repositories handle mappings)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L784-L817[source,window=_blank]

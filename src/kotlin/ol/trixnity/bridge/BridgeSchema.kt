@@ -7,6 +7,7 @@ internal typealias KeywordMap = Map<Keyword, *>
 internal object BridgeSchema {
     private const val schemaNamespace = "ol.trixnity.schemas"
 
+    val id: Keyword = Keyword.intern(schemaNamespace, "id")
     val homeserverUrl: Keyword = Keyword.intern(schemaNamespace, "homeserver-url")
     val username: Keyword = Keyword.intern(schemaNamespace, "username")
     val password: Keyword = Keyword.intern(schemaNamespace, "password")
@@ -16,12 +17,63 @@ internal object BridgeSchema {
     val roomName: Keyword = Keyword.intern(schemaNamespace, "room-name")
     val roomId: Keyword = Keyword.intern(schemaNamespace, "room-id")
     val userId: Keyword = Keyword.intern(schemaNamespace, "user-id")
+    val users: Keyword = Keyword.intern(schemaNamespace, "users")
     val eventId: Keyword = Keyword.intern(schemaNamespace, "event-id")
+    val stateKey: Keyword = Keyword.intern(schemaNamespace, "state-key")
+    val transactionId: Keyword = Keyword.intern(schemaNamespace, "transaction-id")
     val key: Keyword = Keyword.intern(schemaNamespace, "key")
+    val displayName: Keyword = Keyword.intern(schemaNamespace, "display-name")
+    val avatarUrl: Keyword = Keyword.intern(schemaNamespace, "avatar-url")
+    val timeZone: Keyword = Keyword.intern(schemaNamespace, "time-zone")
+    val versions: Keyword = Keyword.intern(schemaNamespace, "versions")
+    val mediaConfig: Keyword = Keyword.intern(schemaNamespace, "media-config")
+    val capabilities: Keyword = Keyword.intern(schemaNamespace, "capabilities")
+    val auth: Keyword = Keyword.intern(schemaNamespace, "auth")
+    val content: Keyword = Keyword.intern(schemaNamespace, "content")
     val message: Keyword = Keyword.intern(schemaNamespace, "message")
-    val onEvent: Keyword = Keyword.intern(schemaNamespace, "on-event")
     val timeout: Keyword = Keyword.intern(schemaNamespace, "timeout")
     val decryptionTimeout: Keyword = Keyword.intern(schemaNamespace, "decryption-timeout")
+    val fetchTimeout: Keyword = Keyword.intern(schemaNamespace, "fetch-timeout")
+    val fetchSize: Keyword = Keyword.intern(schemaNamespace, "fetch-size")
+    val allowReplaceContent: Keyword = Keyword.intern(schemaNamespace, "allow-replace-content")
+    val minSize: Keyword = Keyword.intern(schemaNamespace, "min-size")
+    val maxSize: Keyword = Keyword.intern(schemaNamespace, "max-size")
+    val syncResponseBufferSize: Keyword = Keyword.intern(schemaNamespace, "sync-response-buffer-size")
+    val direction: Keyword = Keyword.intern(schemaNamespace, "direction")
+    val response: Keyword = Keyword.intern(schemaNamespace, "response")
+    val eventContentClass: Keyword = Keyword.intern(schemaNamespace, "event-content-class")
+    val eventContent: Keyword = Keyword.intern(schemaNamespace, "event-content")
+    val membership: Keyword = Keyword.intern(schemaNamespace, "membership")
+    val isDirect: Keyword = Keyword.intern(schemaNamespace, "is-direct")
+    val createdAt: Keyword = Keyword.intern(schemaNamespace, "created-at")
+    val sentAt: Keyword = Keyword.intern(schemaNamespace, "sent-at")
+    val sendError: Keyword = Keyword.intern(schemaNamespace, "send-error")
+    val receipts: Keyword = Keyword.intern(schemaNamespace, "receipts")
+    val receiptType: Keyword = Keyword.intern(schemaNamespace, "receipt-type")
+    val name: Keyword = Keyword.intern(schemaNamespace, "name")
+    val presence: Keyword = Keyword.intern(schemaNamespace, "presence")
+    val lastUpdate: Keyword = Keyword.intern(schemaNamespace, "last-update")
+    val lastActive: Keyword = Keyword.intern(schemaNamespace, "last-active")
+    val currentlyActive: Keyword = Keyword.intern(schemaNamespace, "currently-active")
+    val statusMessage: Keyword = Keyword.intern(schemaNamespace, "status-message")
+    val level: Keyword = Keyword.intern(schemaNamespace, "level")
+    val verified: Keyword = Keyword.intern(schemaNamespace, "verified")
+    val reason: Keyword = Keyword.intern(schemaNamespace, "reason")
+    val dismissed: Keyword = Keyword.intern(schemaNamespace, "dismissed")
+    val sortKey: Keyword = Keyword.intern(schemaNamespace, "sort-key")
+    val actions: Keyword = Keyword.intern(schemaNamespace, "actions")
+    val notificationKind: Keyword = Keyword.intern(schemaNamespace, "notification-kind")
+    val notificationUpdateKind: Keyword = Keyword.intern(schemaNamespace, "notification-update-kind")
+    val timestamp: Keyword = Keyword.intern(schemaNamespace, "timestamp")
+    val deviceId: Keyword = Keyword.intern(schemaNamespace, "device-id")
+    val theirUserId: Keyword = Keyword.intern(schemaNamespace, "their-user-id")
+    val theirDeviceId: Keyword = Keyword.intern(schemaNamespace, "their-device-id")
+    val requestEventId: Keyword = Keyword.intern(schemaNamespace, "request-event-id")
+    val verificationState: Keyword = Keyword.intern(schemaNamespace, "verification-state")
+    val methods: Keyword = Keyword.intern(schemaNamespace, "methods")
+    val reasons: Keyword = Keyword.intern(schemaNamespace, "reasons")
+    val algorithm: Keyword = Keyword.intern(schemaNamespace, "algorithm")
+    val raw: Keyword = Keyword.intern(schemaNamespace, "raw")
 
     object MessageSpec {
         val kind: Keyword = Keyword.intern(schemaNamespace, "kind")
@@ -42,12 +94,153 @@ internal object BridgeSchema {
         val raw: Keyword = Keyword.intern(schemaNamespace, "raw")
     }
 
+    object Room {
+        val roomId: Keyword = BridgeSchema.roomId
+        val membership: Keyword = BridgeSchema.membership
+        val roomName: Keyword = BridgeSchema.roomName
+        val isDirect: Keyword = BridgeSchema.isDirect
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object Profile {
+        val displayName: Keyword = BridgeSchema.displayName
+        val avatarUrl: Keyword = BridgeSchema.avatarUrl
+        val timeZone: Keyword = BridgeSchema.timeZone
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object ServerData {
+        val versions: Keyword = BridgeSchema.versions
+        val mediaConfig: Keyword = BridgeSchema.mediaConfig
+        val capabilities: Keyword = BridgeSchema.capabilities
+        val auth: Keyword = BridgeSchema.auth
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object TypingEventContent {
+        val users: Keyword = BridgeSchema.users
+        val raw: Keyword = BridgeSchema.raw
+    }
+
     object Relation {
         val type: Keyword = Keyword.intern(schemaNamespace, "relation-type")
         val eventId: Keyword = Keyword.intern(schemaNamespace, "relation-event-id")
         val key: Keyword = BridgeSchema.key
         val replyToEventId: Keyword = Keyword.intern(schemaNamespace, "reply-to-event-id")
         val isFallingBack: Keyword = Keyword.intern(schemaNamespace, "is-falling-back")
+    }
+
+    object StateEvent {
+        val type: Keyword = BridgeSchema.Event.type
+        val roomId: Keyword = BridgeSchema.roomId
+        val eventId: Keyword = BridgeSchema.eventId
+        val sender: Keyword = BridgeSchema.Event.sender
+        val stateKey: Keyword = BridgeSchema.stateKey
+        val content: Keyword = BridgeSchema.content
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object RoomOutboxMessage {
+        val roomId: Keyword = BridgeSchema.roomId
+        val transactionId: Keyword = BridgeSchema.transactionId
+        val eventId: Keyword = BridgeSchema.eventId
+        val content: Keyword = BridgeSchema.content
+        val createdAt: Keyword = BridgeSchema.createdAt
+        val sentAt: Keyword = BridgeSchema.sentAt
+        val sendError: Keyword = BridgeSchema.sendError
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object RoomUser {
+        val roomId: Keyword = BridgeSchema.roomId
+        val userId: Keyword = BridgeSchema.userId
+        val name: Keyword = BridgeSchema.name
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object RoomUserReceipt {
+        val receiptType: Keyword = BridgeSchema.receiptType
+        val eventId: Keyword = BridgeSchema.eventId
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object RoomUserReceipts {
+        val roomId: Keyword = BridgeSchema.roomId
+        val userId: Keyword = BridgeSchema.userId
+        val receipts: Keyword = BridgeSchema.receipts
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object PowerLevel {
+        val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val level: Keyword = BridgeSchema.level
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object UserPresence {
+        val presence: Keyword = BridgeSchema.presence
+        val lastUpdate: Keyword = BridgeSchema.lastUpdate
+        val lastActive: Keyword = BridgeSchema.lastActive
+        val currentlyActive: Keyword = BridgeSchema.currentlyActive
+        val statusMessage: Keyword = BridgeSchema.statusMessage
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object Notification {
+        val id: Keyword = BridgeSchema.id
+        val sortKey: Keyword = BridgeSchema.sortKey
+        val actions: Keyword = BridgeSchema.actions
+        val dismissed: Keyword = BridgeSchema.dismissed
+        val kind: Keyword = BridgeSchema.notificationKind
+        val timelineEvent: Keyword = Keyword.intern(schemaNamespace, "timeline-event")
+        val stateEvent: Keyword = Keyword.intern(schemaNamespace, "state-event")
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object NotificationUpdate {
+        val id: Keyword = BridgeSchema.id
+        val sortKey: Keyword = BridgeSchema.sortKey
+        val actions: Keyword = BridgeSchema.actions
+        val kind: Keyword = BridgeSchema.notificationUpdateKind
+        val content: Keyword = BridgeSchema.content
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object ActiveVerification {
+        val theirUserId: Keyword = BridgeSchema.theirUserId
+        val theirDeviceId: Keyword = BridgeSchema.theirDeviceId
+        val requestEventId: Keyword = BridgeSchema.requestEventId
+        val roomId: Keyword = BridgeSchema.roomId
+        val transactionId: Keyword = BridgeSchema.transactionId
+        val timestamp: Keyword = BridgeSchema.timestamp
+        val verificationState: Keyword = BridgeSchema.verificationState
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object VerificationState {
+        val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object SelfVerificationMethods {
+        val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val methods: Keyword = BridgeSchema.methods
+        val reasons: Keyword = BridgeSchema.reasons
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object TrustLevel {
+        val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val verified: Keyword = BridgeSchema.verified
+        val reason: Keyword = BridgeSchema.reason
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object BackupVersion {
+        val version: Keyword = Keyword.intern(schemaNamespace, "version")
+        val algorithm: Keyword = BridgeSchema.algorithm
+        val auth: Keyword = BridgeSchema.auth
+        val raw: Keyword = BridgeSchema.raw
     }
 
     object OpenClientRequest {
@@ -110,9 +303,4 @@ internal object BridgeSchema {
         val timeout: Keyword = BridgeSchema.timeout
     }
 
-    object SubscribeTimelineRequest {
-        val client: Keyword = BridgeSchema.client
-        val onEvent: Keyword = BridgeSchema.onEvent
-        val decryptionTimeout: Keyword = BridgeSchema.decryptionTimeout
-    }
 }

@@ -21,11 +21,19 @@
          test:kotlin
          {:doc     "Run kotlin tests"
           :depends [prep]
-          :task    (shell "mvn -q test")}
+          :task    (shell "mvn test")}
 
          poc:run
          {:doc  "Run facade POC entrypoint"
           :task (apply clojure "-M:dev" "-m" "ol.trixnity-poc.main" *command-line-args*)}
+
+         missionary:spike:run
+         {:doc  "Run the Missionary room observation spike"
+          :task (apply clojure
+                       "-M:dev"
+                       "-m"
+                       "ol.trixnity-missionary-spike.main"
+                       *command-line-args*)}
 
          facade:test
          {:doc     "Run only POC facade tests"
@@ -36,8 +44,8 @@
                           *command-line-args*)}
 
          bridge:build
-          {:doc  "Compile the Kotlin bridge classes"
-           :task (shell "mvn -q compile")}
+         {:doc  "Compile the Kotlin bridge classes"
+          :task (shell "mvn -q compile")}
 
          build
          {:doc "Build" :depends [bridge:build]}

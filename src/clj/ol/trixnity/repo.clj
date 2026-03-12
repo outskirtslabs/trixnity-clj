@@ -1,12 +1,12 @@
 (ns ol.trixnity.repo
-  "Built-in repository helpers for the sqlite4clj-backed happy path.
+  "Built-in repository helpers for the sqlite4clj-backed repository setup.
 
   Most callers do not need to interact with the raw repository handle or the
   Kotlin bridge types directly. Use [[sqlite4clj-config]] with
-  [[ol.trixnity.client/open!]].
+  [[ol.trixnity.client/open]].
 
   Advanced callers can still build a `MatrixClient` with some other repository
-  implementation and pass that client to [[ol.trixnity.client/open!]] via
+  implementation and pass that client to [[ol.trixnity.client/open]] via
   `::mx/client`."
   (:require
    [ol.trixnity.repo.common :as common]
@@ -60,15 +60,14 @@
   Example:
 
   ```clojure
-  (.get
-   (client/open!
-    (merge
-      {::mx/homeserver-url \"https://matrix.example.org\"
-       ::mx/username \"bot\"
-       ::mx/password \"secret\"}
-      (repo/sqlite4clj-config
-        {::mx/database-path \"./var/trixnity.sqlite\"
-         ::mx/media-path \"./var/media\"}))))
+  (m/? (client/open
+        (merge
+         {::mx/homeserver-url \"https://matrix.example.org\"
+          ::mx/username \"bot\"
+          ::mx/password \"secret\"}
+         (repo/sqlite4clj-config
+          {::mx/database-path \"./var/trixnity.sqlite\"
+           ::mx/media-path \"./var/media\"}))))
   ```"
   [options]
   {::mx/database-path (some-> (option-value options ::mx/database-path) str)

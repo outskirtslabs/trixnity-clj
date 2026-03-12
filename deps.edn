@@ -5,6 +5,7 @@
            io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.4.1"}
            io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.4.1"}
            org.slf4j/slf4j-nop                                              {:mvn/version "2.0.17"}
+           missionary/missionary                                            {:mvn/version "b.47"}
            andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
                                                                              :git/sha    "8b9234061a033c06438b3a0542d987046abf06db"
                                                                              :exclusions [org.suskalo/coffi]}

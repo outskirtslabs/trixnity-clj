@@ -1,94 +1,264 @@
 package ol.trixnity.bridge
 
+import clojure.lang.Keyword
+import de.connect2x.trixnity.client.flatten
+import de.connect2x.trixnity.client.flattenValues
 import de.connect2x.trixnity.client.room
 import de.connect2x.trixnity.client.room.message.react
 import de.connect2x.trixnity.client.room.message.reply
 import de.connect2x.trixnity.client.room.message.text
+import de.connect2x.trixnity.client.store.Room
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.InitialStateEvent
+import de.connect2x.trixnity.core.model.events.RoomAccountDataEventContent
+import de.connect2x.trixnity.core.model.events.StateEventContent
+import de.connect2x.trixnity.core.model.events.m.TypingEventContent
 import de.connect2x.trixnity.core.model.events.m.room.EncryptionEventContent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.io.Closeable
+import java.time.Duration
 
 object RoomBridge {
+    private fun normalizeRoom(room: Room?): Map<Keyword, Any?>? {
+        if (room == null) return null
+        return buildMap {
+            put(BridgeSchema.Room.roomId, room.roomId.full)
+            put(BridgeSchema.Room.membership, room.membership.name.lowercase())
+            room.name?.explicitName?.let { put(BridgeSchema.Room.roomName, it) }
+            put(BridgeSchema.Room.isDirect, room.isDirect)
+            put(BridgeSchema.Room.raw, room)
+        }
+    }
+
+    private fun normalizeTypingEventContent(
+        content: TypingEventContent,
+    ): Map<Keyword, Any?> =
+        buildMap {
+            put(BridgeSchema.TypingEventContent.users, content.users.map { it.full }.toSet())
+            put(BridgeSchema.TypingEventContent.raw, content)
+        }
+
     @JvmStatic
-    fun createRoom(request: KeywordMap) =
-        BridgeAsync.submitFuture(
-            scope = BridgeAsync.clientScope(
-                requireKeywordClient(request, BridgeSchema.CreateRoomRequest.client),
-            ),
-        ) {
-            val client = requireKeywordClient(request, BridgeSchema.CreateRoomRequest.client)
-            val roomName = requireKeywordString(request, BridgeSchema.CreateRoomRequest.roomName)
-            client.api.room.createRoom(
-                name = roomName,
-                initialState = listOf(
-                    InitialStateEvent(
-                        content = EncryptionEventContent(),
-                        stateKey = "",
-                    ),
+    fun createRoom(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomName: String,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.api.room.createRoom(
+            name = roomName,
+            initialState = listOf(
+                InitialStateEvent(
+                    content = EncryptionEventContent(),
+                    stateKey = "",
                 ),
-            ).getOrThrow().full
+            ),
+        ).getOrThrow().full
+    }
+
+    @JvmStatic
+    fun inviteUser(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        userId: String,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.inviteUser(RoomId(roomId), UserId(userId)).getOrThrow()
+        null
+    }
+
+    @JvmStatic
+    fun sendMessage(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        message: KeywordMap,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        val parsedMessage = requireMessageSpec(
+            mapOf(BridgeSchema.SendMessageRequest.message to message),
+            BridgeSchema.SendMessageRequest.message,
+        )
+
+        client.room.sendMessage(RoomId(roomId)) {
+            when (parsedMessage.kind) {
+                "text", ":text" -> text(
+                    body = parsedMessage.body,
+                    format = parsedMessage.format,
+                    formattedBody = parsedMessage.formattedBody,
+                )
+
+                else -> error("unsupported message kind: ${parsedMessage.kind}")
+            }
+
+            parsedMessage.replyTo?.let {
+                reply(EventId(it.eventId), relationFrom(it.relatesTo))
+            }
+        }
+    }
+
+    @JvmStatic
+    fun sendReaction(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventId: String,
+        key: String,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.room.sendMessage(RoomId(roomId)) {
+            react(EventId(eventId), key)
+        }
+    }
+
+    @JvmStatic
+    fun currentUsersTyping(
+        client: de.connect2x.trixnity.client.MatrixClient,
+    ): Map<String, Map<Keyword, Any?>> =
+        client.room.usersTyping.value.entries.associate { (roomId, content) ->
+            roomId.full to normalizeTypingEventContent(content)
         }
 
     @JvmStatic
-    fun inviteUser(request: KeywordMap) =
-        BridgeAsync.submitFuture(
-            scope = BridgeAsync.clientScope(
-                requireKeywordClient(request, BridgeSchema.InviteUserRequest.client),
-            ),
-            timeout = optionalKeywordDuration(request, BridgeSchema.InviteUserRequest.timeout),
-        ) {
-            val client = requireKeywordClient(request, BridgeSchema.InviteUserRequest.client)
-            val roomId = RoomId(requireKeywordString(request, BridgeSchema.InviteUserRequest.roomId))
-            val userId = UserId(requireKeywordString(request, BridgeSchema.InviteUserRequest.userId))
-            client.api.room.inviteUser(roomId, userId).getOrThrow()
-            null
-        }
-
-    @JvmStatic
-    fun sendMessage(request: KeywordMap) =
-        BridgeAsync.submitFuture(
-            scope = BridgeAsync.clientScope(
-                requireKeywordClient(request, BridgeSchema.SendMessageRequest.client),
-            ),
-            timeout = optionalKeywordDuration(request, BridgeSchema.SendMessageRequest.timeout),
-        ) {
-            val client = requireKeywordClient(request, BridgeSchema.SendMessageRequest.client)
-            val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendMessageRequest.roomId))
-            val message = requireMessageSpec(request, BridgeSchema.SendMessageRequest.message)
-
-            client.room.sendMessage(roomId) {
-                when (message.kind) {
-                    "text", ":text" -> text(
-                        body = message.body,
-                        format = message.format,
-                        formattedBody = message.formattedBody,
-                    )
-
-                    else -> error("unsupported message kind: ${message.kind}")
-                }
-
-                message.replyTo?.let {
-                    reply(EventId(it.eventId), relationFrom(it.relatesTo))
-                }
+    fun usersTypingFlow(client: de.connect2x.trixnity.client.MatrixClient):
+        Flow<Map<String, Map<Keyword, Any?>>> =
+        client.room.usersTyping.map { usersTyping ->
+            usersTyping.entries.associate { (roomId, content) ->
+                roomId.full to normalizeTypingEventContent(content)
             }
         }
 
     @JvmStatic
-    fun sendReaction(request: KeywordMap) =
-        BridgeAsync.submitFuture(
-            scope = BridgeAsync.clientScope(
-                requireKeywordClient(request, BridgeSchema.SendReactionRequest.client),
-            ),
-            timeout = optionalKeywordDuration(request, BridgeSchema.SendReactionRequest.timeout),
-        ) {
-            val client = requireKeywordClient(request, BridgeSchema.SendReactionRequest.client)
-            val roomId = RoomId(requireKeywordString(request, BridgeSchema.SendReactionRequest.roomId))
-            val eventId = EventId(requireKeywordString(request, BridgeSchema.SendReactionRequest.eventId))
-            val key = requireKeywordString(request, BridgeSchema.SendReactionRequest.key)
-            client.room.sendMessage(roomId) {
-                react(eventId, key)
+    fun roomById(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getById(RoomId(roomId)).map(::normalizeRoom)
+
+    @JvmStatic
+    fun rooms(client: de.connect2x.trixnity.client.MatrixClient):
+        Flow<Map<String, Flow<Map<Keyword, Any?>?>>> =
+        client.room.getAll().map { rooms ->
+            rooms.entries.associate { (roomId, roomFlow) ->
+                roomId.full to roomFlow.map(::normalizeRoom)
             }
         }
+
+    @JvmStatic
+    fun roomsFlat(client: de.connect2x.trixnity.client.MatrixClient):
+        Flow<List<Map<Keyword, Any?>>> =
+        client.room.getAll().flattenValues().map { rooms ->
+            rooms
+                .sortedBy { it.roomId.full }
+                .mapNotNull(::normalizeRoom)
+        }
+
+    @JvmStatic
+    fun accountData(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventContentClass: Class<*>,
+        key: String,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getAccountData(
+            RoomId(roomId),
+            javaClassToKClass<RoomAccountDataEventContent>(eventContentClass),
+            key,
+        ).map(::normalizeContent)
+
+    @JvmStatic
+    fun state(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventContentClass: Class<*>,
+        stateKey: String,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getState(
+            RoomId(roomId),
+            javaClassToKClass<StateEventContent>(eventContentClass),
+            stateKey,
+        ).map(::normalizeStateEvent)
+
+    @JvmStatic
+    fun allState(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventContentClass: Class<*>,
+    ): Flow<Map<String, Flow<Map<Keyword, Any?>?>>> =
+        client.room.getAllState(
+            RoomId(roomId),
+            javaClassToKClass<StateEventContent>(eventContentClass),
+        ).map { stateMap ->
+            stateMap.entries.associate { (stateKey, eventFlow) ->
+                stateKey to eventFlow.map(::normalizeStateEvent)
+            }
+        }
+
+    @JvmStatic
+    fun outbox(
+        client: de.connect2x.trixnity.client.MatrixClient,
+    ): Flow<List<Flow<Map<Keyword, Any?>?>>> =
+        client.room.getOutbox().map { flows ->
+            flows.map { it.map(::normalizeRoomOutboxMessage) }
+        }
+
+    @JvmStatic
+    fun outboxFlat(
+        client: de.connect2x.trixnity.client.MatrixClient,
+    ): Flow<List<Map<Keyword, Any?>>> =
+        client.room.getOutbox().flatten().map { messages ->
+            messages.map(::normalizeRoomOutboxMessage).filterNotNull()
+        }
+
+    @JvmStatic
+    fun outboxByRoom(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+    ): Flow<List<Flow<Map<Keyword, Any?>?>>> =
+        client.room.getOutbox(RoomId(roomId)).map { flows ->
+            flows.map { it.map(::normalizeRoomOutboxMessage) }
+        }
+
+    @JvmStatic
+    fun outboxByRoomFlat(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+    ): Flow<List<Map<Keyword, Any?>>> =
+        client.room.getOutbox(RoomId(roomId)).flatten().map { messages ->
+            messages.map(::normalizeRoomOutboxMessage).filterNotNull()
+        }
+
+    @JvmStatic
+    fun outboxMessage(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        transactionId: String,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getOutbox(RoomId(roomId), transactionId).map(::normalizeRoomOutboxMessage)
 }

@@ -1,5 +1,6 @@
 package ol.trixnity.bridge
 
+import clojure.lang.IFn
 import clojure.lang.Keyword
 import de.connect2x.trixnity.client.MatrixClient
 import de.connect2x.trixnity.client.MediaStoreModule
@@ -7,7 +8,14 @@ import de.connect2x.trixnity.client.RepositoriesModule
 import de.connect2x.trixnity.client.media.okio.okio
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import okio.Path.Companion.toPath
+import java.io.Closeable
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
@@ -96,18 +104,51 @@ internal fun relationFrom(spec: RelationSpec?): RelatesTo? =
         else -> null
     }
 
-internal fun invokeCallback(callback: Any, event: Map<Keyword, Any?>) {
+internal fun invokeCallback(callback: Any, value: Any?) {
     when (callback) {
-        is Function1<*, *> -> (callback as Function1<Any?, Any?>).invoke(event)
+        is IFn -> callback.invoke(value)
+        is Function1<*, *> -> (callback as Function1<Any?, Any?>).invoke(value)
         else -> {
             val invokeMethod = callback.javaClass.methods.firstOrNull {
                 it.name == "invoke" && it.parameterCount == 1
             } ?: throw IllegalArgumentException(
                 "on-event callback ${callback.javaClass.name} does not expose invoke(arg)",
             )
-            invokeMethod.invoke(callback, event)
+            invokeMethod.invoke(callback, value)
         }
     }
+}
+
+internal fun invokeCallbackSafely(callback: Any, value: Any?) {
+    try {
+        invokeCallback(callback, value)
+    } catch (_: Throwable) {
+        // Bridge callback delivery is terminal; callback failures do not cascade.
+    }
+}
+
+internal fun <T> submitBridgeTask(
+    scope: CoroutineScope,
+    onSuccess: Any,
+    onFailure: Any,
+    timeout: Duration? = null,
+    block: suspend CoroutineScope.() -> T,
+): Closeable {
+    val job: Job = scope.launch {
+        try {
+            val result =
+                if (timeout != null) withTimeout(timeout.toMillis()) { block() }
+                else block()
+            invokeCallbackSafely(onSuccess, result)
+        } catch (error: TimeoutCancellationException) {
+            invokeCallbackSafely(onFailure, error)
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Throwable) {
+            invokeCallbackSafely(onFailure, error)
+        }
+    }
+    return Closeable { job.cancel() }
 }
 
 internal fun createRepositoriesModule(databasePath: String): RepositoriesModule =

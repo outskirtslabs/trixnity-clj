@@ -7,100 +7,182 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import java.time.Duration
-import java.util.concurrent.CancellationException as FutureCancellationException
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicInteger
 
 class BridgeAsyncTest {
     private fun testScope(): CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    private class PrivateCallback(
+        private val seen: AtomicReference<Any?>,
+    ) {
+        fun invoke(value: Any?) {
+            seen.set(value)
+        }
+    }
+
     @Test
-    fun submitFutureCompletesNormally() {
+    fun submitBridgeTaskCompletesNormally() {
         val scope = testScope()
+        val success = CompletableFuture<String>()
+        val failure = CompletableFuture<Throwable>()
+
         try {
-            val future = BridgeAsync.submitFuture(scope) {
+            submitBridgeTask(
+                scope = scope,
+                onSuccess = { value: Any? -> success.complete(value as String) },
+                onFailure = { error: Any? -> failure.complete(error as Throwable) },
+            ) {
                 delay(10)
                 "slept"
             }
 
-            assertEquals("slept", future.get(1, TimeUnit.SECONDS))
-            assertTrue(future.isDone)
+            assertEquals("slept", success.get(1, TimeUnit.SECONDS))
+            assertFalse(failure.isDone)
         } finally {
             scope.cancel()
         }
     }
 
     @Test
-    fun cancellingFutureCancelsTheUnderlyingCoroutine() {
+    fun closingTaskCancelsTheUnderlyingCoroutine() {
         val scope = testScope()
-        val started = java.util.concurrent.CompletableFuture<Unit>()
-        val cancelled = java.util.concurrent.CompletableFuture<Unit>()
-        val finished = java.util.concurrent.CompletableFuture<Unit>()
+        val started = CompletableFuture<Unit>()
+        val cancelled = CompletableFuture<Unit>()
+        val finished = CompletableFuture<Unit>()
+        val success = CompletableFuture<Any?>()
+        val failure = CompletableFuture<Any?>()
 
         try {
-            val future = BridgeAsync.submitFuture(scope) {
+            val handle = submitBridgeTask(
+                scope = scope,
+                onSuccess = { value: Any? -> success.complete(value) },
+                onFailure = { error: Any? -> failure.complete(error) },
+            ) {
                 try {
                     started.complete(Unit)
                     delay(60_000)
                     "slept"
-                } catch (error: CancellationException) {
+                } catch (_: CancellationException) {
                     cancelled.complete(Unit)
-                    throw error
+                    throw CancellationException("cancelled")
                 } finally {
                     finished.complete(Unit)
                 }
             }
 
             started.get(1, TimeUnit.SECONDS)
-            assertTrue(future.cancel(true))
+            handle.close()
             cancelled.get(1, TimeUnit.SECONDS)
             finished.get(1, TimeUnit.SECONDS)
-            assertTrue(future.isCancelled)
+            assertFalse(success.isDone)
+            assertFalse(failure.isDone)
         } finally {
             scope.cancel()
         }
     }
 
     @Test
-    fun coroutineCancellationMarksTheReturnedFutureCancelled() {
+    fun coroutineCancellationDoesNotInvokeCallbacks() {
         val scope = testScope()
+        val success = CompletableFuture<Any?>()
+        val failure = CompletableFuture<Any?>()
+
         try {
-            val future = BridgeAsync.submitFuture(scope) {
+            submitBridgeTask(
+                scope = scope,
+                onSuccess = { value: Any? -> success.complete(value) },
+                onFailure = { error: Any? -> failure.complete(error) },
+            ) {
                 currentCoroutineContext().cancel(CancellationException("cancelled in coroutine"))
                 delay(1)
                 "unreachable"
             }
 
-            assertFailsWith<FutureCancellationException> {
-                future.get(1, TimeUnit.SECONDS)
-            }
-            assertTrue(future.isCancelled)
+            Thread.sleep(100)
+            assertFalse(success.isDone)
+            assertFalse(failure.isDone)
+            assertTrue(scope.isActive)
         } finally {
             scope.cancel()
         }
     }
 
     @Test
-    fun explicitTimeoutCompletesExceptionallyInsteadOfCancelling() {
+    fun explicitTimeoutInvokesFailureCallback() {
         val scope = testScope()
+        val success = CompletableFuture<Any?>()
+        val failure = CompletableFuture<Throwable>()
+
         try {
-            val future = BridgeAsync.submitFuture(scope, Duration.ofMillis(25)) {
+            submitBridgeTask(
+                scope = scope,
+                onSuccess = { value: Any? -> success.complete(value) },
+                onFailure = { error: Any? -> failure.complete(error as Throwable) },
+                timeout = java.time.Duration.ofMillis(25),
+            ) {
                 delay(60_000)
                 "unreachable"
             }
 
-            val error = assertFailsWith<ExecutionException> {
-                future.get(1, TimeUnit.SECONDS)
+            val error = failure.get(1, TimeUnit.SECONDS)
+            assertTrue(error is kotlinx.coroutines.TimeoutCancellationException)
+            assertFalse(success.isDone)
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
+    fun submitBridgeTaskSupportsNonPublicCallbackClasses() {
+        val scope = testScope()
+        val seen = AtomicReference<Any?>()
+        val failure = CompletableFuture<Throwable>()
+
+        try {
+            submitBridgeTask(
+                scope = scope,
+                onSuccess = PrivateCallback(seen),
+                onFailure = { error: Any? -> failure.complete(error as Throwable) },
+            ) {
+                "delivered"
             }
-            assertTrue(error.cause is TimeoutException)
-            assertTrue(!future.isCancelled)
+
+            while (seen.get() == null && !failure.isDone) {
+                Thread.sleep(10)
+            }
+
+            assertEquals("delivered", seen.get())
+            assertFalse(failure.isDone)
+        } finally {
+            scope.cancel()
+        }
+    }
+
+    @Test
+    fun successCallbackFailureDoesNotInvokeFailureCallback() {
+        val scope = testScope()
+        val failureCalls = AtomicInteger(0)
+
+        try {
+            submitBridgeTask(
+                scope = scope,
+                onSuccess = { _: Any? -> throw IllegalStateException("boom") },
+                onFailure = { _: Any? -> failureCalls.incrementAndGet() },
+            ) {
+                "delivered"
+            }
+
+            Thread.sleep(100)
+            assertEquals(0, failureCalls.get())
         } finally {
             scope.cancel()
         }

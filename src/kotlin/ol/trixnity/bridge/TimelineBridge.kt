@@ -2,118 +2,350 @@ package ol.trixnity.bridge
 
 import clojure.lang.Keyword
 import de.connect2x.trixnity.client.room
+import de.connect2x.trixnity.client.room.GetTimelineEventConfig
+import de.connect2x.trixnity.client.room.GetTimelineEventsConfig
+import de.connect2x.trixnity.client.room.getTimelineEventsAround
+import de.connect2x.trixnity.client.room.toFlowList
 import de.connect2x.trixnity.client.store.TimelineEvent
-import de.connect2x.trixnity.client.store.eventId
-import de.connect2x.trixnity.client.store.relatesTo
-import de.connect2x.trixnity.client.store.roomId
-import de.connect2x.trixnity.client.store.sender
-import de.connect2x.trixnity.core.model.events.m.RelatesTo
-import de.connect2x.trixnity.core.model.events.m.ReactionEventContent
-import de.connect2x.trixnity.core.model.events.m.room.RoomMessageEventContent
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import de.connect2x.trixnity.clientserverapi.model.room.GetEvents.Direction
+import de.connect2x.trixnity.clientserverapi.model.room.GetEvents.Direction.BACKWARDS
+import de.connect2x.trixnity.clientserverapi.model.room.GetEvents.Direction.FORWARDS
+import de.connect2x.trixnity.clientserverapi.model.sync.Sync
+import de.connect2x.trixnity.core.model.EventId
+import de.connect2x.trixnity.core.model.RoomId
+import de.connect2x.trixnity.core.model.events.m.RelationType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlin.time.Duration.Companion.milliseconds
-import java.io.Closeable
-
-private class TimelineSubscription(
-    private val job: Job,
-) : Closeable {
-    override fun close() {
-        job.cancel()
-    }
-}
 
 object TimelineBridge {
+    private fun timelineEventConfig(
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): GetTimelineEventConfig.() -> Unit = {
+        decryptionTimeoutMs?.let { decryptionTimeout = it.milliseconds }
+        fetchTimeoutMs?.let { fetchTimeout = it.milliseconds }
+        fetchSize?.let { this.fetchSize = it }
+        allowReplaceContent?.let { this.allowReplaceContent = it }
+    }
+
+    private fun timelineEventsConfig(
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+        minSize: Long?,
+        maxSize: Long?,
+    ): GetTimelineEventsConfig.() -> Unit = {
+        decryptionTimeoutMs?.let { decryptionTimeout = it.milliseconds }
+        fetchTimeoutMs?.let { fetchTimeout = it.milliseconds }
+        fetchSize?.let { this.fetchSize = it }
+        allowReplaceContent?.let { this.allowReplaceContent = it }
+        minSize?.let { this.minSize = it }
+        maxSize?.let { this.maxSize = it }
+    }
+
+    private fun directionOf(direction: String?): Direction =
+        when (direction?.lowercase()) {
+            null, "backwards" -> BACKWARDS
+            "forwards" -> FORWARDS
+            else -> throw IllegalArgumentException("unsupported direction: $direction")
+        }
+
     @JvmStatic
-    fun subscribeTimeline(request: KeywordMap): Closeable {
-        val client = requireKeywordClient(request, BridgeSchema.SubscribeTimelineRequest.client)
-        val callback = requireKeywordValue(request, BridgeSchema.SubscribeTimelineRequest.onEvent)
-        val timeout = optionalKeywordDuration(request, BridgeSchema.SubscribeTimelineRequest.decryptionTimeout)
-        val scope = BridgeAsync.clientScope(client)
-        val job = scope.launch {
-            val events = if (timeout != null) {
-                client.room.getTimelineEventsFromNowOn(decryptionTimeout = timeout.toMillis().milliseconds)
-            } else {
-                client.room.getTimelineEventsFromNowOn()
-            }
-
-            events.collect { timelineEvent ->
-                normalizeEvent(timelineEvent)?.let { event ->
-                    try {
-                        invokeCallback(callback, event)
-                    } catch (_: Throwable) {
-                        // Callback failures are isolated to that delivery.
-                    }
-                }
-            }
-        }
-        return TimelineSubscription(job)
-    }
-
-    private fun normalizeEvent(timelineEvent: TimelineEvent): Map<Keyword, Any?>? {
-        val roomId = timelineEvent.roomId.full
-        val sender = timelineEvent.sender.full
-        val content = timelineEvent.content?.getOrNull()
-        return when (content) {
-            is RoomMessageEventContent.TextBased.Text -> mapOf(
-                BridgeSchema.Event.type to "m.room.message",
-                BridgeSchema.Event.roomId to roomId,
-                BridgeSchema.Event.eventId to timelineEvent.eventId.full,
-                BridgeSchema.Event.sender to sender,
-                BridgeSchema.Event.body to content.body,
-                BridgeSchema.Event.relatesTo to timelineEvent.relatesTo?.let(::normalizeRelation),
-                BridgeSchema.Event.raw to timelineEvent,
-            )
-
-            is ReactionEventContent -> {
-                val annotation = content.relatesTo as? RelatesTo.Annotation ?: return null
-                val key = annotation.key ?: return null
-                mapOf(
-                    BridgeSchema.Event.type to "m.reaction",
-                    BridgeSchema.Event.roomId to roomId,
-                    BridgeSchema.Event.eventId to annotation.eventId.full,
-                    BridgeSchema.Event.sender to sender,
-                    BridgeSchema.Event.key to key,
-                    BridgeSchema.Event.relatesTo to normalizeRelation(annotation),
-                    BridgeSchema.Event.raw to timelineEvent,
+    fun timelineEventsFromNowOn(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        decryptionTimeoutMs: Long?,
+        syncResponseBufferSize: Int?,
+    ): Flow<Map<Keyword, Any?>> =
+        when {
+            decryptionTimeoutMs != null && syncResponseBufferSize != null ->
+                client.room.getTimelineEventsFromNowOn(
+                    decryptionTimeout = decryptionTimeoutMs.milliseconds,
+                    syncResponseBufferSize = syncResponseBufferSize,
                 )
-            }
 
-            else -> null
+            decryptionTimeoutMs != null ->
+                client.room.getTimelineEventsFromNowOn(
+                    decryptionTimeout = decryptionTimeoutMs.milliseconds,
+                )
+
+            syncResponseBufferSize != null ->
+                client.room.getTimelineEventsFromNowOn(
+                    syncResponseBufferSize = syncResponseBufferSize,
+                )
+
+            else -> client.room.getTimelineEventsFromNowOn()
+        }.mapNotNull(::normalizeTimelineEvent)
+
+    @JvmStatic
+    fun timelineEvents(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        response: Sync.Response,
+        decryptionTimeoutMs: Long?,
+    ): Flow<Map<Keyword, Any?>> =
+        if (decryptionTimeoutMs != null) {
+            client.room.getTimelineEvents(
+                response = response,
+                decryptionTimeout = decryptionTimeoutMs.milliseconds,
+            )
+        } else {
+            client.room.getTimelineEvents(response = response)
+        }.mapNotNull(::normalizeTimelineEvent)
+
+    @JvmStatic
+    fun timelineEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventId: String,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getTimelineEvent(
+            RoomId(roomId),
+            EventId(eventId),
+            timelineEventConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+            ),
+        ).map(::normalizeTimelineEvent)
+
+    @JvmStatic
+    fun previousTimelineEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        event: TimelineEvent,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<Map<Keyword, Any?>?>? =
+        client.room.getPreviousTimelineEvent(
+            event,
+            timelineEventConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+            ),
+        )?.map(::normalizeTimelineEvent)
+
+    @JvmStatic
+    fun nextTimelineEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        event: TimelineEvent,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<Map<Keyword, Any?>?>? =
+        client.room.getNextTimelineEvent(
+            event,
+            timelineEventConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+            ),
+        )?.map(::normalizeTimelineEvent)
+
+    @JvmStatic
+    fun lastTimelineEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<Flow<Map<Keyword, Any?>>?> =
+        client.room.getLastTimelineEvent(
+            RoomId(roomId),
+            timelineEventConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+            ),
+        ).map { inner ->
+            inner?.mapNotNull(::normalizeTimelineEvent)
         }
-    }
 
-    private fun normalizeRelation(relatesTo: RelatesTo): Map<Keyword, Any?> =
-        buildMap {
-            put(BridgeSchema.Relation.type, relationTypeName(relatesTo))
-            put(BridgeSchema.Relation.eventId, relatesTo.eventId.full)
-            when (relatesTo) {
-                is RelatesTo.Annotation -> relatesTo.key?.let { put(BridgeSchema.Relation.key, it) }
-                is RelatesTo.Thread -> {
-                    relatesTo.replyTo?.eventId?.full?.let {
-                        put(BridgeSchema.Relation.replyToEventId, it)
-                    }
-                    relatesTo.isFallingBack?.let {
-                        put(BridgeSchema.Relation.isFallingBack, it)
-                    }
-                }
+    @JvmStatic
+    fun timelineEventChain(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        startFrom: String,
+        direction: String?,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+        minSize: Long?,
+        maxSize: Long?,
+    ): Flow<Flow<Map<Keyword, Any?>>> =
+        client.room.getTimelineEvents(
+            roomId = RoomId(roomId),
+            startFrom = EventId(startFrom),
+            direction = directionOf(direction),
+            config = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = minSize,
+                maxSize = maxSize,
+            ),
+        ).map { it.mapNotNull(::normalizeTimelineEvent) }
 
-                is RelatesTo.Reply -> {
-                    put(BridgeSchema.Relation.replyToEventId, relatesTo.replyTo.eventId.full)
-                }
-
-                else -> Unit
-            }
+    @JvmStatic
+    fun lastTimelineEvents(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+        minSize: Long?,
+        maxSize: Long?,
+    ): Flow<Flow<Flow<Map<Keyword, Any?>>>?> =
+        client.room.getLastTimelineEvents(
+            roomId = RoomId(roomId),
+            config = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = minSize,
+                maxSize = maxSize,
+            ),
+        ).map { chain ->
+            chain?.map { inner -> inner.mapNotNull(::normalizeTimelineEvent) }
         }
 
-    private fun relationTypeName(relatesTo: RelatesTo): String =
-        when (relatesTo) {
-            is RelatesTo.Thread -> "m.thread"
-            is RelatesTo.Reply -> "m.in_reply_to"
-            is RelatesTo.Annotation -> "m.annotation"
-            is RelatesTo.Reference -> "m.reference"
-            is RelatesTo.Replace -> "m.replace"
-            is RelatesTo.Unknown -> relatesTo.relationType.name
+    @JvmStatic
+    fun timelineEventsList(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        startFrom: String,
+        direction: String?,
+        maxSize: Int,
+        minSize: Int,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<List<Flow<Map<Keyword, Any?>>>> =
+        client.room.getTimelineEvents(
+            roomId = RoomId(roomId),
+            startFrom = EventId(startFrom),
+            direction = directionOf(direction),
+            config = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = null,
+                maxSize = null,
+            ),
+        ).toFlowList(
+            maxSize = MutableStateFlow(maxSize),
+            minSize = MutableStateFlow(minSize),
+        ).map { flows ->
+            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+        }
+
+    @JvmStatic
+    fun lastTimelineEventsList(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        maxSize: Int,
+        minSize: Int,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<List<Flow<Map<Keyword, Any?>>>> =
+        client.room.getLastTimelineEvents(
+            roomId = RoomId(roomId),
+            config = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = null,
+                maxSize = null,
+            ),
+        ).toFlowList(
+            maxSize = MutableStateFlow(maxSize),
+            minSize = MutableStateFlow(minSize),
+        ).map { flows ->
+            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+        }
+
+    @JvmStatic
+    fun timelineEventsAround(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        startFrom: String,
+        maxSizeBefore: Int,
+        maxSizeAfter: Int,
+        decryptionTimeoutMs: Long?,
+        fetchTimeoutMs: Long?,
+        fetchSize: Long?,
+        allowReplaceContent: Boolean?,
+    ): Flow<List<Flow<Map<Keyword, Any?>>>> =
+        client.room.getTimelineEventsAround(
+            roomId = RoomId(roomId),
+            startFrom = EventId(startFrom),
+            maxSizeBefore = MutableStateFlow(maxSizeBefore),
+            maxSizeAfter = MutableStateFlow(maxSizeAfter),
+            configStart = timelineEventConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+            ),
+            configBefore = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = null,
+                maxSize = null,
+            ),
+            configAfter = timelineEventsConfig(
+                decryptionTimeoutMs = decryptionTimeoutMs,
+                fetchTimeoutMs = fetchTimeoutMs,
+                fetchSize = fetchSize,
+                allowReplaceContent = allowReplaceContent,
+                minSize = null,
+                maxSize = null,
+            ),
+        ).map { flows ->
+            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+        }
+
+    @JvmStatic
+    fun timelineEventRelations(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventId: String,
+        relationType: String,
+    ): Flow<Map<String, Flow<Map<Keyword, Any?>?>>?> =
+        client.room.getTimelineEventRelations(
+            roomId = RoomId(roomId),
+            eventId = EventId(eventId),
+            relationType = RelationType.of(relationType),
+        ).map { relationMap ->
+            relationMap?.entries?.associate { (relatedEventId, relationFlow) ->
+                relatedEventId.full to relationFlow.map(::normalizeTimelineEventRelation)
+            }
         }
 }

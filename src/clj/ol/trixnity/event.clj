@@ -1,4 +1,13 @@
 (ns ol.trixnity.event
+  "Accessors and predicates for normalized event maps.
+
+  This namespace provides convenience accessors over
+  the normalized event shapes defined in [[ol.trixnity.schemas]] without
+  exposing callers to raw bridge internals.
+
+  Use these helpers when consuming timeline events, notifications, or reply
+  metadata from [[ol.trixnity.room]], [[ol.trixnity.notification]], and
+  [[ol.trixnity.room.message]]."
   (:refer-clojure :exclude [key type])
   (:require
    [ol.trixnity.schemas :as mx]))
@@ -25,6 +34,9 @@
 
 (defn relates-to [event]
   (::mx/relates-to event))
+
+(defn relation-event-id [event]
+  (get-in event [::mx/relates-to ::mx/relation-event-id]))
 
 (defn raw [event]
   (::mx/raw event))

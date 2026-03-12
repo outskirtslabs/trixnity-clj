@@ -9,21 +9,22 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.headersOf
+import java.io.Closeable
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.serialization.json.Json
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import java.util.concurrent.atomic.AtomicLong
 
 class BridgeAsyncHttpCancellationTest {
     private data class RequestProbe(
@@ -31,6 +32,12 @@ class BridgeAsyncHttpCancellationTest {
         val cancelled: CompletableFuture<Unit> = CompletableFuture(),
         val startedAtNanos: AtomicLong = AtomicLong(0),
         val cancelledAtNanos: AtomicLong = AtomicLong(0),
+    )
+
+    private data class TaskProbe(
+        val handle: Closeable,
+        val success: CompletableFuture<List<String>>,
+        val failure: CompletableFuture<Throwable>,
     )
 
     private val versionsResponse = GetVersions.Response(
@@ -41,11 +48,13 @@ class BridgeAsyncHttpCancellationTest {
     private fun testScope(): CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private fun delayedGetVersionsFuture(
+    private fun delayedGetVersionsTask(
         scope: CoroutineScope,
         delayMillis: Long,
         probe: RequestProbe? = null,
-    ): CompletableFuture<List<String>> {
+    ): TaskProbe {
+        val success = CompletableFuture<List<String>>()
+        val failure = CompletableFuture<Throwable>()
         val client = MatrixClientServerApiClientImpl(
             baseUrl = Url("https://matrix.host"),
             httpClientEngine = MockEngine { requestData ->
@@ -68,37 +77,43 @@ class BridgeAsyncHttpCancellationTest {
             },
         )
 
-        return BridgeAsync.submitFuture(scope) {
+        val handle = submitBridgeTask(
+            scope = scope,
+            onSuccess = { value: Any? -> success.complete(value as List<String>) },
+            onFailure = { error: Any? -> failure.complete(error as Throwable) },
+        ) {
             try {
                 client.server.getVersions().getOrThrow().versions
             } finally {
                 client.close()
             }
         }
+
+        return TaskProbe(handle, success, failure)
     }
 
     @Test
     fun realHttpBackedOperationCompletesNormally() {
         val scope = testScope()
         try {
-            val future = delayedGetVersionsFuture(scope, 10)
-            assertEquals(listOf("v1.11"), future.get(1, TimeUnit.SECONDS))
-            assertFalse(future.cancel(true))
+            val task = delayedGetVersionsTask(scope, 10)
+            assertEquals(listOf("v1.11"), task.success.get(1, TimeUnit.SECONDS))
+            assertFalse(task.failure.isDone)
         } finally {
             scope.cancel()
         }
     }
 
     @Test
-    fun cancellingFutureCancelsRealOperationPromptly() {
+    fun closingTaskCancelsRealOperationPromptly() {
         val scope = testScope()
         val probe = RequestProbe()
 
         try {
-            val future = delayedGetVersionsFuture(scope, 60_000, probe)
+            val task = delayedGetVersionsTask(scope, 60_000, probe)
 
             assertTrue(awaitSignal(probe.started, 1_000))
-            assertTrue(future.cancel(true))
+            task.handle.close()
             assertTrue(awaitSignal(probe.cancelled, 1_000))
 
             val latencyMillis =
@@ -107,7 +122,8 @@ class BridgeAsyncHttpCancellationTest {
                 )
             assertNotNull(latencyMillis)
             assertTrue(latencyMillis < 1_000)
-            assertTrue(future.isCancelled)
+            assertFalse(task.success.isDone)
+            assertFalse(task.failure.isDone)
         } finally {
             scope.cancel()
         }

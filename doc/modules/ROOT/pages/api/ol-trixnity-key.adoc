@@ -25,10 +25,11 @@ trust-level checks.
 (current-bootstrap-running client)
 ----
 
+Returns whether cross-signing bootstrap is currently running.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L27-L29[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L27-L30[source,window=_blank]
 
 '''
 
@@ -40,10 +41,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (bootstrap-running client)
 ----
 
+Returns a Missionary flow of cross-signing bootstrap state.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L31-L34[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L32-L36[source,window=_blank]
 
 '''
 
@@ -55,10 +57,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (current-backup-version client)
 ----
 
+Returns the current active room-key-backup version, or nil when unavailable.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L36-L38[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L38-L41[source,window=_blank]
 
 '''
 
@@ -70,10 +73,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (backup-version client)
 ----
 
+Returns a Missionary flow of the active room-key-backup version.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L40-L43[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L43-L47[source,window=_blank]
 
 '''
 
@@ -86,10 +90,19 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (get-trust-level client user-id-or-room-id device-id-or-event-id)
 ----
 
+Returns a Missionary flow of trust information.
+
+With two arguments, `user-id` resolves to the trust level of that user.
+
+With three arguments, the meaning depends on the first id:
+
+- a `@user:server` value resolves device trust for `device-id`
+- a `!room:server` value resolves the trust level for the device that sent
+  the timeline `event-id`
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L45-L58[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L49-L71[source,window=_blank]
 
 '''
 
@@ -101,10 +114,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (get-device-keys client user-id)
 ----
 
+Returns a Missionary flow of device keys for `user-id`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L60-L63[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L73-L77[source,window=_blank]
 
 '''
 
@@ -116,7 +130,8 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (get-cross-signing-keys client user-id)
 ----
 
+Returns a Missionary flow of cross-signing keys for `user-id`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L65-L68[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L79-L83[source,window=_blank]

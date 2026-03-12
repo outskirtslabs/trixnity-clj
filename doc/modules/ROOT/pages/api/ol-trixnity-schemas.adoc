@@ -26,10 +26,11 @@ payload maps by hand.
 (schemas _)
 ----
 
+Returns the project Malli schema map for `opts`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L45-L399[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L45-L400[source,window=_blank]
 
 '''
 
@@ -41,10 +42,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (registry opts)
 ----
 
+Builds a Malli registry containing the project schemas and default schemas.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L401-L405[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L402-L407[source,window=_blank]
 
 '''
 
@@ -52,10 +54,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 == schema-registry
 
 
+Default Malli registry used by public API validation.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L407-L408[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L409-L411[source,window=_blank]
 
 '''
 
@@ -68,7 +71,10 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (validate! registry schema-id data)
 ----
 
+Validates `data` against `schema-id` and returns `data` on success.
+
+Throws `ExceptionInfo` with humanized Malli errors on validation failure.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L413-L424[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L416-L430[source,window=_blank]

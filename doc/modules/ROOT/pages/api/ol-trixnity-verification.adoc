@@ -23,10 +23,11 @@ accompany verification workflows.
 (current-active-device-verification client)
 ----
 
+Returns the current active device verification, or nil when none is active.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L23-L25[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L23-L26[source,window=_blank]
 
 '''
 
@@ -38,10 +39,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (active-device-verification client)
 ----
 
+Returns a relieved Missionary flow of the current active device verification.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L27-L30[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L28-L32[source,window=_blank]
 
 '''
 
@@ -53,10 +55,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (current-active-user-verifications client)
 ----
 
+Returns the current active user verifications as a vector.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L32-L34[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L34-L37[source,window=_blank]
 
 '''
 
@@ -68,10 +71,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (active-user-verifications client)
 ----
 
+Returns a relieved Missionary flow of the current active user verifications.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L36-L39[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L39-L43[source,window=_blank]
 
 '''
 
@@ -83,7 +87,12 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (get-self-verification-methods client)
 ----
 
+Returns a Missionary flow of available self-verification methods.
+
+Upstream models this as a state machine that distinguishes unmet
+preconditions, no-cross-signing-yet, already-cross-signed, and available
+self-verification methods.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L41-L43[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L45-L52[source,window=_blank]

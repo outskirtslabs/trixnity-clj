@@ -37,8 +37,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (reply-to message ev)
 ----
 
-Associates reply metadata from a normalized event map.
+Associates reply metadata from normalized event `ev` onto `message`.
+
+When `ev` already carries relation metadata, that relation is copied into the
+reply target so upstream threading semantics are preserved.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L32-L42[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L32-L45[source,window=_blank]

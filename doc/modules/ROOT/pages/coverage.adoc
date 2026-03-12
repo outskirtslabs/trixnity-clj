@@ -1,0 +1,620 @@
+= Upstream API Coverage
+
+This page tracks `trixnity-clj` coverage of Trixnity's API.
+
+`Implemented` means there is a public wrapper under `ol.trixnity.*`.
+For upstream `StateFlow` members, the Clojure surface usually appears as a
+`current-*` accessor plus a Missionary flow.
+`Not yet` means there is no public wrapper today.
+
+== Client
+
+=== MatrixClient
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `userId`
+| `ol.trixnity.client/current-user-id`
+| Current snapshot only.
+
+| Not yet
+| `deviceId`
+| -
+| No public wrapper.
+
+| Not yet
+| `baseUrl`
+| -
+| No public wrapper.
+
+| Not yet
+| `identityKey`
+| -
+| No public wrapper.
+
+| Not yet
+| `signingKey`
+| -
+| No public wrapper.
+
+| Not yet
+| `di`
+| -
+| No public wrapper.
+
+| Not yet
+| `api`
+| -
+| Used internally by the bridge for some room endpoints, but not exposed
+publicly.
+
+| Implemented
+| `profile`
+| `ol.trixnity.client/current-profile`, `ol.trixnity.client/profile`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `serverData`
+| `ol.trixnity.client/current-server-data`, `ol.trixnity.client/server-data`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `syncState`
+| `ol.trixnity.client/current-sync-state`, `ol.trixnity.client/sync-state`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `initialSyncDone`
+| `ol.trixnity.client/current-initial-sync-done`, `ol.trixnity.client/initial-sync-done`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `loginState`
+| `ol.trixnity.client/current-login-state`, `ol.trixnity.client/login-state`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `started`
+| `ol.trixnity.client/current-started`, `ol.trixnity.client/started`
+| Current snapshot plus relieved flow.
+
+| Not yet
+| `logout()`
+| -
+| No public wrapper.
+
+| Not yet
+| `clearCache()`
+| -
+| No public wrapper.
+
+| Not yet
+| `clearMediaCache()`
+| -
+| No public wrapper.
+
+| Implemented
+| `startSync(...)`
+| `ol.trixnity.client/start-sync`
+| Uses upstream default presence. There is no public presence parameter.
+
+| Not yet
+| `syncOnce(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `syncOnce(..., runOnce)`
+| -
+| No public wrapper.
+
+| Implemented
+| `stopSync()`
+| `ol.trixnity.client/stop-sync`
+| -
+
+| Not yet
+| `cancelSync()`
+| -
+| No public wrapper.
+
+| Not yet
+| `setProfileField(...)`
+| -
+| No public wrapper.
+
+| Implemented
+| `closeSuspending()`
+| `ol.trixnity.client/close`
+| Public close path for the client lifecycle.
+|===
+
+=== Additional Public APIs
+
+* `ol.trixnity.client/open` wraps client creation or resume around the built-in
+  sqlite4clj repository configuration.
+* `ol.trixnity.client/await-running` waits for `syncState` to reach `RUNNING`.
+
+== Room
+
+=== RoomService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `usersTyping`
+| `ol.trixnity.room/current-users-typing`, `ol.trixnity.room/users-typing`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `fillTimelineGaps(roomId, eventId, limit)`
+| `ol.trixnity.room/fill-timeline-gaps`
+| -
+
+| Implemented
+| `getTimelineEvent(roomId, eventId, config)`
+| `ol.trixnity.room/get-timeline-event`
+| Flow wrapper over one timeline event lookup.
+
+| Implemented
+| `getPreviousTimelineEvent(timelineEvent, config)`
+| `ol.trixnity.room/get-previous-timeline-event`
+| -
+
+| Implemented
+| `getNextTimelineEvent(timelineEvent, config)`
+| `ol.trixnity.room/get-next-timeline-event`
+| -
+
+| Implemented
+| `getLastTimelineEvent(roomId, config)`
+| `ol.trixnity.room/get-last-timeline-event`
+| Preserves the upstream nested-flow shape.
+
+| Implemented
+| `getTimelineEvents(roomId, startFrom, direction, config)`
+| `ol.trixnity.room/get-timeline-events`, `ol.trixnity.room/get-timeline-events-list`
+| `get-timeline-events-list` is a list-shaped convenience built on top of the
+same upstream timeline chain.
+
+| Implemented
+| `getLastTimelineEvents(roomId, config)`
+| `ol.trixnity.room/get-last-timeline-events`, `ol.trixnity.room/get-last-timeline-events-list`
+| `get-last-timeline-events-list` is a list-shaped convenience over the same
+upstream room-end traversal.
+
+| Implemented
+| `getTimelineEventsFromNowOn(...)`
+| `ol.trixnity.room/get-timeline-events-from-now-on`
+| Live timeline stream from the current sync position forward.
+
+| Implemented
+| `getTimelineEvents(response, decryptionTimeout)`
+| `ol.trixnity.room/get-timeline-events`
+| Covered by the sync-response arity.
+
+| Not yet
+| `getTimeline(...)`
+| -
+| The advanced mutable `Timeline<T>` abstraction is not exposed yet.
+
+| Implemented
+| `getTimelineEventRelations(roomId, eventId, relationType)`
+| `ol.trixnity.room/get-timeline-event-relations`
+| -
+
+| Implemented
+| `sendMessage(roomId, wait, builder)`
+| `ol.trixnity.room/send-message`, `ol.trixnity.room/send-reaction`
+| `send-message` currently covers text messages and reply metadata.
+Reactions have a dedicated wrapper.
+
+| Implemented
+| `cancelSendMessage(roomId, transactionId)`
+| `ol.trixnity.room/cancel-send-message`
+| -
+
+| Implemented
+| `retrySendMessage(roomId, transactionId)`
+| `ol.trixnity.room/retry-send-message`
+| -
+
+| Implemented
+| `getAll()`
+| `ol.trixnity.room/get-all`, `ol.trixnity.room/get-all-flat`
+| `get-all-flat` flattens the nested upstream flow map.
+
+| Implemented
+| `getById(roomId)`
+| `ol.trixnity.room/get-by-id`
+| -
+
+| Implemented
+| `forgetRoom(roomId, force)`
+| `ol.trixnity.room/forget-room`
+| -
+
+| Implemented
+| `getAccountData(roomId, contentClass, key)`
+| `ol.trixnity.room/get-account-data`
+| -
+
+| Implemented
+| `getOutbox()`
+| `ol.trixnity.room/get-outbox`, `ol.trixnity.room/get-outbox-flat`
+| `get-outbox-flat` flattens the nested upstream outbox flows.
+
+| Implemented
+| `getOutbox(roomId)`
+| `ol.trixnity.room/get-outbox`, `ol.trixnity.room/get-outbox-flat`
+| Covered by room-scoped arities.
+
+| Implemented
+| `getOutbox(roomId, transactionId)`
+| `ol.trixnity.room/get-outbox`
+| Covered by the transaction-id arity.
+
+| Implemented
+| `getState(roomId, contentClass, stateKey)`
+| `ol.trixnity.room/get-state`
+| -
+
+| Implemented
+| `getAllState(roomId, contentClass)`
+| `ol.trixnity.room/get-all-state`
+| -
+|===
+
+=== Additional Public APIs
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream API | `trixnity-clj` surface | Notes
+
+| Implemented
+| `MatrixClientServerApiClient.room.createRoom(...)`
+| `ol.trixnity.room/create-room`
+| Exposed directly through `client.api.room`, not through `RoomService`.
+
+| Implemented
+| `MatrixClientServerApiClient.room.inviteUser(...)`
+| `ol.trixnity.room/invite-user`
+| Exposed directly through `client.api.room`, not through `RoomService`.
+
+| Implemented
+| `MatrixClientServerApiClient.room.joinRoom(...)`
+| `ol.trixnity.room/join-room`
+| Exposed directly through `client.api.room`, not through `RoomService`.
+
+| Implemented
+| `de.connect2x.trixnity.client.room.getTimelineEventsAround(...)`
+| `ol.trixnity.room/get-timeline-events-around`
+| Centers a list-shaped view around one timeline event.
+|===
+
+== Timeline<T>
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Not yet
+| `state`
+| -
+| No public wrapper for `TimelineState<T>`.
+
+| Not yet
+| `init(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `loadBefore(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `loadAfter(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `dropBefore(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `dropAfter(...)`
+| -
+| No public wrapper.
+|===
+
+== UserService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `loadMembers(roomId, wait)`
+| `ol.trixnity.user/load-members`
+| -
+
+| Implemented
+| `getAll(roomId)`
+| `ol.trixnity.user/get-all`
+| -
+
+| Implemented
+| `getById(roomId, userId)`
+| `ol.trixnity.user/get-by-id`
+| -
+
+| Implemented
+| `getAllReceipts(roomId)`
+| `ol.trixnity.user/get-all-receipts`
+| -
+
+| Implemented
+| `getReceiptsById(roomId, userId)`
+| `ol.trixnity.user/get-receipts-by-id`
+| -
+
+| Implemented
+| `getPowerLevel(roomId, userId)`
+| `ol.trixnity.user/get-power-level`
+| -
+
+| Not yet
+| `getPowerLevel(roomId, createEvent, powerLevels)`
+| -
+| Pure helper overload is not wrapped.
+
+| Implemented
+| `canKickUser(roomId, userId)`
+| `ol.trixnity.user/can-kick-user`
+| -
+
+| Implemented
+| `canBanUser(roomId, userId)`
+| `ol.trixnity.user/can-ban-user`
+| -
+
+| Implemented
+| `canUnbanUser(roomId, userId)`
+| `ol.trixnity.user/can-unban-user`
+| -
+
+| Implemented
+| `canInviteUser(roomId, userId)`
+| `ol.trixnity.user/can-invite-user`
+| -
+
+| Implemented
+| `canInvite(roomId)`
+| `ol.trixnity.user/can-invite`
+| -
+
+| Implemented
+| `canRedactEvent(roomId, eventId)`
+| `ol.trixnity.user/can-redact-event`
+| -
+
+| Implemented
+| `canSetPowerLevelToMax(roomId, userId)`
+| `ol.trixnity.user/can-set-power-level-to-max`
+| -
+
+| Implemented
+| `canSendEvent(roomId, KClass<RoomEventContent>)`
+| `ol.trixnity.user/can-send-event`
+| Covered by the class-taking arity.
+
+| Implemented
+| `canSendEvent(roomId, RoomEventContent)`
+| `ol.trixnity.user/can-send-event`
+| Covered by the content-taking arity.
+
+| Implemented
+| `getPresence(userId)`
+| `ol.trixnity.user/get-presence`
+| -
+
+| Implemented
+| `getAccountData(contentClass, key)`
+| `ol.trixnity.user/get-account-data`
+| -
+|===
+
+== NotificationService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `getNotifications(decryptionTimeout, syncResponseBufferSize)`
+| `ol.trixnity.notification/get-notifications`
+| Deprecated upstream path. Still exposed as a deprecated Clojure wrapper.
+
+| Implemented
+| `getNotifications(response, decryptionTimeout)`
+| `ol.trixnity.notification/get-notifications`
+| Covered by the response-taking deprecated arity.
+
+| Implemented
+| `getAll()`
+| `ol.trixnity.notification/get-all`, `ol.trixnity.notification/get-all-flat`
+| `get-all-flat` flattens the nested upstream flows.
+
+| Implemented
+| `getById(id)`
+| `ol.trixnity.notification/get-by-id`
+| -
+
+| Implemented
+| `getCount()`
+| `ol.trixnity.notification/get-count`
+| Covered by the one-argument arity.
+
+| Implemented
+| `getCount(roomId)`
+| `ol.trixnity.notification/get-count`
+| Covered by the room-scoped arity.
+
+| Implemented
+| `isUnread(roomId)`
+| `ol.trixnity.notification/is-unread`
+| -
+
+| Implemented
+| `dismiss(id)`
+| `ol.trixnity.notification/dismiss`
+| -
+
+| Implemented
+| `dismissAll()`
+| `ol.trixnity.notification/dismiss-all`
+| -
+
+| Implemented
+| `getAllUpdates()`
+| `ol.trixnity.notification/get-all-updates`
+| -
+
+| Not yet
+| `onPush(roomId, eventId)`
+| -
+| No public wrapper.
+
+| Not yet
+| `processPending()`
+| -
+| No public wrapper.
+|===
+
+== VerificationService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `activeDeviceVerification`
+| `ol.trixnity.verification/current-active-device-verification`, `ol.trixnity.verification/active-device-verification`
+| Current snapshot plus relieved flow.
+
+| Implemented
+| `activeUserVerifications`
+| `ol.trixnity.verification/current-active-user-verifications`, `ol.trixnity.verification/active-user-verifications`
+| Current snapshot plus relieved flow.
+
+| Not yet
+| `createDeviceVerificationRequest(...)`
+| -
+| No public wrapper.
+
+| Not yet
+| `createUserVerificationRequest(...)`
+| -
+| No public wrapper.
+
+| Implemented
+| `getSelfVerificationMethods()`
+| `ol.trixnity.verification/get-self-verification-methods`
+| -
+
+| Not yet
+| `getActiveUserVerification(timelineEvent)`
+| -
+| No public wrapper.
+
+| Not yet
+| `getActiveUserVerification(roomId, eventId)`
+| -
+| No public wrapper.
+|===
+
+== KeyService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `bootstrapRunning`
+| `ol.trixnity.key/current-bootstrap-running`, `ol.trixnity.key/bootstrap-running`
+| Current snapshot plus relieved flow.
+
+| Not yet
+| `bootstrapCrossSigning(secretKey, secretKeyEvent)`
+| -
+| No public wrapper.
+
+| Not yet
+| `bootstrapCrossSigning()`
+| -
+| No public wrapper.
+
+| Not yet
+| `bootstrapCrossSigningFromPassphrase(passphrase)`
+| -
+| No public wrapper.
+
+| Implemented
+| `getTrustLevel(userId, deviceId)`
+| `ol.trixnity.key/get-trust-level`
+| Covered by the three-argument arity when the first id is a user id.
+
+| Implemented
+| `getTrustLevel(roomId, eventId)`
+| `ol.trixnity.key/get-trust-level`
+| Covered by the three-argument arity when the first id is a room id.
+
+| Implemented
+| `getTrustLevel(userId)`
+| `ol.trixnity.key/get-trust-level`
+| Covered by the two-argument arity.
+
+| Implemented
+| `getDeviceKeys(userId)`
+| `ol.trixnity.key/get-device-keys`
+| -
+
+| Implemented
+| `getCrossSigningKeys(userId)`
+| `ol.trixnity.key/get-cross-signing-keys`
+| -
+|===
+
+== KeyBackupService
+
+[cols="1,4,5,6",options="header",stripes=hover]
+|===
+| Status | Upstream member | `trixnity-clj` surface | Notes
+
+| Implemented
+| `version`
+| `ol.trixnity.key/current-backup-version`, `ol.trixnity.key/backup-version`
+| Current snapshot plus relieved flow.
+
+| Not yet
+| `loadMegolmSession(roomId, sessionId)`
+| -
+| No public wrapper.
+
+| Not yet
+| `keyBackupCanBeTrusted(version, recoveryKey)`
+| -
+| No public wrapper.
+
+| Not yet
+| `bootstrapRoomKeyBackup(...)`
+| -
+| No public wrapper.
+|===

@@ -18,10 +18,11 @@ xref:api/ol-trixnity-room-message.adoc[`ol.trixnity.room.message`].
 (type event)
 ----
 
+Returns the Matrix event type string from normalized `event`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L17-L18[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L17-L20[source,window=_blank]
 
 '''
 
@@ -33,10 +34,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (room-id event)
 ----
 
+Returns the Matrix room id string from normalized `event`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L20-L21[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L22-L25[source,window=_blank]
 
 '''
 
@@ -48,10 +50,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (event-id event)
 ----
 
+Returns the Matrix event id string from normalized `event`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L23-L24[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L27-L30[source,window=_blank]
 
 '''
 
@@ -63,10 +66,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (sender event)
 ----
 
+Returns the sender user id string from normalized `event`.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L26-L27[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L32-L35[source,window=_blank]
 
 '''
 
@@ -78,10 +82,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (sender-display-name event)
 ----
 
+Returns the sender display name from normalized `event`, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L29-L30[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L37-L40[source,window=_blank]
 
 '''
 
@@ -93,10 +98,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (body event)
 ----
 
+Returns the normalized message body from `event`, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L32-L33[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L42-L45[source,window=_blank]
 
 '''
 
@@ -108,10 +114,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (key event)
 ----
 
+Returns the normalized reaction key or relation key from `event`, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L35-L36[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L47-L50[source,window=_blank]
 
 '''
 
@@ -123,10 +130,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (relates-to event)
 ----
 
+Returns the normalized `::mx/relates-to` map from `event`, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L38-L39[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L52-L55[source,window=_blank]
 
 '''
 
@@ -138,10 +146,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (relation-event-id event)
 ----
 
+Returns the related event id from `event` reply or relation metadata, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L41-L42[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L57-L60[source,window=_blank]
 
 '''
 
@@ -153,10 +162,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (raw event)
 ----
 
+Returns the upstream raw event object carried by normalized `event`, if present.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L44-L45[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L62-L65[source,window=_blank]
 
 '''
 
@@ -168,10 +178,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (text? event)
 ----
 
+Returns true when `event` is a Matrix room-message event.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L47-L48[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L67-L70[source,window=_blank]
 
 '''
 
@@ -183,7 +194,8 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (reaction? event)
 ----
 
+Returns true when `event` is a Matrix reaction event.
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L50-L51[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L72-L75[source,window=_blank]

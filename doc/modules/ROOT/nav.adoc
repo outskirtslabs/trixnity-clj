@@ -1,5 +1,6 @@
 * xref:index.adoc[Home]
 * xref:changelog.adoc[Changelog]
 * xref:security.adoc[Security Policy]
+* xref:coverage.adoc[Upstream API Coverage]
 
 include::partial$api-nav.adoc[]

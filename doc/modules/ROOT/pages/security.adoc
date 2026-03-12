@@ -1,0 +1,15 @@
+= Security policy
+
+== Advisories
+
+All security advisories for `trixnity-clj` will be posted https://github.com/outskirtslabs/trixnity-clj/security/advisories[on GitHub].
+
+== Reporting a vulnerability
+
+Please report possible security vulnerabilities https://github.com/outskirtslabs/trixnity-clj/security/advisories[via GitHub], or by emailing me at `casey@outskirtslabs.com`. You may encrypt email with https://casey.link/pgp.asc[my public PGP key].
+
+For the organization-wide security policy, see https://docs.outskirtslabs.com/security-policy[Outskirts Labs Security Policy].
+
+Thank you!
+
+https://casey.link[Casey Link]

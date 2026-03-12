@@ -1,0 +1,14 @@
+= Changelog
+
+All notable changes to this project will be documented in this file.
+
+This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
+
+== ++[++UNRELEASED++]++
+
+[[v001-2026-03-12]]
+== `v0.0.1` (2026-03-12)
+
+Initial public release of `trixnity-clj`.
+
+This release establishes the first published Clojure wrapper around Trixnity, with Missionary-based task and flow interop plus the sqlite4clj-backed repository module.

@@ -40,26 +40,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#open]
-== open
-
-[source,clojure]
-----
-(open config)
-----
-
-Opens or resumes a `MatrixClient` using the built-in sqlite4clj-backed
-repository configuration.
-
-If `config` already contains a client under `::mx/client`, the returned task
-resolves to that client immediately.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L39-L50[source,window=_blank]
-
-'''
-
 [#start-sync]
 == start-sync
 
@@ -73,22 +53,6 @@ Starts sync for `client` and returns a Missionary task.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L52-L55[source,window=_blank]
-
-'''
-
-[#start-sync]
-== start-sync
-
-[source,clojure]
-----
-(start-sync client)
-----
-
-Starts sync for `client` and returns a Missionary task.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L52-L55[source,window=_blank]
 
 '''
 
@@ -113,27 +77,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#await-running]
-== await-running
-
-[source,clojure]
-----
-(await-running client)
-(await-running client opts)
-----
-
-Waits for `client` to reach `RUNNING`.
-
-Supported opts:
-
-`{::mx/timeout java.time.Duration}`
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L57-L69[source,window=_blank]
-
-'''
-
 [#stop-sync]
 == stop-sync
 
@@ -147,22 +90,6 @@ Stops sync for `client` and returns a Missionary task.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L71-L74[source,window=_blank]
-
-'''
-
-[#stop-sync]
-== stop-sync
-
-[source,clojure]
-----
-(stop-sync client)
-----
-
-Stops sync for `client` and returns a Missionary task.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L71-L74[source,window=_blank]
 
 '''
 
@@ -182,22 +109,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#close]
-== close
-
-[source,clojure]
-----
-(close client)
-----
-
-Closes `client` and tears down its bridge-owned coroutine scope.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L76-L79[source,window=_blank]
-
-'''
-
 [#current-user-id]
 == current-user-id
 
@@ -211,22 +122,6 @@ Returns the Matrix user id of `client` as a string.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L81-L84[source,window=_blank]
-
-'''
-
-[#current-user-id]
-== current-user-id
-
-[source,clojure]
-----
-(current-user-id client)
-----
-
-Returns the Matrix user id of `client` as a string.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L81-L84[source,window=_blank]
 
 '''
 
@@ -246,22 +141,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-sync-state]
-== current-sync-state
-
-[source,clojure]
-----
-(current-sync-state client)
-----
-
-Returns the current sync state as a lower-case keyword.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L86-L89[source,window=_blank]
-
-'''
-
 [#current-profile]
 == current-profile
 
@@ -275,22 +154,6 @@ Returns the current normalized client profile.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L91-L94[source,window=_blank]
-
-'''
-
-[#current-profile]
-== current-profile
-
-[source,clojure]
-----
-(current-profile client)
-----
-
-Returns the current normalized client profile.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L91-L94[source,window=_blank]
 
 '''
 
@@ -310,22 +173,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#profile]
-== profile
-
-[source,clojure]
-----
-(profile client)
-----
-
-Returns a Missionary flow of the current normalized client profile.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L96-L100[source,window=_blank]
-
-'''
-
 [#current-server-data]
 == current-server-data
 
@@ -339,22 +186,6 @@ Returns the current normalized server data snapshot.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L102-L105[source,window=_blank]
-
-'''
-
-[#current-server-data]
-== current-server-data
-
-[source,clojure]
-----
-(current-server-data client)
-----
-
-Returns the current normalized server data snapshot.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L102-L105[source,window=_blank]
 
 '''
 
@@ -374,22 +205,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#server-data]
-== server-data
-
-[source,clojure]
-----
-(server-data client)
-----
-
-Returns a Missionary flow of normalized server data snapshots.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L107-L111[source,window=_blank]
-
-'''
-
 [#sync-state]
 == sync-state
 
@@ -403,22 +218,6 @@ Returns a Missionary flow of the current sync state.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L113-L118[source,window=_blank]
-
-'''
-
-[#sync-state]
-== sync-state
-
-[source,clojure]
-----
-(sync-state client)
-----
-
-Returns a Missionary flow of the current sync state.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L113-L118[source,window=_blank]
 
 '''
 
@@ -438,22 +237,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-initial-sync-done]
-== current-initial-sync-done
-
-[source,clojure]
-----
-(current-initial-sync-done client)
-----
-
-Returns whether initial sync has completed.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L120-L123[source,window=_blank]
-
-'''
-
 [#initial-sync-done]
 == initial-sync-done
 
@@ -467,22 +250,6 @@ Returns a Missionary flow of initial-sync completion state.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L125-L129[source,window=_blank]
-
-'''
-
-[#initial-sync-done]
-== initial-sync-done
-
-[source,clojure]
-----
-(initial-sync-done client)
-----
-
-Returns a Missionary flow of initial-sync completion state.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L125-L129[source,window=_blank]
 
 '''
 
@@ -502,22 +269,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-login-state]
-== current-login-state
-
-[source,clojure]
-----
-(current-login-state client)
-----
-
-Returns the current login state as a lower-case keyword or nil.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L131-L134[source,window=_blank]
-
-'''
-
 [#login-state]
 == login-state
 
@@ -531,22 +282,6 @@ Returns a Missionary flow of lower-case login-state keywords or nil.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L136-L141[source,window=_blank]
-
-'''
-
-[#login-state]
-== login-state
-
-[source,clojure]
-----
-(login-state client)
-----
-
-Returns a Missionary flow of lower-case login-state keywords or nil.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L136-L141[source,window=_blank]
 
 '''
 
@@ -566,22 +301,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-started]
-== current-started
-
-[source,clojure]
-----
-(current-started client)
-----
-
-Returns whether sync has been started for `client`.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L143-L146[source,window=_blank]
-
-'''
-
 [#started]
 == started
 
@@ -595,19 +314,3 @@ Returns a Missionary flow of `client` started state.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L148-L152[source,window=_blank]
-
-'''
-
-[#started]
-== started
-
-[source,clojure]
-----
-(started client)
-----
-
-Returns a Missionary flow of `client` started state.
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/client.clj#L148-L152[source,window=_blank]

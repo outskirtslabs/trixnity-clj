@@ -93,7 +93,7 @@
 
          gen-docs
          {:doc  "Generate all Antora documentation"
-          :task (gen-docs/generate!)}
+          :task (gen-docs/generate! {:source-paths ["src/clj"]})}
 
          jar
          {:override-builtin true

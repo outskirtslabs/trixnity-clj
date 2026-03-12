@@ -50,46 +50,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#sqlite4clj-config]
-== sqlite4clj-config
-
-[source,clojure]
-----
-(sqlite4clj-config options)
-----
-
-Returns config entries for the built-in sqlite4clj repository and okio media store.
-
-Prefer the namespaced keys from xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]. Plain keywords are
-still accepted here as a convenience when normalizing app config.
-
-Options:
-
-| key | description
-|-----|-------------
-| `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`
-| `::mx/media-path` | Directory used by the okio-backed media store
-
-Example:
-
-[source,clojure]
-----
-(m/? (client/open
-      (merge
-       {::mx/homeserver-url "https://matrix.example.org"
-        ::mx/username "bot"
-        ::mx/password "secret"}
-       (repo/sqlite4clj-config
-        {::mx/database-path "./var/trixnity.sqlite"
-         ::mx/media-path "./var/media"}))))
-----
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L47-L74[source,window=_blank]
-
-'''
-
 [#open-handle-BANG-]
 == open-handle!
 
@@ -105,21 +65,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#open-handle-BANG-]
-== open-handle!
-
-[source,clojure]
-----
-(open-handle! path json)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L76-L78[source,window=_blank]
-
-'''
-
 [#create-repositories]
 == create-repositories
 
@@ -132,18 +77,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L784-L817[source,window=_blank]
-
-'''
-
-[#create-repositories]
-== create-repositories
-
-[source,clojure]
-----
-(create-repositories handle mappings)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/repo.clj#L784-L817[source,window=_blank]

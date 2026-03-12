@@ -32,21 +32,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-bootstrap-running]
-== current-bootstrap-running
-
-[source,clojure]
-----
-(current-bootstrap-running client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L27-L29[source,window=_blank]
-
-'''
-
 [#bootstrap-running]
 == bootstrap-running
 
@@ -59,21 +44,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L31-L34[source,window=_blank]
-
-'''
-
-[#bootstrap-running]
-== bootstrap-running
-
-[source,clojure]
-----
-(bootstrap-running client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L31-L34[source,window=_blank]
 
 '''
 
@@ -92,21 +62,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-backup-version]
-== current-backup-version
-
-[source,clojure]
-----
-(current-backup-version client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L36-L38[source,window=_blank]
-
-'''
-
 [#backup-version]
 == backup-version
 
@@ -119,21 +74,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L40-L43[source,window=_blank]
-
-'''
-
-[#backup-version]
-== backup-version
-
-[source,clojure]
-----
-(backup-version client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L40-L43[source,window=_blank]
 
 '''
 
@@ -153,22 +93,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-trust-level]
-== get-trust-level
-
-[source,clojure]
-----
-(get-trust-level client user-id)
-(get-trust-level client user-id-or-room-id device-id-or-event-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L45-L58[source,window=_blank]
-
-'''
-
 [#get-device-keys]
 == get-device-keys
 
@@ -184,21 +108,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-device-keys]
-== get-device-keys
-
-[source,clojure]
-----
-(get-device-keys client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L60-L63[source,window=_blank]
-
-'''
-
 [#get-cross-signing-keys]
 == get-cross-signing-keys
 
@@ -211,18 +120,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/key.clj#L65-L68[source,window=_blank]
-
-'''
-
-[#get-cross-signing-keys]
-== get-cross-signing-keys
-
-[source,clojure]
-----
-(get-cross-signing-keys client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/key.clj#L65-L68[source,window=_blank]

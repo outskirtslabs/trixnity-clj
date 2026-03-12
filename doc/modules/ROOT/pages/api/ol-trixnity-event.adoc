@@ -25,21 +25,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#type]
-== type
-
-[source,clojure]
-----
-(type event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L17-L18[source,window=_blank]
-
-'''
-
 [#room-id]
 == room-id
 
@@ -52,21 +37,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L20-L21[source,window=_blank]
-
-'''
-
-[#room-id]
-== room-id
-
-[source,clojure]
-----
-(room-id event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L20-L21[source,window=_blank]
 
 '''
 
@@ -85,21 +55,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#event-id]
-== event-id
-
-[source,clojure]
-----
-(event-id event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L23-L24[source,window=_blank]
-
-'''
-
 [#sender]
 == sender
 
@@ -112,21 +67,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L26-L27[source,window=_blank]
-
-'''
-
-[#sender]
-== sender
-
-[source,clojure]
-----
-(sender event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L26-L27[source,window=_blank]
 
 '''
 
@@ -145,21 +85,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#sender-display-name]
-== sender-display-name
-
-[source,clojure]
-----
-(sender-display-name event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L29-L30[source,window=_blank]
-
-'''
-
 [#body]
 == body
 
@@ -172,21 +97,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L32-L33[source,window=_blank]
-
-'''
-
-[#body]
-== body
-
-[source,clojure]
-----
-(body event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L32-L33[source,window=_blank]
 
 '''
 
@@ -205,21 +115,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#key]
-== key
-
-[source,clojure]
-----
-(key event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L35-L36[source,window=_blank]
-
-'''
-
 [#relates-to]
 == relates-to
 
@@ -232,21 +127,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L38-L39[source,window=_blank]
-
-'''
-
-[#relates-to]
-== relates-to
-
-[source,clojure]
-----
-(relates-to event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L38-L39[source,window=_blank]
 
 '''
 
@@ -265,21 +145,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#relation-event-id]
-== relation-event-id
-
-[source,clojure]
-----
-(relation-event-id event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L41-L42[source,window=_blank]
-
-'''
-
 [#raw]
 == raw
 
@@ -292,21 +157,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L44-L45[source,window=_blank]
-
-'''
-
-[#raw]
-== raw
-
-[source,clojure]
-----
-(raw event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L44-L45[source,window=_blank]
 
 '''
 
@@ -325,21 +175,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#text-QMARK-]
-== text?
-
-[source,clojure]
-----
-(text? event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L47-L48[source,window=_blank]
-
-'''
-
 [#reaction-QMARK-]
 == reaction?
 
@@ -352,18 +187,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L50-L51[source,window=_blank]
-
-'''
-
-[#reaction-QMARK-]
-== reaction?
-
-[source,clojure]
-----
-(reaction? event)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/event.clj#L50-L51[source,window=_blank]

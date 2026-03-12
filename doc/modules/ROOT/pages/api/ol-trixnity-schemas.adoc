@@ -33,21 +33,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#schemas]
-== schemas
-
-[source,clojure]
-----
-(schemas _)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L45-L399[source,window=_blank]
-
-'''
-
 [#registry]
 == registry
 
@@ -63,21 +48,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#registry]
-== registry
-
-[source,clojure]
-----
-(registry opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L401-L405[source,window=_blank]
-
-'''
-
 [#schema-registry]
 == schema-registry
 
@@ -86,17 +56,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L407-L408[source,window=_blank]
-
-'''
-
-[#schema-registry]
-== schema-registry
-
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L407-L408[source,window=_blank]
 
 '''
 
@@ -113,19 +72,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/schemas.clj#L413-L424[source,window=_blank]
-
-'''
-
-[#validate-BANG-]
-== validate!
-
-[source,clojure]
-----
-(validate! schema-id data)
-(validate! registry schema-id data)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/schemas.clj#L413-L424[source,window=_blank]

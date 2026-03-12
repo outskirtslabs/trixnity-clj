@@ -15,21 +15,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#observe-flow]
-== observe-flow
-
-[source,clojure]
-----
-(observe-flow client kotlin-flow)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal.clj#L17-L21[source,window=_blank]
-
-'''
-
 [#observe-keyed-flow-map]
 == observe-keyed-flow-map
 
@@ -42,21 +27,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal.clj#L23-L40[source,window=_blank]
-
-'''
-
-[#observe-keyed-flow-map]
-== observe-keyed-flow-map
-
-[source,clojure]
-----
-(observe-keyed-flow-map client kotlin-outer-flow)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal.clj#L23-L40[source,window=_blank]
 
 '''
 
@@ -75,21 +45,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#observe-flow-list]
-== observe-flow-list
-
-[source,clojure]
-----
-(observe-flow-list client kotlin-outer-flow)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal.clj#L42-L47[source,window=_blank]
-
-'''
-
 [#suspend-task]
 == suspend-task
 
@@ -105,21 +60,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#suspend-task]
-== suspend-task
-
-[source,clojure]
-----
-(suspend-task bridge-fn & args)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal.clj#L49-L52[source,window=_blank]
-
-'''
-
 [#duration--GT-millis]
 == duration->millis
 
@@ -132,18 +72,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal.clj#L54-L55[source,window=_blank]
-
-'''
-
-[#duration--GT-millis]
-== duration->millis
-
-[source,clojure]
-----
-(duration->millis duration)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal.clj#L54-L55[source,window=_blank]

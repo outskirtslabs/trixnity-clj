@@ -1,6 +1,6 @@
 = API Reference
 
-This release publishes 29 namespaces.
+This release publishes 13 namespaces.
 
 [cols="1,3",options="header",stripes=hover]
 |===
@@ -9,17 +9,8 @@ This release publishes 29 namespaces.
 | xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`]
 | Matrix client lifecycle, sync control, and client-level state flows.
 
-| xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`]
-| Matrix client lifecycle, sync control, and client-level state flows.
-
 | xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`]
 | Accessors and predicates for normalized event maps.
-
-| xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`]
-| Accessors and predicates for normalized event maps.
-
-| xref:api/ol-trixnity-internal.adoc[`ol.trixnity.internal`]
-| -
 
 | xref:api/ol-trixnity-internal.adoc[`ol.trixnity.internal`]
 | -
@@ -27,23 +18,8 @@ This release publishes 29 namespaces.
 | xref:api/ol-trixnity-internal-bridge.adoc[`ol.trixnity.internal.bridge`]
 | -
 
-| xref:api/ol-trixnity-internal-bridge.adoc[`ol.trixnity.internal.bridge`]
-| -
-
-| xref:api/ol-trixnity-interop.adoc[`ol.trixnity.interop`]
-| -
-
 | xref:api/ol-trixnity-key.adoc[`ol.trixnity.key`]
 | Encryption-key state, backup state, and trust-level queries.
-
-| xref:api/ol-trixnity-key.adoc[`ol.trixnity.key`]
-| Encryption-key state, backup state, and trust-level queries.
-
-| xref:api/ol-trixnity-missionary.adoc[`ol.trixnity.missionary`]
-| -
-
-| xref:api/ol-trixnity-notification.adoc[`ol.trixnity.notification`]
-| Notification snapshots and notification update flows.
 
 | xref:api/ol-trixnity-notification.adoc[`ol.trixnity.notification`]
 | Notification snapshots and notification update flows.
@@ -51,17 +27,8 @@ This release publishes 29 namespaces.
 | xref:api/ol-trixnity-repo.adoc[`ol.trixnity.repo`]
 | Built-in repository helpers for the sqlite4clj-backed repository setup.
 
-| xref:api/ol-trixnity-repo.adoc[`ol.trixnity.repo`]
-| Built-in repository helpers for the sqlite4clj-backed repository setup.
-
 | xref:api/ol-trixnity-repo-common.adoc[`ol.trixnity.repo.common`]
 | -
-
-| xref:api/ol-trixnity-repo-common.adoc[`ol.trixnity.repo.common`]
-| -
-
-| xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`]
-| Room operations, state queries, and timeline traversal.
 
 | xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`]
 | Room operations, state queries, and timeline traversal.
@@ -69,26 +36,11 @@ This release publishes 29 namespaces.
 | xref:api/ol-trixnity-room-message.adoc[`ol.trixnity.room.message`]
 | Helpers for constructing normalized room message payloads.
 
-| xref:api/ol-trixnity-room-message.adoc[`ol.trixnity.room.message`]
-| Helpers for constructing normalized room message payloads.
-
 | xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]
 | Malli schema registry for ol.
 
-| xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]
-| Malli schema registry for ol.
-
-| xref:api/ol-trixnity-timeline.adoc[`ol.trixnity.timeline`]
-| -
-
 | xref:api/ol-trixnity-user.adoc[`ol.trixnity.user`]
 | Room user state, receipts, presence, and permission checks.
-
-| xref:api/ol-trixnity-user.adoc[`ol.trixnity.user`]
-| Room user state, receipts, presence, and permission checks.
-
-| xref:api/ol-trixnity-verification.adoc[`ol.trixnity.verification`]
-| Verification state snapshots and active verification flows.
 
 | xref:api/ol-trixnity-verification.adoc[`ol.trixnity.verification`]
 | Verification state snapshots and active verification flows.

@@ -15,21 +15,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#open-client]
-== open-client
-
-[source,clojure]
-----
-(open-client request on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L17-L18[source,window=_blank]
-
-'''
-
 [#start-sync]
 == start-sync
 
@@ -42,21 +27,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L20-L21[source,window=_blank]
-
-'''
-
-[#start-sync]
-== start-sync
-
-[source,clojure]
-----
-(start-sync client on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L20-L21[source,window=_blank]
 
 '''
 
@@ -75,21 +45,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#await-running]
-== await-running
-
-[source,clojure]
-----
-(await-running client timeout on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L23-L24[source,window=_blank]
-
-'''
-
 [#stop-sync]
 == stop-sync
 
@@ -102,21 +57,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L26-L27[source,window=_blank]
-
-'''
-
-[#stop-sync]
-== stop-sync
-
-[source,clojure]
-----
-(stop-sync client on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L26-L27[source,window=_blank]
 
 '''
 
@@ -135,21 +75,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#close-client]
-== close-client
-
-[source,clojure]
-----
-(close-client client on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L29-L30[source,window=_blank]
-
-'''
-
 [#current-user-id]
 == current-user-id
 
@@ -162,21 +87,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L32-L33[source,window=_blank]
-
-'''
-
-[#current-user-id]
-== current-user-id
-
-[source,clojure]
-----
-(current-user-id client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L32-L33[source,window=_blank]
 
 '''
 
@@ -195,21 +105,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-sync-state]
-== current-sync-state
-
-[source,clojure]
-----
-(current-sync-state client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L35-L36[source,window=_blank]
-
-'''
-
 [#current-profile]
 == current-profile
 
@@ -222,21 +117,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L38-L39[source,window=_blank]
-
-'''
-
-[#current-profile]
-== current-profile
-
-[source,clojure]
-----
-(current-profile client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L38-L39[source,window=_blank]
 
 '''
 
@@ -255,21 +135,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#profile-flow]
-== profile-flow
-
-[source,clojure]
-----
-(profile-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L41-L42[source,window=_blank]
-
-'''
-
 [#current-server-data]
 == current-server-data
 
@@ -282,21 +147,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L44-L45[source,window=_blank]
-
-'''
-
-[#current-server-data]
-== current-server-data
-
-[source,clojure]
-----
-(current-server-data client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L44-L45[source,window=_blank]
 
 '''
 
@@ -315,21 +165,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#server-data-flow]
-== server-data-flow
-
-[source,clojure]
-----
-(server-data-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L47-L48[source,window=_blank]
-
-'''
-
 [#sync-state-flow]
 == sync-state-flow
 
@@ -342,21 +177,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L50-L51[source,window=_blank]
-
-'''
-
-[#sync-state-flow]
-== sync-state-flow
-
-[source,clojure]
-----
-(sync-state-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L50-L51[source,window=_blank]
 
 '''
 
@@ -375,21 +195,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-initial-sync-done]
-== current-initial-sync-done
-
-[source,clojure]
-----
-(current-initial-sync-done client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L53-L54[source,window=_blank]
-
-'''
-
 [#initial-sync-done-flow]
 == initial-sync-done-flow
 
@@ -402,21 +207,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L56-L57[source,window=_blank]
-
-'''
-
-[#initial-sync-done-flow]
-== initial-sync-done-flow
-
-[source,clojure]
-----
-(initial-sync-done-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L56-L57[source,window=_blank]
 
 '''
 
@@ -435,21 +225,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-login-state]
-== current-login-state
-
-[source,clojure]
-----
-(current-login-state client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L59-L60[source,window=_blank]
-
-'''
-
 [#login-state-flow]
 == login-state-flow
 
@@ -462,21 +237,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L62-L63[source,window=_blank]
-
-'''
-
-[#login-state-flow]
-== login-state-flow
-
-[source,clojure]
-----
-(login-state-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L62-L63[source,window=_blank]
 
 '''
 
@@ -495,21 +255,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-started]
-== current-started
-
-[source,clojure]
-----
-(current-started client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L65-L66[source,window=_blank]
-
-'''
-
 [#started-flow]
 == started-flow
 
@@ -522,21 +267,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L68-L69[source,window=_blank]
-
-'''
-
-[#started-flow]
-== started-flow
-
-[source,clojure]
-----
-(started-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L68-L69[source,window=_blank]
 
 '''
 
@@ -555,21 +285,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-users-typing]
-== current-users-typing
-
-[source,clojure]
-----
-(current-users-typing client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L71-L72[source,window=_blank]
-
-'''
-
 [#users-typing-flow]
 == users-typing-flow
 
@@ -582,21 +297,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L74-L75[source,window=_blank]
-
-'''
-
-[#users-typing-flow]
-== users-typing-flow
-
-[source,clojure]
-----
-(users-typing-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L74-L75[source,window=_blank]
 
 '''
 
@@ -615,21 +315,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#create-room]
-== create-room
-
-[source,clojure]
-----
-(create-room client room-name on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L77-L78[source,window=_blank]
-
-'''
-
 [#invite-user]
 == invite-user
 
@@ -642,21 +327,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L80-L81[source,window=_blank]
-
-'''
-
-[#invite-user]
-== invite-user
-
-[source,clojure]
-----
-(invite-user client room-id user-id timeout on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L80-L81[source,window=_blank]
 
 '''
 
@@ -675,21 +345,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#join-room]
-== join-room
-
-[source,clojure]
-----
-(join-room client room-id timeout on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L83-L84[source,window=_blank]
-
-'''
-
 [#forget-room]
 == forget-room
 
@@ -702,21 +357,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L86-L87[source,window=_blank]
-
-'''
-
-[#forget-room]
-== forget-room
-
-[source,clojure]
-----
-(forget-room client room-id force on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L86-L87[source,window=_blank]
 
 '''
 
@@ -735,21 +375,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#send-message]
-== send-message
-
-[source,clojure]
-----
-(send-message client room-id message timeout on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L89-L90[source,window=_blank]
-
-'''
-
 [#send-reaction]
 == send-reaction
 
@@ -762,21 +387,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L92-L93[source,window=_blank]
-
-'''
-
-[#send-reaction]
-== send-reaction
-
-[source,clojure]
-----
-(send-reaction client room-id event-id key timeout on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L92-L93[source,window=_blank]
 
 '''
 
@@ -795,21 +405,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#cancel-send-message]
-== cancel-send-message
-
-[source,clojure]
-----
-(cancel-send-message client room-id transaction-id on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L95-L96[source,window=_blank]
-
-'''
-
 [#retry-send-message]
 == retry-send-message
 
@@ -822,21 +417,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L98-L99[source,window=_blank]
-
-'''
-
-[#retry-send-message]
-== retry-send-message
-
-[source,clojure]
-----
-(retry-send-message client room-id transaction-id on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L98-L99[source,window=_blank]
 
 '''
 
@@ -855,21 +435,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#room-by-id]
-== room-by-id
-
-[source,clojure]
-----
-(room-by-id client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L101-L102[source,window=_blank]
-
-'''
-
 [#rooms]
 == rooms
 
@@ -882,21 +447,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L104-L105[source,window=_blank]
-
-'''
-
-[#rooms]
-== rooms
-
-[source,clojure]
-----
-(rooms client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L104-L105[source,window=_blank]
 
 '''
 
@@ -915,21 +465,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#rooms-flat]
-== rooms-flat
-
-[source,clojure]
-----
-(rooms-flat client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L107-L108[source,window=_blank]
-
-'''
-
 [#account-data]
 == account-data
 
@@ -942,21 +477,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L110-L111[source,window=_blank]
-
-'''
-
-[#account-data]
-== account-data
-
-[source,clojure]
-----
-(account-data client room-id event-content-class key)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L110-L111[source,window=_blank]
 
 '''
 
@@ -975,21 +495,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#state]
-== state
-
-[source,clojure]
-----
-(state client room-id event-content-class state-key)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L113-L114[source,window=_blank]
-
-'''
-
 [#all-state]
 == all-state
 
@@ -1002,21 +507,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L116-L117[source,window=_blank]
-
-'''
-
-[#all-state]
-== all-state
-
-[source,clojure]
-----
-(all-state client room-id event-content-class)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L116-L117[source,window=_blank]
 
 '''
 
@@ -1035,21 +525,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#outbox]
-== outbox
-
-[source,clojure]
-----
-(outbox client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L119-L120[source,window=_blank]
-
-'''
-
 [#outbox-flat]
 == outbox-flat
 
@@ -1062,21 +537,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L122-L123[source,window=_blank]
-
-'''
-
-[#outbox-flat]
-== outbox-flat
-
-[source,clojure]
-----
-(outbox-flat client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L122-L123[source,window=_blank]
 
 '''
 
@@ -1095,21 +555,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#outbox-by-room]
-== outbox-by-room
-
-[source,clojure]
-----
-(outbox-by-room client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L125-L126[source,window=_blank]
-
-'''
-
 [#outbox-by-room-flat]
 == outbox-by-room-flat
 
@@ -1122,21 +567,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L128-L129[source,window=_blank]
-
-'''
-
-[#outbox-by-room-flat]
-== outbox-by-room-flat
-
-[source,clojure]
-----
-(outbox-by-room-flat client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L128-L129[source,window=_blank]
 
 '''
 
@@ -1155,21 +585,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#outbox-message]
-== outbox-message
-
-[source,clojure]
-----
-(outbox-message client room-id transaction-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L131-L132[source,window=_blank]
-
-'''
-
 [#fill-timeline-gaps]
 == fill-timeline-gaps
 
@@ -1182,21 +597,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L134-L135[source,window=_blank]
-
-'''
-
-[#fill-timeline-gaps]
-== fill-timeline-gaps
-
-[source,clojure]
-----
-(fill-timeline-gaps client room-id event-id limit on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L134-L135[source,window=_blank]
 
 '''
 
@@ -1215,21 +615,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#timeline-events-from-now-on]
-== timeline-events-from-now-on
-
-[source,clojure]
-----
-(timeline-events-from-now-on client decryption-timeout-ms sync-response-buffer-size)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L137-L142[source,window=_blank]
-
-'''
-
 [#response-timeline-events]
 == response-timeline-events
 
@@ -1242,21 +627,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L144-L145[source,window=_blank]
-
-'''
-
-[#response-timeline-events]
-== response-timeline-events
-
-[source,clojure]
-----
-(response-timeline-events client response decryption-timeout-ms)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L144-L145[source,window=_blank]
 
 '''
 
@@ -1275,21 +645,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#timeline-event]
-== timeline-event
-
-[source,clojure]
-----
-(timeline-event client room-id event-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L147-L156[source,window=_blank]
-
-'''
-
 [#previous-timeline-event]
 == previous-timeline-event
 
@@ -1302,21 +657,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L158-L166[source,window=_blank]
-
-'''
-
-[#previous-timeline-event]
-== previous-timeline-event
-
-[source,clojure]
-----
-(previous-timeline-event client timeline-event decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L158-L166[source,window=_blank]
 
 '''
 
@@ -1335,21 +675,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#next-timeline-event]
-== next-timeline-event
-
-[source,clojure]
-----
-(next-timeline-event client timeline-event decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L168-L176[source,window=_blank]
-
-'''
-
 [#last-timeline-event]
 == last-timeline-event
 
@@ -1362,21 +687,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L178-L186[source,window=_blank]
-
-'''
-
-[#last-timeline-event]
-== last-timeline-event
-
-[source,clojure]
-----
-(last-timeline-event client room-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L178-L186[source,window=_blank]
 
 '''
 
@@ -1395,21 +705,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#timeline-event-chain]
-== timeline-event-chain
-
-[source,clojure]
-----
-(timeline-event-chain client room-id start-from direction decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content min-size max-size)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L188-L200[source,window=_blank]
-
-'''
-
 [#last-timeline-events]
 == last-timeline-events
 
@@ -1422,21 +717,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L202-L212[source,window=_blank]
-
-'''
-
-[#last-timeline-events]
-== last-timeline-events
-
-[source,clojure]
-----
-(last-timeline-events client room-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content min-size max-size)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L202-L212[source,window=_blank]
 
 '''
 
@@ -1455,21 +735,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#timeline-events-list]
-== timeline-events-list
-
-[source,clojure]
-----
-(timeline-events-list client room-id start-from direction max-size min-size decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L214-L226[source,window=_blank]
-
-'''
-
 [#last-timeline-events-list]
 == last-timeline-events-list
 
@@ -1482,21 +747,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L228-L238[source,window=_blank]
-
-'''
-
-[#last-timeline-events-list]
-== last-timeline-events-list
-
-[source,clojure]
-----
-(last-timeline-events-list client room-id max-size min-size decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L228-L238[source,window=_blank]
 
 '''
 
@@ -1515,21 +765,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#timeline-events-around]
-== timeline-events-around
-
-[source,clojure]
-----
-(timeline-events-around client room-id start-from max-size-before max-size-after decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L240-L251[source,window=_blank]
-
-'''
-
 [#timeline-event-relations]
 == timeline-event-relations
 
@@ -1542,21 +777,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L253-L254[source,window=_blank]
-
-'''
-
-[#timeline-event-relations]
-== timeline-event-relations
-
-[source,clojure]
-----
-(timeline-event-relations client room-id event-id relation-type)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L253-L254[source,window=_blank]
 
 '''
 
@@ -1575,21 +795,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#user-all]
-== user-all
-
-[source,clojure]
-----
-(user-all client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L256-L257[source,window=_blank]
-
-'''
-
 [#load-members]
 == load-members
 
@@ -1602,21 +807,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L259-L260[source,window=_blank]
-
-'''
-
-[#load-members]
-== load-members
-
-[source,clojure]
-----
-(load-members client room-id wait on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L259-L260[source,window=_blank]
 
 '''
 
@@ -1635,21 +825,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#user-by-id]
-== user-by-id
-
-[source,clojure]
-----
-(user-by-id client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L262-L263[source,window=_blank]
-
-'''
-
 [#user-all-receipts]
 == user-all-receipts
 
@@ -1662,21 +837,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L265-L266[source,window=_blank]
-
-'''
-
-[#user-all-receipts]
-== user-all-receipts
-
-[source,clojure]
-----
-(user-all-receipts client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L265-L266[source,window=_blank]
 
 '''
 
@@ -1695,21 +855,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#user-receipts-by-id]
-== user-receipts-by-id
-
-[source,clojure]
-----
-(user-receipts-by-id client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L268-L269[source,window=_blank]
-
-'''
-
 [#user-power-level]
 == user-power-level
 
@@ -1722,21 +867,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L271-L272[source,window=_blank]
-
-'''
-
-[#user-power-level]
-== user-power-level
-
-[source,clojure]
-----
-(user-power-level client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L271-L272[source,window=_blank]
 
 '''
 
@@ -1755,21 +885,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#can-kick-user]
-== can-kick-user
-
-[source,clojure]
-----
-(can-kick-user client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L274-L275[source,window=_blank]
-
-'''
-
 [#can-ban-user]
 == can-ban-user
 
@@ -1782,21 +897,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L277-L278[source,window=_blank]
-
-'''
-
-[#can-ban-user]
-== can-ban-user
-
-[source,clojure]
-----
-(can-ban-user client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L277-L278[source,window=_blank]
 
 '''
 
@@ -1815,21 +915,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#can-unban-user]
-== can-unban-user
-
-[source,clojure]
-----
-(can-unban-user client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L280-L281[source,window=_blank]
-
-'''
-
 [#can-invite-user]
 == can-invite-user
 
@@ -1842,21 +927,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L283-L284[source,window=_blank]
-
-'''
-
-[#can-invite-user]
-== can-invite-user
-
-[source,clojure]
-----
-(can-invite-user client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L283-L284[source,window=_blank]
 
 '''
 
@@ -1875,21 +945,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#can-invite]
-== can-invite
-
-[source,clojure]
-----
-(can-invite client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L286-L287[source,window=_blank]
-
-'''
-
 [#can-redact-event]
 == can-redact-event
 
@@ -1902,21 +957,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L289-L290[source,window=_blank]
-
-'''
-
-[#can-redact-event]
-== can-redact-event
-
-[source,clojure]
-----
-(can-redact-event client room-id event-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L289-L290[source,window=_blank]
 
 '''
 
@@ -1935,21 +975,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#can-set-power-level-to-max]
-== can-set-power-level-to-max
-
-[source,clojure]
-----
-(can-set-power-level-to-max client room-id user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L292-L293[source,window=_blank]
-
-'''
-
 [#can-send-event-by-class]
 == can-send-event-by-class
 
@@ -1962,21 +987,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L295-L296[source,window=_blank]
-
-'''
-
-[#can-send-event-by-class]
-== can-send-event-by-class
-
-[source,clojure]
-----
-(can-send-event-by-class client room-id event-content-class)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L295-L296[source,window=_blank]
 
 '''
 
@@ -1995,21 +1005,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#can-send-event-by-content]
-== can-send-event-by-content
-
-[source,clojure]
-----
-(can-send-event-by-content client room-id event-content)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L298-L299[source,window=_blank]
-
-'''
-
 [#user-presence]
 == user-presence
 
@@ -2022,21 +1017,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L301-L302[source,window=_blank]
-
-'''
-
-[#user-presence]
-== user-presence
-
-[source,clojure]
-----
-(user-presence client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L301-L302[source,window=_blank]
 
 '''
 
@@ -2055,21 +1035,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#user-account-data]
-== user-account-data
-
-[source,clojure]
-----
-(user-account-data client event-content-class key)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L304-L305[source,window=_blank]
-
-'''
-
 [#notifications]
 == notifications
 
@@ -2082,21 +1047,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L307-L308[source,window=_blank]
-
-'''
-
-[#notifications]
-== notifications
-
-[source,clojure]
-----
-(notifications client decryption-timeout-ms sync-response-buffer-size)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L307-L308[source,window=_blank]
 
 '''
 
@@ -2115,21 +1065,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#notifications-from-response]
-== notifications-from-response
-
-[source,clojure]
-----
-(notifications-from-response client response decryption-timeout-ms)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L310-L311[source,window=_blank]
-
-'''
-
 [#notification-all]
 == notification-all
 
@@ -2142,21 +1077,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L313-L314[source,window=_blank]
-
-'''
-
-[#notification-all]
-== notification-all
-
-[source,clojure]
-----
-(notification-all client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L313-L314[source,window=_blank]
 
 '''
 
@@ -2175,21 +1095,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#notification-all-flat]
-== notification-all-flat
-
-[source,clojure]
-----
-(notification-all-flat client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L316-L317[source,window=_blank]
-
-'''
-
 [#notification-by-id]
 == notification-by-id
 
@@ -2202,21 +1107,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L319-L320[source,window=_blank]
-
-'''
-
-[#notification-by-id]
-== notification-by-id
-
-[source,clojure]
-----
-(notification-by-id client id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L319-L320[source,window=_blank]
 
 '''
 
@@ -2236,22 +1126,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#notification-count]
-== notification-count
-
-[source,clojure]
-----
-(notification-count client)
-(notification-count client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L322-L326[source,window=_blank]
-
-'''
-
 [#notification-unread]
 == notification-unread
 
@@ -2264,21 +1138,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L328-L329[source,window=_blank]
-
-'''
-
-[#notification-unread]
-== notification-unread
-
-[source,clojure]
-----
-(notification-unread client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L328-L329[source,window=_blank]
 
 '''
 
@@ -2297,21 +1156,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#notification-all-updates]
-== notification-all-updates
-
-[source,clojure]
-----
-(notification-all-updates client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L331-L332[source,window=_blank]
-
-'''
-
 [#notification-dismiss]
 == notification-dismiss
 
@@ -2324,21 +1168,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L334-L335[source,window=_blank]
-
-'''
-
-[#notification-dismiss]
-== notification-dismiss
-
-[source,clojure]
-----
-(notification-dismiss client id on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L334-L335[source,window=_blank]
 
 '''
 
@@ -2357,21 +1186,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#notification-dismiss-all]
-== notification-dismiss-all
-
-[source,clojure]
-----
-(notification-dismiss-all client on-success on-failure)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L337-L338[source,window=_blank]
-
-'''
-
 [#current-active-device-verification]
 == current-active-device-verification
 
@@ -2384,21 +1198,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L340-L341[source,window=_blank]
-
-'''
-
-[#current-active-device-verification]
-== current-active-device-verification
-
-[source,clojure]
-----
-(current-active-device-verification client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L340-L341[source,window=_blank]
 
 '''
 
@@ -2417,21 +1216,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#active-device-verification-flow]
-== active-device-verification-flow
-
-[source,clojure]
-----
-(active-device-verification-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L343-L344[source,window=_blank]
-
-'''
-
 [#current-active-user-verifications]
 == current-active-user-verifications
 
@@ -2444,21 +1228,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L346-L347[source,window=_blank]
-
-'''
-
-[#current-active-user-verifications]
-== current-active-user-verifications
-
-[source,clojure]
-----
-(current-active-user-verifications client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L346-L347[source,window=_blank]
 
 '''
 
@@ -2477,21 +1246,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#active-user-verifications-flow]
-== active-user-verifications-flow
-
-[source,clojure]
-----
-(active-user-verifications-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L349-L350[source,window=_blank]
-
-'''
-
 [#self-verification-methods]
 == self-verification-methods
 
@@ -2504,21 +1258,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L352-L353[source,window=_blank]
-
-'''
-
-[#self-verification-methods]
-== self-verification-methods
-
-[source,clojure]
-----
-(self-verification-methods client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L352-L353[source,window=_blank]
 
 '''
 
@@ -2537,21 +1276,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-bootstrap-running]
-== current-bootstrap-running
-
-[source,clojure]
-----
-(current-bootstrap-running client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L355-L356[source,window=_blank]
-
-'''
-
 [#bootstrap-running-flow]
 == bootstrap-running-flow
 
@@ -2564,21 +1288,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L358-L359[source,window=_blank]
-
-'''
-
-[#bootstrap-running-flow]
-== bootstrap-running-flow
-
-[source,clojure]
-----
-(bootstrap-running-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L358-L359[source,window=_blank]
 
 '''
 
@@ -2597,21 +1306,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-backup-version]
-== current-backup-version
-
-[source,clojure]
-----
-(current-backup-version client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L361-L362[source,window=_blank]
-
-'''
-
 [#backup-version-flow]
 == backup-version-flow
 
@@ -2624,21 +1318,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L364-L365[source,window=_blank]
-
-'''
-
-[#backup-version-flow]
-== backup-version-flow
-
-[source,clojure]
-----
-(backup-version-flow client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L364-L365[source,window=_blank]
 
 '''
 
@@ -2657,21 +1336,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#device-trust-level]
-== device-trust-level
-
-[source,clojure]
-----
-(device-trust-level client user-id device-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L367-L368[source,window=_blank]
-
-'''
-
 [#timeline-trust-level]
 == timeline-trust-level
 
@@ -2684,21 +1348,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L370-L371[source,window=_blank]
-
-'''
-
-[#timeline-trust-level]
-== timeline-trust-level
-
-[source,clojure]
-----
-(timeline-trust-level client room-id event-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L370-L371[source,window=_blank]
 
 '''
 
@@ -2717,21 +1366,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#user-trust-level]
-== user-trust-level
-
-[source,clojure]
-----
-(user-trust-level client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L373-L374[source,window=_blank]
-
-'''
-
 [#device-keys-flow]
 == device-keys-flow
 
@@ -2747,21 +1381,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#device-keys-flow]
-== device-keys-flow
-
-[source,clojure]
-----
-(device-keys-flow client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L376-L377[source,window=_blank]
-
-'''
-
 [#cross-signing-keys-flow]
 == cross-signing-keys-flow
 
@@ -2774,18 +1393,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L379-L380[source,window=_blank]
-
-'''
-
-[#cross-signing-keys-flow]
-== cross-signing-keys-flow
-
-[source,clojure]
-----
-(cross-signing-keys-flow client user-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/internal/bridge.clj#L379-L380[source,window=_blank]

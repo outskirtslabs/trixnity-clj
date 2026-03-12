@@ -34,21 +34,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#create-room]
-== create-room
-
-[source,clojure]
-----
-(create-room client opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L61-L66[source,window=_blank]
-
-'''
-
 [#invite-user]
 == invite-user
 
@@ -62,22 +47,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L68-L79[source,window=_blank]
-
-'''
-
-[#invite-user]
-== invite-user
-
-[source,clojure]
-----
-(invite-user client room-id user-id)
-(invite-user client room-id user-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L68-L79[source,window=_blank]
 
 '''
 
@@ -97,22 +66,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#join-room]
-== join-room
-
-[source,clojure]
-----
-(join-room client room-id)
-(join-room client room-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L81-L90[source,window=_blank]
-
-'''
-
 [#forget-room]
 == forget-room
 
@@ -126,22 +79,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L92-L101[source,window=_blank]
-
-'''
-
-[#forget-room]
-== forget-room
-
-[source,clojure]
-----
-(forget-room client room-id)
-(forget-room client room-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L92-L101[source,window=_blank]
 
 '''
 
@@ -161,22 +98,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#send-message]
-== send-message
-
-[source,clojure]
-----
-(send-message client room-id message)
-(send-message client room-id message opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L103-L114[source,window=_blank]
-
-'''
-
 [#send-reaction]
 == send-reaction
 
@@ -190,22 +111,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L116-L129[source,window=_blank]
-
-'''
-
-[#send-reaction]
-== send-reaction
-
-[source,clojure]
-----
-(send-reaction client room-id ev key)
-(send-reaction client room-id ev key opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L116-L129[source,window=_blank]
 
 '''
 
@@ -224,21 +129,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#cancel-send-message]
-== cancel-send-message
-
-[source,clojure]
-----
-(cancel-send-message client room-id transaction-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L131-L138[source,window=_blank]
-
-'''
-
 [#retry-send-message]
 == retry-send-message
 
@@ -251,21 +141,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L140-L147[source,window=_blank]
-
-'''
-
-[#retry-send-message]
-== retry-send-message
-
-[source,clojure]
-----
-(retry-send-message client room-id transaction-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L140-L147[source,window=_blank]
 
 '''
 
@@ -284,21 +159,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-by-id]
-== get-by-id
-
-[source,clojure]
-----
-(get-by-id client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L149-L152[source,window=_blank]
-
-'''
-
 [#get-all]
 == get-all
 
@@ -311,21 +171,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L154-L156[source,window=_blank]
-
-'''
-
-[#get-all]
-== get-all
-
-[source,clojure]
-----
-(get-all client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L154-L156[source,window=_blank]
 
 '''
 
@@ -344,21 +189,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-all-flat]
-== get-all-flat
-
-[source,clojure]
-----
-(get-all-flat client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L158-L160[source,window=_blank]
-
-'''
-
 [#current-users-typing]
 == current-users-typing
 
@@ -374,21 +204,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#current-users-typing]
-== current-users-typing
-
-[source,clojure]
-----
-(current-users-typing client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L162-L164[source,window=_blank]
-
-'''
-
 [#users-typing]
 == users-typing
 
@@ -401,21 +216,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L166-L169[source,window=_blank]
-
-'''
-
-[#users-typing]
-== users-typing
-
-[source,clojure]
-----
-(users-typing client)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L166-L169[source,window=_blank]
 
 '''
 
@@ -435,22 +235,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-account-data]
-== get-account-data
-
-[source,clojure]
-----
-(get-account-data client room-id event-content-class)
-(get-account-data client room-id event-content-class key)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L171-L182[source,window=_blank]
-
-'''
-
 [#get-state]
 == get-state
 
@@ -467,22 +251,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-state]
-== get-state
-
-[source,clojure]
-----
-(get-state client room-id event-content-class)
-(get-state client room-id event-content-class state-key)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L184-L195[source,window=_blank]
-
-'''
-
 [#get-all-state]
 == get-all-state
 
@@ -495,21 +263,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L197-L205[source,window=_blank]
-
-'''
-
-[#get-all-state]
-== get-all-state
-
-[source,clojure]
-----
-(get-all-state client room-id event-content-class)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L197-L205[source,window=_blank]
 
 '''
 
@@ -530,23 +283,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-outbox]
-== get-outbox
-
-[source,clojure]
-----
-(get-outbox client)
-(get-outbox client room-id)
-(get-outbox client room-id transaction-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L207-L216[source,window=_blank]
-
-'''
-
 [#get-outbox-flat]
 == get-outbox-flat
 
@@ -560,22 +296,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L218-L223[source,window=_blank]
-
-'''
-
-[#get-outbox-flat]
-== get-outbox-flat
-
-[source,clojure]
-----
-(get-outbox-flat client)
-(get-outbox-flat client room-id)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L218-L223[source,window=_blank]
 
 '''
 
@@ -595,22 +315,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#fill-timeline-gaps]
-== fill-timeline-gaps
-
-[source,clojure]
-----
-(fill-timeline-gaps client room-id event-id)
-(fill-timeline-gaps client room-id event-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L225-L236[source,window=_blank]
-
-'''
-
 [#get-timeline-event]
 == get-timeline-event
 
@@ -624,22 +328,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L238-L255[source,window=_blank]
-
-'''
-
-[#get-timeline-event]
-== get-timeline-event
-
-[source,clojure]
-----
-(get-timeline-event client room-id event-id)
-(get-timeline-event client room-id event-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L238-L255[source,window=_blank]
 
 '''
 
@@ -659,22 +347,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-previous-timeline-event]
-== get-previous-timeline-event
-
-[source,clojure]
-----
-(get-previous-timeline-event client timeline-event)
-(get-previous-timeline-event client timeline-event opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L257-L270[source,window=_blank]
-
-'''
-
 [#get-next-timeline-event]
 == get-next-timeline-event
 
@@ -691,22 +363,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-next-timeline-event]
-== get-next-timeline-event
-
-[source,clojure]
-----
-(get-next-timeline-event client timeline-event)
-(get-next-timeline-event client timeline-event opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L272-L285[source,window=_blank]
-
-'''
-
 [#get-last-timeline-event]
 == get-last-timeline-event
 
@@ -720,22 +376,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L287-L302[source,window=_blank]
-
-'''
-
-[#get-last-timeline-event]
-== get-last-timeline-event
-
-[source,clojure]
-----
-(get-last-timeline-event client room-id)
-(get-last-timeline-event client room-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L287-L302[source,window=_blank]
 
 '''
 
@@ -757,24 +397,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-timeline-events]
-== get-timeline-events
-
-[source,clojure]
-----
-(get-timeline-events client response)
-(get-timeline-events client response opts)
-(get-timeline-events client room-id start-from direction)
-(get-timeline-events client room-id start-from direction opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L304-L335[source,window=_blank]
-
-'''
-
 [#get-last-timeline-events]
 == get-last-timeline-events
 
@@ -788,22 +410,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L337-L354[source,window=_blank]
-
-'''
-
-[#get-last-timeline-events]
-== get-last-timeline-events
-
-[source,clojure]
-----
-(get-last-timeline-events client room-id)
-(get-last-timeline-events client room-id opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L337-L354[source,window=_blank]
 
 '''
 
@@ -823,22 +429,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-timeline-events-list]
-== get-timeline-events-list
-
-[source,clojure]
-----
-(get-timeline-events-list client room-id start-from direction max-size min-size)
-(get-timeline-events-list client room-id start-from direction max-size min-size opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L356-L379[source,window=_blank]
-
-'''
-
 [#get-last-timeline-events-list]
 == get-last-timeline-events-list
 
@@ -852,22 +442,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L381-L400[source,window=_blank]
-
-'''
-
-[#get-last-timeline-events-list]
-== get-last-timeline-events-list
-
-[source,clojure]
-----
-(get-last-timeline-events-list client room-id max-size min-size)
-(get-last-timeline-events-list client room-id max-size min-size opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L381-L400[source,window=_blank]
 
 '''
 
@@ -887,22 +461,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-timeline-events-around]
-== get-timeline-events-around
-
-[source,clojure]
-----
-(get-timeline-events-around client room-id start-from max-size-before max-size-after)
-(get-timeline-events-around client room-id start-from max-size-before max-size-after opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L402-L423[source,window=_blank]
-
-'''
-
 [#get-timeline-events-from-now-on]
 == get-timeline-events-from-now-on
 
@@ -919,22 +477,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
-[#get-timeline-events-from-now-on]
-== get-timeline-events-from-now-on
-
-[source,clojure]
-----
-(get-timeline-events-from-now-on client)
-(get-timeline-events-from-now-on client opts)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L425-L435[source,window=_blank]
-
-'''
-
 [#get-timeline-event-relations]
 == get-timeline-event-relations
 
@@ -947,18 +489,3 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/t
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L437-L444[source,window=_blank]
-
-'''
-
-[#get-timeline-event-relations]
-== get-timeline-event-relations
-
-[source,clojure]
-----
-(get-timeline-event-relations client room-id event-id relation-type)
-----
-
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/target/classes/ol/trixnity/room.clj#L437-L444[source,window=_blank]

@@ -1,24 +1,64 @@
 # trixnity-clj
 
-> A Missionary-first Clojure adapter for [Trixnity][trixnity], a Matrix SDK.
+> A Clojure adapter for [Trixnity][trixnity], a Matrix SDK. Write matrix apps/bots in Clojure.
 
-`trixnity-clj` wraps the JVM flavor of Trixnity with a small Kotlin bridge and a
-public Clojure API that mirrors Trixnity's service layout:
+[Trixnity][trixnity] is a Kotlin Multiplatform library for building Matrix
+applications. It covers the full matrix client-server API surface, including
+room management, sync, and end-to-end encryption. Despite flying under the
+radar, Trixnity already powers a large chunk of Germany's TI-Messenger
+healthcare infrastructure, reaching tens of millions of potential users.
 
-- `ol.trixnity.client`
-- `ol.trixnity.room`
-- `ol.trixnity.user`
-- `ol.trixnity.notification`
-- `ol.trixnity.verification`
-- `ol.trixnity.key`
+Trixnity targets the JVM, which means Clojure can call into it directly, but the
+interop is still rough. Nearly every interesting API is either a Kotlin suspend
+function or returns a `Flow`/`StateFlow`, so even basic client work quickly
+turns into coroutine plumbing: scopes, dispatchers, cancellation, and stream
+observation.
 
-Suspend functions return Missionary tasks. Kotlin `Flow` and `StateFlow`
-surfaces return Missionary flows. `StateFlow` properties are exposed as a
-synchronous `current-*` getter plus a relieved Missionary flow.
+The flow-heavy parts are especially awkward because they are long-lived Kotlin
+stream types, not something Clojure can consume idiomatically.
+So things like sync state, timeline updates, and other live observations need
+extra translation. Kotlin's compiler also mangles names in the compiled
+bytecode, which makes direct interop harder when reading the upstream docs. 
+
+
+`trixnity-clj` aims to wrap Trixnity with a small Kotlin bridge and expose the concurrency using [Missionary][missionary]. It maps Kotlin coroutines into [Missionary tasks][miss-tasks] and Kotlin Flows to [Missionary flows][miss-flow].
+
+(Also i wanted an excuse to use Missionary in a real application)
+
+The public clojure API attempts to mirror the Trixnity service layout, so when reading Trixnity code/docs it should be more or less obvious where the corresponding clojure functions are.
+
+Kotlin suspend functions always return Missionary tasks.
+Kotlin `Flow` and `StateFlow` surfaces always return Missionary flows.
+`StateFlow` properties are exposed as a synchronous `current-*` getter plus a relieved Missionary flow.
 
 Project Status: [Experimental](https://docs.outskirtslabs.com/open-source-vital-signs#experimental)
 
-## Happy Path
+## Repository Backend
+
+In Trixnity, a repository module is the persistence backend for all the client
+state it needs to keep around: sync tokens, rooms, timelines, outbox entries,
+encryption keys, notifications, and the rest of the Matrix baggage.
+
+Upstream ships several of these across platforms. If you want durable storage on
+the JVM, the stock option is the [Exposed repository module][trixnity-exposed],
+which means JetBrains's ORM Exposed layered on top of JDBC.
+
+Maybe that sparks joy for somebody. It does not spark joy for me.
+
+For the kind of bots and small clients I am building, running SQLite through
+JDBC makes write serialization harder than it should be, which means more
+busy_timeout pain. 
+
+And god forbid anyone suggest dragging Hikari into that mess.
+
+So this library includes its own repository implementation backed by
+[sqlite4clj][sqlite4clj], and that is the default setup.
+
+The storage layer is just plain SQLite, explicit SQL, and a lot less nonsense.
+
+Shout out to Anders Murphy for building [sqlite4clj][sqlite4clj], and making the SQLite story in Clojure 100% less deranged.
+
+## Example Usage
 
 Use [`ol.trixnity.repo`](/home/ramblurr/src/github.com/outskirtslabs/trixnity-clj/src/clj/ol/trixnity/repo.clj)
 to configure the built-in sqlite4clj repository, then open a client with
@@ -70,13 +110,6 @@ to configure the built-in sqlite4clj repository, then open a client with
 If you want a different repository implementation, construct a `MatrixClient`
 yourself and pass it to `client/open` as `::mx/client`.
 
-## API Notes
-
-- `client/open`, `client/start-sync`, `client/await-running`, `client/stop-sync`, and `client/close` return Missionary tasks.
-- `client/profile`, `client/server-data`, `client/sync-state`, `client/initial-sync-done`, `client/login-state`, and `client/started` are Missionary flows.
-- `room/get-all` preserves Trixnity's keyed nested room-flow shape.
-- `room/get-all-flat`, `room/get-outbox-flat`, `room/get-timeline-events-list`, `room/get-last-timeline-events-list`, and `room/get-timeline-events-around` are additive helpers for snapshot/list-oriented consumers.
-- `ol.trixnity.event` remains a small accessor namespace for normalized live event maps.
 
 ## License: Apache License 2.0
 
@@ -85,3 +118,8 @@ Copyright © 2026 Casey Link
 Distributed under the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) just like Trixnity itself.
 
 [trixnity]: https://trixnity.connect2x.de/
+[trixnity-exposed]: https://gitlab.com/trixnity/trixnity/-/tree/main/trixnity-client/trixnity-client-repository-exposed
+[missionary]: https://github.com/leonoel/missionary/
+[miss-task]: https://github.com/leonoel/missionary/blob/master/doc/tutorials/hello_task.md
+[miss-flow]: https://github.com/leonoel/missionary/blob/master/doc/tutorials/hello_flow.md
+[sqlite4clj]: https://github.com/andersmurphy/sqlite4clj

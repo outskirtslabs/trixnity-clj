@@ -1,0 +1,8 @@
+{:paths ["src"]
+ :deps  {com.outskirtslabs/trixnity-clj {:local/root "../../"}}
+ :aliases
+ {:run  {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
+         :main-opts ["-m" "basic-bot.main"]}
+  :test {:extra-paths ["test"]
+         :jvm-opts    ["-Dguardrails.enabled=true"
+                       "--enable-native-access=ALL-UNNAMED"]}}}

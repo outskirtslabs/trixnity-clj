@@ -35,6 +35,7 @@ object NotificationBridge {
             else -> client.notification.getNotifications()
         }.map { notification ->
             normalizeNotificationUpdate(
+                client,
                 de.connect2x.trixnity.client.notification.NotificationUpdate.New(
                     id = "",
                     sortKey = "",
@@ -70,6 +71,7 @@ object NotificationBridge {
             client.notification.getNotifications(response = response)
         }.map { notification ->
             normalizeNotificationUpdate(
+                client,
                 de.connect2x.trixnity.client.notification.NotificationUpdate.New(
                     id = "",
                     sortKey = "",
@@ -94,7 +96,9 @@ object NotificationBridge {
         client: de.connect2x.trixnity.client.MatrixClient,
     ): Flow<List<Flow<Map<Keyword, Any?>?>>> =
         client.notification.getAll().map { flows ->
-            flows.map { it.map(::normalizeNotification) }
+            flows.map { flow ->
+                flow.map { normalizeNotification(client, it) }
+            }
         }
 
     @JvmStatic
@@ -102,7 +106,7 @@ object NotificationBridge {
         client: de.connect2x.trixnity.client.MatrixClient,
     ): Flow<List<Map<Keyword, Any?>>> =
         client.notification.getAll().flatten().map { notifications ->
-            notifications.map(::normalizeNotification).filterNotNull()
+            notifications.map { normalizeNotification(client, it) }.filterNotNull()
         }
 
     @JvmStatic
@@ -110,7 +114,7 @@ object NotificationBridge {
         client: de.connect2x.trixnity.client.MatrixClient,
         id: String,
     ): Flow<Map<Keyword, Any?>?> =
-        client.notification.getById(id).map(::normalizeNotification)
+        client.notification.getById(id).map { normalizeNotification(client, it) }
 
     @JvmStatic
     fun count(
@@ -136,5 +140,5 @@ object NotificationBridge {
     fun allUpdates(
         client: de.connect2x.trixnity.client.MatrixClient,
     ): Flow<Map<Keyword, Any?>> =
-        client.notification.getAllUpdates().map(::normalizeNotificationUpdate)
+        client.notification.getAllUpdates().map { normalizeNotificationUpdate(client, it) }
 }

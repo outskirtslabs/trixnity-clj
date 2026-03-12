@@ -82,6 +82,22 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun joinRoom(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.joinRoom(RoomId(roomId)).getOrThrow().full
+    }
+
+    @JvmStatic
     fun sendMessage(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,

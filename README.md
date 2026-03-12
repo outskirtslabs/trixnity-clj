@@ -110,6 +110,13 @@ to configure the built-in sqlite4clj repository, then open a client with
 If you want a different repository implementation, construct a `MatrixClient`
 yourself and pass it to `client/open` as `::mx/client`.
 
+## Examples
+
+Several examples are available in [examples](./examples):
+
+- [basic-bot](./examples/basic-bot) - A minimal end-to-end bot that opens a
+  client, starts sync, joins invited rooms, and replies to live timeline
+  events.
 
 ## License: Apache License 2.0
 

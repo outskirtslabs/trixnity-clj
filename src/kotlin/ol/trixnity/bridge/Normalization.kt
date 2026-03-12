@@ -3,6 +3,7 @@ package ol.trixnity.bridge
 import clojure.lang.Keyword
 import de.connect2x.trixnity.client.notification.Notification
 import de.connect2x.trixnity.client.notification.NotificationUpdate
+import de.connect2x.trixnity.client.user
 import de.connect2x.trixnity.client.store.RoomOutboxMessage
 import de.connect2x.trixnity.client.store.RoomUser
 import de.connect2x.trixnity.client.store.RoomUserReceipts
@@ -15,6 +16,8 @@ import de.connect2x.trixnity.client.verification.ActiveUserVerification
 import de.connect2x.trixnity.client.verification.ActiveVerification
 import de.connect2x.trixnity.client.verification.VerificationService
 import de.connect2x.trixnity.clientserverapi.model.key.GetRoomKeysBackupVersionResponse
+import de.connect2x.trixnity.core.model.RoomId
+import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.ClientEvent
 import de.connect2x.trixnity.core.model.events.MessageEventContent
 import de.connect2x.trixnity.core.model.events.RoomEventContent
@@ -24,6 +27,7 @@ import de.connect2x.trixnity.core.model.events.m.ReactionEventContent
 import de.connect2x.trixnity.core.model.events.m.room.RoomMessageEventContent
 import de.connect2x.trixnity.crypto.key.DeviceTrustLevel
 import de.connect2x.trixnity.crypto.key.UserTrustLevel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlin.reflect.KClass
 
 internal fun normalizedKind(value: String?): String? =
@@ -74,7 +78,22 @@ private fun eventTypeName(content: RoomEventContent?): String? =
         else -> content::class.simpleName?.let(::normalizedKind)
     }
 
-internal fun normalizeTimelineEvent(timelineEvent: TimelineEvent?): Map<Keyword, Any?>? {
+private suspend fun senderDisplayName(
+    client: de.connect2x.trixnity.client.MatrixClient,
+    timelineEvent: TimelineEvent,
+): String? =
+    client.user
+        .getById(
+            RoomId(timelineEvent.event.roomId.full),
+            UserId(timelineEvent.event.sender.full),
+        )
+        .firstOrNull()
+        ?.name
+
+internal suspend fun normalizeTimelineEvent(
+    client: de.connect2x.trixnity.client.MatrixClient,
+    timelineEvent: TimelineEvent?,
+): Map<Keyword, Any?>? {
     if (timelineEvent == null) return null
     val content = timelineEvent.content?.getOrNull()
     return buildMap {
@@ -82,6 +101,9 @@ internal fun normalizeTimelineEvent(timelineEvent: TimelineEvent?): Map<Keyword,
         put(BridgeSchema.Event.roomId, timelineEvent.event.roomId.full)
         put(BridgeSchema.Event.eventId, timelineEvent.event.id.full)
         put(BridgeSchema.Event.sender, timelineEvent.event.sender.full)
+        senderDisplayName(client, timelineEvent)?.let {
+            put(BridgeSchema.Event.senderDisplayName, it)
+        }
         when (content) {
             is RoomMessageEventContent.TextBased.Text -> {
                 put(BridgeSchema.Event.body, content.body)
@@ -217,7 +239,10 @@ internal fun normalizeUserPresence(presence: UserPresence?): Map<Keyword, Any?>?
 private fun normalizeActions(actions: Set<*>): Set<String> =
     actions.map { it.toString() }.toSet()
 
-internal fun normalizeNotification(notification: Notification?): Map<Keyword, Any?>? {
+internal suspend fun normalizeNotification(
+    client: de.connect2x.trixnity.client.MatrixClient,
+    notification: Notification?,
+): Map<Keyword, Any?>? {
     if (notification == null) return null
     return buildMap {
         put(BridgeSchema.Notification.id, notification.id)
@@ -229,7 +254,7 @@ internal fun normalizeNotification(notification: Notification?): Map<Keyword, An
                 put(BridgeSchema.Notification.kind, "message")
                 put(
                     BridgeSchema.Notification.timelineEvent,
-                    normalizeTimelineEvent(notification.timelineEvent),
+                    normalizeTimelineEvent(client, notification.timelineEvent),
                 )
             }
 
@@ -245,12 +270,14 @@ internal fun normalizeNotification(notification: Notification?): Map<Keyword, An
     }
 }
 
-private fun normalizeNotificationUpdateContent(
+private suspend fun normalizeNotificationUpdateContent(
+    client: de.connect2x.trixnity.client.MatrixClient,
     content: NotificationUpdate.Content,
 ): Map<Keyword, Any?> =
     when (content) {
         is NotificationUpdate.Content.Message -> mapOf(
-            BridgeSchema.Notification.timelineEvent to normalizeTimelineEvent(content.timelineEvent),
+            BridgeSchema.Notification.timelineEvent to
+                normalizeTimelineEvent(client, content.timelineEvent),
             BridgeSchema.raw to content,
         )
 
@@ -260,7 +287,10 @@ private fun normalizeNotificationUpdateContent(
         )
     }
 
-internal fun normalizeNotificationUpdate(update: NotificationUpdate): Map<Keyword, Any?> =
+internal suspend fun normalizeNotificationUpdate(
+    client: de.connect2x.trixnity.client.MatrixClient,
+    update: NotificationUpdate,
+): Map<Keyword, Any?> =
     buildMap {
         put(BridgeSchema.NotificationUpdate.id, update.id)
         put(BridgeSchema.NotificationUpdate.sortKey, update.sortKey)
@@ -271,7 +301,7 @@ internal fun normalizeNotificationUpdate(update: NotificationUpdate): Map<Keywor
                 put(BridgeSchema.NotificationUpdate.actions, normalizeActions(update.actions))
                 put(
                     BridgeSchema.NotificationUpdate.content,
-                    normalizeNotificationUpdateContent(update.content),
+                    normalizeNotificationUpdateContent(client, update.content),
                 )
             }
 
@@ -280,7 +310,7 @@ internal fun normalizeNotificationUpdate(update: NotificationUpdate): Map<Keywor
                 put(BridgeSchema.NotificationUpdate.actions, normalizeActions(update.actions))
                 put(
                     BridgeSchema.NotificationUpdate.content,
-                    normalizeNotificationUpdateContent(update.content),
+                    normalizeNotificationUpdateContent(client, update.content),
                 )
             }
 

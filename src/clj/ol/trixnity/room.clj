@@ -55,8 +55,8 @@
 
 (defn- timeline-event-raw [timeline-event]
   (::mx/raw (mx/validate!
-                          ::mx/BridgeableTimelineEvent
-                          timeline-event)))
+             ::mx/BridgeableTimelineEvent
+             timeline-event)))
 
 (defn create-room
   [client opts]
@@ -76,6 +76,17 @@
                             client
                             room-id
                             user-id
+                            (get opts ::mx/timeout)))))
+
+(defn join-room
+  ([client room-id]
+   (join-room client room-id {}))
+  ([client room-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (let [opts (mx/validate! ::mx/JoinOpts opts)]
+     (internal/suspend-task bridge/join-room
+                            client
+                            room-id
                             (get opts ::mx/timeout)))))
 
 (defn send-message
@@ -134,8 +145,8 @@
   ([client room-id event-content-class key]
    (mx/validate! ::mx/room-id room-id)
    (mx/validate!
-                 ::mx/room-account-data-event-content-class
-                 event-content-class)
+    ::mx/room-account-data-event-content-class
+    event-content-class)
    (mx/validate! ::mx/key key)
    (internal/observe-flow
     client
@@ -147,8 +158,8 @@
   ([client room-id event-content-class state-key]
    (mx/validate! ::mx/room-id room-id)
    (mx/validate!
-                 ::mx/state-event-content-class
-                 event-content-class)
+    ::mx/state-event-content-class
+    event-content-class)
    (mx/validate! ::mx/state-key state-key)
    (internal/observe-flow
     client
@@ -158,8 +169,8 @@
   [client room-id event-content-class]
   (mx/validate! ::mx/room-id room-id)
   (mx/validate!
-                ::mx/state-event-content-class
-                event-content-class)
+   ::mx/state-event-content-class
+   event-content-class)
   (internal/observe-keyed-flow-map
    client
    (bridge/all-state client room-id event-content-class)))

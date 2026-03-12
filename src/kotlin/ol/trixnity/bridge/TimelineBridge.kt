@@ -80,7 +80,7 @@ object TimelineBridge {
                 )
 
             else -> client.room.getTimelineEventsFromNowOn()
-        }.mapNotNull(::normalizeTimelineEvent)
+        }.mapNotNull { normalizeTimelineEvent(client, it) }
 
     @JvmStatic
     fun timelineEvents(
@@ -95,7 +95,7 @@ object TimelineBridge {
             )
         } else {
             client.room.getTimelineEvents(response = response)
-        }.mapNotNull(::normalizeTimelineEvent)
+        }.mapNotNull { normalizeTimelineEvent(client, it) }
 
     @JvmStatic
     fun timelineEvent(
@@ -116,7 +116,7 @@ object TimelineBridge {
                 fetchSize = fetchSize,
                 allowReplaceContent = allowReplaceContent,
             ),
-        ).map(::normalizeTimelineEvent)
+        ).map { normalizeTimelineEvent(client, it) }
 
     @JvmStatic
     fun previousTimelineEvent(
@@ -135,7 +135,7 @@ object TimelineBridge {
                 fetchSize = fetchSize,
                 allowReplaceContent = allowReplaceContent,
             ),
-        )?.map(::normalizeTimelineEvent)
+        )?.map { normalizeTimelineEvent(client, it) }
 
     @JvmStatic
     fun nextTimelineEvent(
@@ -154,7 +154,7 @@ object TimelineBridge {
                 fetchSize = fetchSize,
                 allowReplaceContent = allowReplaceContent,
             ),
-        )?.map(::normalizeTimelineEvent)
+        )?.map { normalizeTimelineEvent(client, it) }
 
     @JvmStatic
     fun lastTimelineEvent(
@@ -174,7 +174,7 @@ object TimelineBridge {
                 allowReplaceContent = allowReplaceContent,
             ),
         ).map { inner ->
-            inner?.mapNotNull(::normalizeTimelineEvent)
+            inner?.mapNotNull { normalizeTimelineEvent(client, it) }
         }
 
     @JvmStatic
@@ -202,7 +202,9 @@ object TimelineBridge {
                 minSize = minSize,
                 maxSize = maxSize,
             ),
-        ).map { it.mapNotNull(::normalizeTimelineEvent) }
+        ).map { chain ->
+            chain.mapNotNull { normalizeTimelineEvent(client, it) }
+        }
 
     @JvmStatic
     fun lastTimelineEvents(
@@ -226,7 +228,9 @@ object TimelineBridge {
                 maxSize = maxSize,
             ),
         ).map { chain ->
-            chain?.map { inner -> inner.mapNotNull(::normalizeTimelineEvent) }
+            chain?.map { inner ->
+                inner.mapNotNull { normalizeTimelineEvent(client, it) }
+            }
         }
 
     @JvmStatic
@@ -258,7 +262,9 @@ object TimelineBridge {
             maxSize = MutableStateFlow(maxSize),
             minSize = MutableStateFlow(minSize),
         ).map { flows ->
-            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+            flows.map { flow ->
+                flow.mapNotNull { normalizeTimelineEvent(client, it) }
+            }
         }
 
     @JvmStatic
@@ -286,7 +292,9 @@ object TimelineBridge {
             maxSize = MutableStateFlow(maxSize),
             minSize = MutableStateFlow(minSize),
         ).map { flows ->
-            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+            flows.map { flow ->
+                flow.mapNotNull { normalizeTimelineEvent(client, it) }
+            }
         }
 
     @JvmStatic
@@ -329,7 +337,9 @@ object TimelineBridge {
                 maxSize = null,
             ),
         ).map { flows ->
-            flows.map { it.mapNotNull(::normalizeTimelineEvent) }
+            flows.map { flow ->
+                flow.mapNotNull { normalizeTimelineEvent(client, it) }
+            }
         }
 
     @JvmStatic

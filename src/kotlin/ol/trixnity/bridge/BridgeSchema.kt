@@ -23,6 +23,7 @@ internal object BridgeSchema {
     val transactionId: Keyword = Keyword.intern(schemaNamespace, "transaction-id")
     val key: Keyword = Keyword.intern(schemaNamespace, "key")
     val displayName: Keyword = Keyword.intern(schemaNamespace, "display-name")
+    val senderDisplayName: Keyword = Keyword.intern(schemaNamespace, "sender-display-name")
     val avatarUrl: Keyword = Keyword.intern(schemaNamespace, "avatar-url")
     val timeZone: Keyword = Keyword.intern(schemaNamespace, "time-zone")
     val versions: Keyword = Keyword.intern(schemaNamespace, "versions")
@@ -88,6 +89,7 @@ internal object BridgeSchema {
         val roomId: Keyword = Keyword.intern(schemaNamespace, "room-id")
         val eventId: Keyword = Keyword.intern(schemaNamespace, "event-id")
         val sender: Keyword = Keyword.intern(schemaNamespace, "sender")
+        val senderDisplayName: Keyword = BridgeSchema.senderDisplayName
         val body: Keyword = Keyword.intern(schemaNamespace, "body")
         val key: Keyword = Keyword.intern(schemaNamespace, "key")
         val relatesTo: Keyword = Keyword.intern(schemaNamespace, "relates-to")
@@ -292,6 +294,12 @@ internal object BridgeSchema {
         val client: Keyword = BridgeSchema.client
         val roomId: Keyword = BridgeSchema.roomId
         val message: Keyword = BridgeSchema.message
+        val timeout: Keyword = BridgeSchema.timeout
+    }
+
+    object JoinRoomRequest {
+        val client: Keyword = BridgeSchema.client
+        val roomId: Keyword = BridgeSchema.roomId
         val timeout: Keyword = BridgeSchema.timeout
     }
 

@@ -94,6 +94,7 @@
    ::formatted-body                     :string
    ::type                               :string
    ::sender                             :string
+   ::sender-display-name                :string
    ::is-direct                          :boolean
    ::content                            :any
    ::created-at                         :string
@@ -175,6 +176,9 @@
    ::InviteOpts
    ::OneShotOpts
 
+   ::JoinOpts
+   ::OneShotOpts
+
    ::SendOpts
    ::OneShotOpts
 
@@ -205,6 +209,7 @@
     [::room-id ::room-id]
     [::event-id ::event-id]
     [::sender {:optional true} ::sender]
+    [::sender-display-name {:optional true} ::sender-display-name]
     [::body {:optional true} ::body]
     [::key {:optional true} ::key]
     [::relates-to {:optional true} ::Relation]

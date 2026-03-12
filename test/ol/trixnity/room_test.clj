@@ -21,6 +21,9 @@
             (m/eduction (take n))
             (m/reduce conj []))))
 
+(defn- resolve-var [ns-sym var-sym]
+  (ns-resolve ns-sym var-sym))
+
 (deftype StubCloseable [closed-count]
   Closeable
   (close [_]
@@ -77,6 +80,31 @@
              (:send-message @calls)))
       (is (= [:client-handle "!room:example.org" "$event" "🔥" nil]
              (:send-reaction @calls))))))
+
+(deftest join-room-task-surface-returns-a-missionary-task-test
+  (let [join-room-var        (resolve-var 'ol.trixnity.room 'join-room)
+        bridge-join-room-var (resolve-var 'ol.trixnity.internal.bridge 'join-room)
+        timeout              (Duration/ofSeconds 5)
+        calls                (atom nil)]
+    (is (some? join-room-var)
+        "ol.trixnity.room/join-room is missing")
+    (is (some? bridge-join-room-var)
+        "ol.trixnity.internal.bridge/join-room is missing")
+    (when (and join-room-var bridge-join-room-var)
+      (with-redefs-fn
+        {bridge-join-room-var
+         (fn [client room-id bridge-timeout on-success _]
+           (reset! calls [client room-id bridge-timeout])
+           (on-success "!room:example.org")
+           (->StubCloseable (atom 0)))}
+        #(is (= "!room:example.org"
+                (realize-task
+                 ((var-get join-room-var)
+                  :client-handle
+                  "!room:example.org"
+                  {::schemas/timeout timeout})))))
+      (is (= [:client-handle "!room:example.org" timeout]
+             @calls)))))
 
 (deftest room-and-state-surfaces-stay-thin-test
   (let [calls        (atom {})

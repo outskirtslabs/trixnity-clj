@@ -26,6 +26,9 @@
 (defn sender [event]
   (::mx/sender event))
 
+(defn sender-display-name [event]
+  (::mx/sender-display-name event))
+
 (defn body [event]
   (::mx/body event))
 

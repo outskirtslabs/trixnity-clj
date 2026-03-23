@@ -1,5 +1,6 @@
 = ol.trixnity.room.message
 
+
 Helpers for constructing normalized room message payloads.
 
 This namespace provides small builders for the message-spec maps accepted by
@@ -15,6 +16,9 @@ Use xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`] to inspect the events y
 [#text]
 == text
 
+
+
+
 [source,clojure]
 ----
 (text body)
@@ -23,7 +27,6 @@ Use xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`] to inspect the events y
 
 Builds a text message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
 
-
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L19-L30[source,window=_blank]
 
@@ -31,6 +34,9 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [#reply-to]
 == reply-to
+
+
+
 
 [source,clojure]
 ----
@@ -41,7 +47,6 @@ Associates reply metadata from normalized event `ev` onto `message`.
 
 When `ev` already carries relation metadata, that relation is copied into the
 reply target so upstream threading semantics are preserved.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L32-L45[source,window=_blank]

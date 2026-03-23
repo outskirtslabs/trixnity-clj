@@ -3,11 +3,13 @@
 [#open-client]
 == open-client
 
+
+
+
 [source,clojure]
 ----
 (open-client request on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -18,11 +20,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#start-sync]
 == start-sync
 
+
+
+
 [source,clojure]
 ----
 (start-sync client on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -33,11 +37,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#await-running]
 == await-running
 
+
+
+
 [source,clojure]
 ----
 (await-running client timeout on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -48,11 +54,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#stop-sync]
 == stop-sync
 
+
+
+
 [source,clojure]
 ----
 (stop-sync client on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -63,11 +71,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#close-client]
 == close-client
 
+
+
+
 [source,clojure]
 ----
 (close-client client on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -78,11 +88,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-user-id]
 == current-user-id
 
+
+
+
 [source,clojure]
 ----
 (current-user-id client)
 ----
-
 
 
 [.api-source]
@@ -93,11 +105,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-sync-state]
 == current-sync-state
 
+
+
+
 [source,clojure]
 ----
 (current-sync-state client)
 ----
-
 
 
 [.api-source]
@@ -108,11 +122,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-profile]
 == current-profile
 
+
+
+
 [source,clojure]
 ----
 (current-profile client)
 ----
-
 
 
 [.api-source]
@@ -123,11 +139,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#profile-flow]
 == profile-flow
 
+
+
+
 [source,clojure]
 ----
 (profile-flow client)
 ----
-
 
 
 [.api-source]
@@ -138,11 +156,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-server-data]
 == current-server-data
 
+
+
+
 [source,clojure]
 ----
 (current-server-data client)
 ----
-
 
 
 [.api-source]
@@ -153,11 +173,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#server-data-flow]
 == server-data-flow
 
+
+
+
 [source,clojure]
 ----
 (server-data-flow client)
 ----
-
 
 
 [.api-source]
@@ -168,11 +190,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#sync-state-flow]
 == sync-state-flow
 
+
+
+
 [source,clojure]
 ----
 (sync-state-flow client)
 ----
-
 
 
 [.api-source]
@@ -183,11 +207,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-initial-sync-done]
 == current-initial-sync-done
 
+
+
+
 [source,clojure]
 ----
 (current-initial-sync-done client)
 ----
-
 
 
 [.api-source]
@@ -198,11 +224,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#initial-sync-done-flow]
 == initial-sync-done-flow
 
+
+
+
 [source,clojure]
 ----
 (initial-sync-done-flow client)
 ----
-
 
 
 [.api-source]
@@ -213,11 +241,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-login-state]
 == current-login-state
 
+
+
+
 [source,clojure]
 ----
 (current-login-state client)
 ----
-
 
 
 [.api-source]
@@ -228,11 +258,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#login-state-flow]
 == login-state-flow
 
+
+
+
 [source,clojure]
 ----
 (login-state-flow client)
 ----
-
 
 
 [.api-source]
@@ -243,11 +275,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-started]
 == current-started
 
+
+
+
 [source,clojure]
 ----
 (current-started client)
 ----
-
 
 
 [.api-source]
@@ -258,11 +292,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#started-flow]
 == started-flow
 
+
+
+
 [source,clojure]
 ----
 (started-flow client)
 ----
-
 
 
 [.api-source]
@@ -273,11 +309,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-users-typing]
 == current-users-typing
 
+
+
+
 [source,clojure]
 ----
 (current-users-typing client)
 ----
-
 
 
 [.api-source]
@@ -288,11 +326,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#users-typing-flow]
 == users-typing-flow
 
+
+
+
 [source,clojure]
 ----
 (users-typing-flow client)
 ----
-
 
 
 [.api-source]
@@ -303,11 +343,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#create-room]
 == create-room
 
+
+
+
 [source,clojure]
 ----
 (create-room client room-name on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -318,11 +360,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#invite-user]
 == invite-user
 
+
+
+
 [source,clojure]
 ----
 (invite-user client room-id user-id timeout on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -333,11 +377,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#join-room]
 == join-room
 
+
+
+
 [source,clojure]
 ----
 (join-room client room-id timeout on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -348,11 +394,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#forget-room]
 == forget-room
 
+
+
+
 [source,clojure]
 ----
 (forget-room client room-id force on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -363,11 +411,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#send-message]
 == send-message
 
+
+
+
 [source,clojure]
 ----
 (send-message client room-id message timeout on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -378,11 +428,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#send-reaction]
 == send-reaction
 
+
+
+
 [source,clojure]
 ----
 (send-reaction client room-id event-id key timeout on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -393,11 +445,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#cancel-send-message]
 == cancel-send-message
 
+
+
+
 [source,clojure]
 ----
 (cancel-send-message client room-id transaction-id on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -408,11 +462,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#retry-send-message]
 == retry-send-message
 
+
+
+
 [source,clojure]
 ----
 (retry-send-message client room-id transaction-id on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -423,11 +479,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#room-by-id]
 == room-by-id
 
+
+
+
 [source,clojure]
 ----
 (room-by-id client room-id)
 ----
-
 
 
 [.api-source]
@@ -438,11 +496,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#rooms]
 == rooms
 
+
+
+
 [source,clojure]
 ----
 (rooms client)
 ----
-
 
 
 [.api-source]
@@ -453,11 +513,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#rooms-flat]
 == rooms-flat
 
+
+
+
 [source,clojure]
 ----
 (rooms-flat client)
 ----
-
 
 
 [.api-source]
@@ -468,11 +530,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#account-data]
 == account-data
 
+
+
+
 [source,clojure]
 ----
 (account-data client room-id event-content-class key)
 ----
-
 
 
 [.api-source]
@@ -483,11 +547,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#state]
 == state
 
+
+
+
 [source,clojure]
 ----
 (state client room-id event-content-class state-key)
 ----
-
 
 
 [.api-source]
@@ -498,11 +564,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#all-state]
 == all-state
 
+
+
+
 [source,clojure]
 ----
 (all-state client room-id event-content-class)
 ----
-
 
 
 [.api-source]
@@ -513,11 +581,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#outbox]
 == outbox
 
+
+
+
 [source,clojure]
 ----
 (outbox client)
 ----
-
 
 
 [.api-source]
@@ -528,11 +598,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#outbox-flat]
 == outbox-flat
 
+
+
+
 [source,clojure]
 ----
 (outbox-flat client)
 ----
-
 
 
 [.api-source]
@@ -543,11 +615,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#outbox-by-room]
 == outbox-by-room
 
+
+
+
 [source,clojure]
 ----
 (outbox-by-room client room-id)
 ----
-
 
 
 [.api-source]
@@ -558,11 +632,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#outbox-by-room-flat]
 == outbox-by-room-flat
 
+
+
+
 [source,clojure]
 ----
 (outbox-by-room-flat client room-id)
 ----
-
 
 
 [.api-source]
@@ -573,11 +649,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#outbox-message]
 == outbox-message
 
+
+
+
 [source,clojure]
 ----
 (outbox-message client room-id transaction-id)
 ----
-
 
 
 [.api-source]
@@ -588,11 +666,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#fill-timeline-gaps]
 == fill-timeline-gaps
 
+
+
+
 [source,clojure]
 ----
 (fill-timeline-gaps client room-id event-id limit on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -603,11 +683,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-events-from-now-on]
 == timeline-events-from-now-on
 
+
+
+
 [source,clojure]
 ----
 (timeline-events-from-now-on client decryption-timeout-ms sync-response-buffer-size)
 ----
-
 
 
 [.api-source]
@@ -618,11 +700,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#response-timeline-events]
 == response-timeline-events
 
+
+
+
 [source,clojure]
 ----
 (response-timeline-events client response decryption-timeout-ms)
 ----
-
 
 
 [.api-source]
@@ -633,11 +717,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-event]
 == timeline-event
 
+
+
+
 [source,clojure]
 ----
 (timeline-event client room-id event-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -648,11 +734,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#previous-timeline-event]
 == previous-timeline-event
 
+
+
+
 [source,clojure]
 ----
 (previous-timeline-event client timeline-event decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -663,11 +751,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#next-timeline-event]
 == next-timeline-event
 
+
+
+
 [source,clojure]
 ----
 (next-timeline-event client timeline-event decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -678,11 +768,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#last-timeline-event]
 == last-timeline-event
 
+
+
+
 [source,clojure]
 ----
 (last-timeline-event client room-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -693,11 +785,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-event-chain]
 == timeline-event-chain
 
+
+
+
 [source,clojure]
 ----
 (timeline-event-chain client room-id start-from direction decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content min-size max-size)
 ----
-
 
 
 [.api-source]
@@ -708,11 +802,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#last-timeline-events]
 == last-timeline-events
 
+
+
+
 [source,clojure]
 ----
 (last-timeline-events client room-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content min-size max-size)
 ----
-
 
 
 [.api-source]
@@ -723,11 +819,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-events-list]
 == timeline-events-list
 
+
+
+
 [source,clojure]
 ----
 (timeline-events-list client room-id start-from direction max-size min-size decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -738,11 +836,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#last-timeline-events-list]
 == last-timeline-events-list
 
+
+
+
 [source,clojure]
 ----
 (last-timeline-events-list client room-id max-size min-size decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -753,11 +853,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-events-around]
 == timeline-events-around
 
+
+
+
 [source,clojure]
 ----
 (timeline-events-around client room-id start-from max-size-before max-size-after decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content)
 ----
-
 
 
 [.api-source]
@@ -768,11 +870,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-event-relations]
 == timeline-event-relations
 
+
+
+
 [source,clojure]
 ----
 (timeline-event-relations client room-id event-id relation-type)
 ----
-
 
 
 [.api-source]
@@ -783,11 +887,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-all]
 == user-all
 
+
+
+
 [source,clojure]
 ----
 (user-all client room-id)
 ----
-
 
 
 [.api-source]
@@ -798,11 +904,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#load-members]
 == load-members
 
+
+
+
 [source,clojure]
 ----
 (load-members client room-id wait on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -813,11 +921,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-by-id]
 == user-by-id
 
+
+
+
 [source,clojure]
 ----
 (user-by-id client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -828,11 +938,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-all-receipts]
 == user-all-receipts
 
+
+
+
 [source,clojure]
 ----
 (user-all-receipts client room-id)
 ----
-
 
 
 [.api-source]
@@ -843,11 +955,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-receipts-by-id]
 == user-receipts-by-id
 
+
+
+
 [source,clojure]
 ----
 (user-receipts-by-id client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -858,11 +972,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-power-level]
 == user-power-level
 
+
+
+
 [source,clojure]
 ----
 (user-power-level client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -873,11 +989,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-kick-user]
 == can-kick-user
 
+
+
+
 [source,clojure]
 ----
 (can-kick-user client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -888,11 +1006,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-ban-user]
 == can-ban-user
 
+
+
+
 [source,clojure]
 ----
 (can-ban-user client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -903,11 +1023,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-unban-user]
 == can-unban-user
 
+
+
+
 [source,clojure]
 ----
 (can-unban-user client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -918,11 +1040,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-invite-user]
 == can-invite-user
 
+
+
+
 [source,clojure]
 ----
 (can-invite-user client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -933,11 +1057,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-invite]
 == can-invite
 
+
+
+
 [source,clojure]
 ----
 (can-invite client room-id)
 ----
-
 
 
 [.api-source]
@@ -948,11 +1074,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-redact-event]
 == can-redact-event
 
+
+
+
 [source,clojure]
 ----
 (can-redact-event client room-id event-id)
 ----
-
 
 
 [.api-source]
@@ -963,11 +1091,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-set-power-level-to-max]
 == can-set-power-level-to-max
 
+
+
+
 [source,clojure]
 ----
 (can-set-power-level-to-max client room-id user-id)
 ----
-
 
 
 [.api-source]
@@ -978,11 +1108,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-send-event-by-class]
 == can-send-event-by-class
 
+
+
+
 [source,clojure]
 ----
 (can-send-event-by-class client room-id event-content-class)
 ----
-
 
 
 [.api-source]
@@ -993,11 +1125,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-send-event-by-content]
 == can-send-event-by-content
 
+
+
+
 [source,clojure]
 ----
 (can-send-event-by-content client room-id event-content)
 ----
-
 
 
 [.api-source]
@@ -1008,11 +1142,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-presence]
 == user-presence
 
+
+
+
 [source,clojure]
 ----
 (user-presence client user-id)
 ----
-
 
 
 [.api-source]
@@ -1023,11 +1159,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-account-data]
 == user-account-data
 
+
+
+
 [source,clojure]
 ----
 (user-account-data client event-content-class key)
 ----
-
 
 
 [.api-source]
@@ -1038,11 +1176,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notifications]
 == notifications
 
+
+
+
 [source,clojure]
 ----
 (notifications client decryption-timeout-ms sync-response-buffer-size)
 ----
-
 
 
 [.api-source]
@@ -1053,11 +1193,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notifications-from-response]
 == notifications-from-response
 
+
+
+
 [source,clojure]
 ----
 (notifications-from-response client response decryption-timeout-ms)
 ----
-
 
 
 [.api-source]
@@ -1068,11 +1210,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-all]
 == notification-all
 
+
+
+
 [source,clojure]
 ----
 (notification-all client)
 ----
-
 
 
 [.api-source]
@@ -1083,11 +1227,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-all-flat]
 == notification-all-flat
 
+
+
+
 [source,clojure]
 ----
 (notification-all-flat client)
 ----
-
 
 
 [.api-source]
@@ -1098,11 +1244,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-by-id]
 == notification-by-id
 
+
+
+
 [source,clojure]
 ----
 (notification-by-id client id)
 ----
-
 
 
 [.api-source]
@@ -1113,12 +1261,14 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-count]
 == notification-count
 
+
+
+
 [source,clojure]
 ----
 (notification-count client)
 (notification-count client room-id)
 ----
-
 
 
 [.api-source]
@@ -1129,11 +1279,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-unread]
 == notification-unread
 
+
+
+
 [source,clojure]
 ----
 (notification-unread client room-id)
 ----
-
 
 
 [.api-source]
@@ -1144,11 +1296,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-all-updates]
 == notification-all-updates
 
+
+
+
 [source,clojure]
 ----
 (notification-all-updates client)
 ----
-
 
 
 [.api-source]
@@ -1159,11 +1313,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-dismiss]
 == notification-dismiss
 
+
+
+
 [source,clojure]
 ----
 (notification-dismiss client id on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -1174,11 +1330,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#notification-dismiss-all]
 == notification-dismiss-all
 
+
+
+
 [source,clojure]
 ----
 (notification-dismiss-all client on-success on-failure)
 ----
-
 
 
 [.api-source]
@@ -1189,11 +1347,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-active-device-verification]
 == current-active-device-verification
 
+
+
+
 [source,clojure]
 ----
 (current-active-device-verification client)
 ----
-
 
 
 [.api-source]
@@ -1204,11 +1364,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#active-device-verification-flow]
 == active-device-verification-flow
 
+
+
+
 [source,clojure]
 ----
 (active-device-verification-flow client)
 ----
-
 
 
 [.api-source]
@@ -1219,11 +1381,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-active-user-verifications]
 == current-active-user-verifications
 
+
+
+
 [source,clojure]
 ----
 (current-active-user-verifications client)
 ----
-
 
 
 [.api-source]
@@ -1234,11 +1398,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#active-user-verifications-flow]
 == active-user-verifications-flow
 
+
+
+
 [source,clojure]
 ----
 (active-user-verifications-flow client)
 ----
-
 
 
 [.api-source]
@@ -1249,11 +1415,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#self-verification-methods]
 == self-verification-methods
 
+
+
+
 [source,clojure]
 ----
 (self-verification-methods client)
 ----
-
 
 
 [.api-source]
@@ -1264,11 +1432,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-bootstrap-running]
 == current-bootstrap-running
 
+
+
+
 [source,clojure]
 ----
 (current-bootstrap-running client)
 ----
-
 
 
 [.api-source]
@@ -1279,11 +1449,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#bootstrap-running-flow]
 == bootstrap-running-flow
 
+
+
+
 [source,clojure]
 ----
 (bootstrap-running-flow client)
 ----
-
 
 
 [.api-source]
@@ -1294,11 +1466,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-backup-version]
 == current-backup-version
 
+
+
+
 [source,clojure]
 ----
 (current-backup-version client)
 ----
-
 
 
 [.api-source]
@@ -1309,11 +1483,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#backup-version-flow]
 == backup-version-flow
 
+
+
+
 [source,clojure]
 ----
 (backup-version-flow client)
 ----
-
 
 
 [.api-source]
@@ -1324,11 +1500,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#device-trust-level]
 == device-trust-level
 
+
+
+
 [source,clojure]
 ----
 (device-trust-level client user-id device-id)
 ----
-
 
 
 [.api-source]
@@ -1339,11 +1517,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#timeline-trust-level]
 == timeline-trust-level
 
+
+
+
 [source,clojure]
 ----
 (timeline-trust-level client room-id event-id)
 ----
-
 
 
 [.api-source]
@@ -1354,11 +1534,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-trust-level]
 == user-trust-level
 
+
+
+
 [source,clojure]
 ----
 (user-trust-level client user-id)
 ----
-
 
 
 [.api-source]
@@ -1369,11 +1551,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#device-keys-flow]
 == device-keys-flow
 
+
+
+
 [source,clojure]
 ----
 (device-keys-flow client user-id)
 ----
-
 
 
 [.api-source]
@@ -1384,11 +1568,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#cross-signing-keys-flow]
 == cross-signing-keys-flow
 
+
+
+
 [source,clojure]
 ----
 (cross-signing-keys-flow client user-id)
 ----
-
 
 
 [.api-source]

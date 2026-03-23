@@ -3,11 +3,13 @@
 [#db]
 == db
 
+
+
+
 [source,clojure]
 ----
 (db handle)
 ----
-
 
 
 [.api-source]
@@ -18,11 +20,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#json]
 == json
 
+
+
+
 [source,clojure]
 ----
 (json handle)
 ----
-
 
 
 [.api-source]
@@ -33,11 +37,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#writer-pool]
 == writer-pool
 
+
+
+
 [source,clojure]
 ----
 (writer-pool handle)
 ----
-
 
 
 [.api-source]
@@ -48,11 +54,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#reader-pool]
 == reader-pool
 
+
+
+
 [source,clojure]
 ----
 (reader-pool handle)
 ----
-
 
 
 [.api-source]
@@ -63,11 +71,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#borrow-reader-conn-BANG-]
 == borrow-reader-conn!
 
+
+
+
 [source,clojure]
 ----
 (borrow-reader-conn! handle)
 ----
-
 
 
 [.api-source]
@@ -78,11 +88,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#borrow-writer-conn-BANG-]
 == borrow-writer-conn!
 
+
+
+
 [source,clojure]
 ----
 (borrow-writer-conn! handle)
 ----
-
 
 
 [.api-source]
@@ -93,11 +105,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#release-reader-conn-BANG-]
 == release-reader-conn!
 
+
+
+
 [source,clojure]
 ----
 (release-reader-conn! handle conn)
 ----
-
 
 
 [.api-source]
@@ -108,11 +122,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#release-writer-conn-BANG-]
 == release-writer-conn!
 
+
+
+
 [source,clojure]
 ----
 (release-writer-conn! handle conn)
 ----
-
 
 
 [.api-source]
@@ -123,11 +139,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#begin-deferred-BANG-]
 == begin-deferred!
 
+
+
+
 [source,clojure]
 ----
 (begin-deferred! conn)
 ----
-
 
 
 [.api-source]
@@ -138,11 +156,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#begin-immediate-BANG-]
 == begin-immediate!
 
+
+
+
 [source,clojure]
 ----
 (begin-immediate! conn)
 ----
-
 
 
 [.api-source]
@@ -153,11 +173,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#commit-BANG-]
 == commit!
 
+
+
+
 [source,clojure]
 ----
 (commit! conn)
 ----
-
 
 
 [.api-source]
@@ -168,11 +190,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#rollback-BANG-]
 == rollback!
 
+
+
+
 [source,clojure]
 ----
 (rollback! conn)
 ----
-
 
 
 [.api-source]
@@ -183,11 +207,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-read-conn]
 == current-read-conn
 
+
+
+
 [source,clojure]
 ----
 (current-read-conn)
 ----
-
 
 
 [.api-source]
@@ -198,11 +224,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#current-write-conn]
 == current-write-conn
 
+
+
+
 [source,clojure]
 ----
 (current-write-conn)
 ----
-
 
 
 [.api-source]
@@ -213,11 +241,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#q-read]
 == q-read
 
+
+
+
 [source,clojure]
 ----
 (q-read handle query)
 ----
-
 
 
 [.api-source]
@@ -228,11 +258,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#q-write]
 == q-write
 
+
+
+
 [source,clojure]
 ----
 (q-write handle query)
 ----
-
 
 
 [.api-source]
@@ -243,11 +275,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#open-BANG-]
 == open!
 
+
+
+
 [source,clojure]
 ----
 (open! path json)
 ----
-
 
 
 [.api-source]
@@ -258,11 +292,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#ensure-schema-BANG-]
 == ensure-schema!
 
+
+
+
 [source,clojure]
 ----
 (ensure-schema! handle)
 ----
-
 
 
 [.api-source]
@@ -273,11 +309,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#encode-json]
 == encode-json
 
+
+
+
 [source,clojure]
 ----
 (encode-json json serializer value)
 ----
-
 
 
 [.api-source]
@@ -288,11 +326,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#decode-json]
 == decode-json
 
+
+
+
 [source,clojure]
 ----
 (decode-json json serializer value)
 ----
-
 
 
 [.api-source]
@@ -303,11 +343,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#first-row]
 == first-row
 
+
+
+
 [source,clojure]
 ----
 (first-row rows)
 ----
-
 
 
 [.api-source]
@@ -318,11 +360,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#maybe-rows]
 == maybe-rows
 
+
+
+
 [source,clojure]
 ----
 (maybe-rows rows)
 ----
-
 
 
 [.api-source]
@@ -333,11 +377,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#in-placeholders]
 == in-placeholders
 
+
+
+
 [source,clojure]
 ----
 (in-placeholders n)
 ----
-
 
 
 [.api-source]
@@ -348,11 +394,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#minimal-get]
 == minimal-get
 
+
+
+
 [source,clojure]
 ----
 (minimal-get handle table repo-key serializer)
 ----
-
 
 
 [.api-source]
@@ -363,11 +411,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#minimal-save-BANG-]
 == minimal-save!
 
+
+
+
 [source,clojure]
 ----
 (minimal-save! handle table repo-key payload)
 ----
-
 
 
 [.api-source]
@@ -378,11 +428,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#minimal-delete-BANG-]
 == minimal-delete!
 
+
+
+
 [source,clojure]
 ----
 (minimal-delete! handle table repo-key)
 ----
-
 
 
 [.api-source]
@@ -393,11 +445,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#delete-all-BANG-]
 == delete-all!
 
+
+
+
 [source,clojure]
 ----
 (delete-all! handle table)
 ----
-
 
 
 [.api-source]
@@ -408,11 +462,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#full-get-all]
 == full-get-all
 
+
+
+
 [source,clojure]
 ----
 (full-get-all handle table serializer)
 ----
-
 
 
 [.api-source]
@@ -423,11 +479,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#room-id-str]
 == room-id-str
 
+
+
+
 [source,clojure]
 ----
 (room-id-str room-id)
 ----
-
 
 
 [.api-source]
@@ -438,11 +496,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#user-id-str]
 == user-id-str
 
+
+
+
 [source,clojure]
 ----
 (user-id-str user-id)
 ----
-
 
 
 [.api-source]
@@ -453,11 +513,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#event-id-str]
 == event-id-str
 
+
+
+
 [source,clojure]
 ----
 (event-id-str event-id)
 ----
-
 
 
 [.api-source]

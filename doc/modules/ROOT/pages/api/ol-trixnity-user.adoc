@@ -1,5 +1,6 @@
 = ol.trixnity.user
 
+
 Room user state, receipts, presence, and permission checks.
 
 ## Upstream Mapping
@@ -21,6 +22,9 @@ xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`] for client-wide state.
 [#load-members]
 == load-members
 
+
+
+
 [source,clojure]
 ----
 (load-members client room-id)
@@ -35,7 +39,6 @@ Supported opts:
 |-----|-------------
 | `::mx/wait` | When true, wait for the member load to finish before resolving the task (default `true`) |
 
-
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L26-L42[source,window=_blank]
 
@@ -44,13 +47,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-all]
 == get-all
 
+
+
+
 [source,clojure]
 ----
 (get-all client room-id)
 ----
 
 Returns a Missionary flow of room members keyed by user id.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L44-L48[source,window=_blank]
@@ -60,13 +65,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-by-id]
 == get-by-id
 
+
+
+
 [source,clojure]
 ----
 (get-by-id client room-id user-id)
 ----
 
 Returns a Missionary flow of the room member for `user-id`, or nil when unavailable.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L50-L55[source,window=_blank]
@@ -76,13 +83,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-all-receipts]
 == get-all-receipts
 
+
+
+
 [source,clojure]
 ----
 (get-all-receipts client room-id)
 ----
 
 Returns a Missionary flow of per-user receipt flows keyed by user id.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L57-L61[source,window=_blank]
@@ -92,13 +101,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-receipts-by-id]
 == get-receipts-by-id
 
+
+
+
 [source,clojure]
 ----
 (get-receipts-by-id client room-id user-id)
 ----
 
 Returns a Missionary flow of receipts for `user-id` in `room-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L63-L68[source,window=_blank]
@@ -108,13 +119,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-power-level]
 == get-power-level
 
+
+
+
 [source,clojure]
 ----
 (get-power-level client room-id user-id)
 ----
 
 Returns a Missionary flow of the current power-level view for `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L70-L75[source,window=_blank]
@@ -124,13 +137,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-kick-user]
 == can-kick-user
 
+
+
+
 [source,clojure]
 ----
 (can-kick-user client room-id user-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can kick `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L77-L82[source,window=_blank]
@@ -140,13 +155,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-ban-user]
 == can-ban-user
 
+
+
+
 [source,clojure]
 ----
 (can-ban-user client room-id user-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can ban `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L84-L89[source,window=_blank]
@@ -156,13 +173,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-unban-user]
 == can-unban-user
 
+
+
+
 [source,clojure]
 ----
 (can-unban-user client room-id user-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can unban `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L91-L96[source,window=_blank]
@@ -172,13 +191,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-invite-user]
 == can-invite-user
 
+
+
+
 [source,clojure]
 ----
 (can-invite-user client room-id user-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can invite `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L98-L103[source,window=_blank]
@@ -188,13 +209,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-invite]
 == can-invite
 
+
+
+
 [source,clojure]
 ----
 (can-invite client room-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can invite users to `room-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L105-L109[source,window=_blank]
@@ -204,13 +227,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-redact-event]
 == can-redact-event
 
+
+
+
 [source,clojure]
 ----
 (can-redact-event client room-id event-id)
 ----
 
 Returns a Missionary flow that reports whether the current client can redact `event-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L111-L116[source,window=_blank]
@@ -220,13 +245,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#can-set-power-level-to-max]
 == can-set-power-level-to-max
 
+
+
+
 [source,clojure]
 ----
 (can-set-power-level-to-max client room-id user-id)
 ----
 
 Returns a Missionary flow of the maximum power level the current client may assign to `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L118-L123[source,window=_blank]
@@ -235,6 +262,9 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [#can-send-event]
 == can-send-event
+
+
+
 
 [source,clojure]
 ----
@@ -246,7 +276,6 @@ Returns a Missionary flow that reports whether the current client can send an ev
 `event-class-or-content` may be either a room-event-content class or a
 concrete room-event-content instance.
 
-
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L125-L142[source,window=_blank]
 
@@ -255,13 +284,15 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#get-presence]
 == get-presence
 
+
+
+
 [source,clojure]
 ----
 (get-presence client user-id)
 ----
 
 Returns a Missionary flow of presence data for `user-id`.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L144-L148[source,window=_blank]
@@ -270,6 +301,9 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [#get-account-data]
 == get-account-data
+
+
+
 
 [source,clojure]
 ----
@@ -280,7 +314,6 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of global account-data content.
 
 When `key` is omitted, the empty-string state key is used.
-
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L150-L161[source,window=_blank]

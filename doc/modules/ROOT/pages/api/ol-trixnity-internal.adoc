@@ -3,11 +3,13 @@
 [#observe-flow]
 == observe-flow
 
+
+
+
 [source,clojure]
 ----
 (observe-flow client kotlin-flow)
 ----
-
 
 
 [.api-source]
@@ -18,11 +20,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#observe-keyed-flow-map]
 == observe-keyed-flow-map
 
+
+
+
 [source,clojure]
 ----
 (observe-keyed-flow-map client kotlin-outer-flow)
 ----
-
 
 
 [.api-source]
@@ -33,11 +37,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#observe-flow-list]
 == observe-flow-list
 
+
+
+
 [source,clojure]
 ----
 (observe-flow-list client kotlin-outer-flow)
 ----
-
 
 
 [.api-source]
@@ -48,11 +54,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#suspend-task]
 == suspend-task
 
+
+
+
 [source,clojure]
 ----
 (suspend-task bridge-fn & args)
 ----
-
 
 
 [.api-source]
@@ -63,11 +71,13 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [#duration--GT-millis]
 == duration->millis
 
+
+
+
 [source,clojure]
 ----
 (duration->millis duration)
 ----
-
 
 
 [.api-source]

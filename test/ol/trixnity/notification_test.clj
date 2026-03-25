@@ -3,9 +3,9 @@
    [clojure.test :refer [deftest is]]
    [missionary.core :as m]
    [ol.trixnity.internal :as internal]
-  [ol.trixnity.internal.bridge :as bridge]
-  [ol.trixnity.notification :as sut]
-  [ol.trixnity.schemas :as schemas])
+   [ol.trixnity.internal.bridge :as bridge]
+   [ol.trixnity.notification :as sut]
+   [ol.trixnity.schemas :as schemas])
   (:import
    [de.connect2x.trixnity.clientserverapi.model.sync Sync$Response]
    [java.io Closeable]
@@ -23,15 +23,15 @@
   (ns-resolve ns-sym var-sym))
 
 (deftest notification-dismiss-task-surfaces-return-missionary-tasks-test
-  (let [dismiss-var              (resolve-var 'ol.trixnity.notification
-                                              'dismiss)
-        bridge-dismiss-var       (resolve-var 'ol.trixnity.internal.bridge
-                                              'notification-dismiss)
-        dismiss-all-var          (resolve-var 'ol.trixnity.notification
-                                              'dismiss-all)
-        bridge-dismiss-all-var   (resolve-var 'ol.trixnity.internal.bridge
-                                              'notification-dismiss-all)
-        calls                    (atom [])]
+  (let [dismiss-var            (resolve-var 'ol.trixnity.notification
+                                            'dismiss)
+        bridge-dismiss-var     (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-dismiss)
+        dismiss-all-var        (resolve-var 'ol.trixnity.notification
+                                            'dismiss-all)
+        bridge-dismiss-all-var (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-dismiss-all)
+        calls                  (atom [])]
     (is (some? dismiss-var)
         "ol.trixnity.notification/dismiss is missing")
     (is (some? bridge-dismiss-var)
@@ -70,10 +70,10 @@
              @calls)))))
 
 (deftest notification-dismiss-validates-id-before-bridge-test
-  (let [dismiss-var            (resolve-var 'ol.trixnity.notification 'dismiss)
-        bridge-dismiss-var     (resolve-var 'ol.trixnity.internal.bridge
-                                            'notification-dismiss)
-        called?                (atom false)]
+  (let [dismiss-var        (resolve-var 'ol.trixnity.notification 'dismiss)
+        bridge-dismiss-var (resolve-var 'ol.trixnity.internal.bridge
+                                        'notification-dismiss)
+        called?            (atom false)]
     (is (some? dismiss-var)
         "ol.trixnity.notification/dismiss is missing")
     (is (some? bridge-dismiss-var)

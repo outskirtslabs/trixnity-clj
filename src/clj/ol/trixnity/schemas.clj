@@ -42,6 +42,15 @@
   (and (instance? Class value)
        (.isAssignableFrom expected ^Class value)))
 
+(defn- non-blank-string?
+  [value]
+  (and (string? value)
+       (not (str/blank? value))))
+
+(defn- message-kind-schema
+  [kind]
+  [:enum kind (name kind) (str kind)])
+
 (defn schemas
   "Returns the project Malli schema map for `opts`."
   [_]
@@ -70,6 +79,12 @@
    ::transaction-id                     :string
    ::device-id                          :string
    ::body                               :string
+   ::source-path                        [:fn non-blank-string?]
+   ::file-name                          [:fn non-blank-string?]
+   ::mime-type                          [:fn non-blank-string?]
+   ::size-bytes                         nat-int?
+   ::height                             pos-int?
+   ::width                              pos-int?
    ::key                                :string
    ::display-name                       :string
    ::avatar-url                         :string
@@ -222,13 +237,68 @@
     [::event-id ::event-id]
     [::relates-to {:optional true} ::Relation]]
 
-   ::MessageSpec
+   ::TextMessageSpec
    [:map
-    [::kind ::kind]
+    [::kind (message-kind-schema :text)]
     [::body ::body]
     [::format {:optional true} ::format]
     [::formatted-body {:optional true} ::formatted-body]
     [::reply-to {:optional true} ::ReplyTarget]]
+
+   ::EmoteMessageSpec
+   [:map
+    [::kind (message-kind-schema :emote)]
+    [::body ::body]
+    [::format {:optional true} ::format]
+    [::formatted-body {:optional true} ::formatted-body]
+    [::reply-to {:optional true} ::ReplyTarget]]
+
+   ::AudioMessageSpec
+   [:map
+    [::kind (message-kind-schema :audio)]
+    [::body ::body]
+    [::source-path ::source-path]
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes {:optional true} ::size-bytes]
+    [::duration {:optional true} ::duration]
+    [::format {:optional true} ::format]
+    [::formatted-body {:optional true} ::formatted-body]
+    [::reply-to {:optional true} ::ReplyTarget]]
+
+   ::ImageMessageSpec
+   [:map
+    [::kind (message-kind-schema :image)]
+    [::body ::body]
+    [::source-path ::source-path]
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes {:optional true} ::size-bytes]
+    [::height {:optional true} ::height]
+    [::width {:optional true} ::width]
+    [::format {:optional true} ::format]
+    [::formatted-body {:optional true} ::formatted-body]
+    [::reply-to {:optional true} ::ReplyTarget]]
+
+   ::FileMessageSpec
+   [:map
+    [::kind (message-kind-schema :file)]
+    [::body ::body]
+    [::source-path ::source-path]
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes {:optional true} ::size-bytes]
+    [::format {:optional true} ::format]
+    [::formatted-body {:optional true} ::formatted-body]
+    [::reply-to {:optional true} ::ReplyTarget]]
+
+   ::MessageSpec
+   [:or
+    ::TextMessageSpec
+    ::EmoteMessageSpec
+    ::AudioMessageSpec
+    ::ImageMessageSpec
+    ::FileMessageSpec]
 
    ::Event
    [:map

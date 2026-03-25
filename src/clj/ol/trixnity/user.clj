@@ -132,13 +132,13 @@
   (if (instance? Class event-class-or-content)
     (do
       (mx/validate!
-                    ::mx/room-event-content-class
-                    event-class-or-content)
+       ::mx/room-event-content-class
+       event-class-or-content)
       (internal/observe-flow client (bridge/can-send-event-by-class client room-id event-class-or-content)))
     (do
       (mx/validate!
-                    ::mx/room-event-content
-                    event-class-or-content)
+       ::mx/room-event-content
+       event-class-or-content)
       (internal/observe-flow client (bridge/can-send-event-by-content client room-id event-class-or-content)))))
 
 (defn get-presence
@@ -155,8 +155,8 @@
    (get-account-data client event-content-class ""))
   ([client event-content-class key]
    (mx/validate!
-                 ::mx/global-account-data-event-content-class
-                 event-content-class)
+    ::mx/global-account-data-event-content-class
+    event-content-class)
    (mx/validate! ::mx/key key)
    (internal/observe-flow client (bridge/user-account-data client event-content-class key))))
 

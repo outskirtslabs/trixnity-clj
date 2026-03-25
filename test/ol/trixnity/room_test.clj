@@ -87,6 +87,36 @@
       (is (= [:client-handle "!room:example.org" "$event" "🔥" nil]
              (:send-reaction @calls))))))
 
+(deftest send-message-accepts-and-forwards-rich-message-specs-test
+  (let [calls   (atom [])
+        timeout (Duration/ofSeconds 5)
+        emote   (msg/reply-to
+                 (msg/emote "/me waves")
+                 {::schemas/event-id "$parent"})
+        audio   (msg/reply-to
+                 (msg/audio "/tmp/audio/intro.ogg"
+                            {::schemas/body       "Intro clip"
+                             ::schemas/file-name  "intro.ogg"
+                             ::schemas/mime-type  "audio/ogg"
+                             ::schemas/size-bytes 1024
+                             ::schemas/duration   (Duration/ofSeconds 42)})
+                 {::schemas/event-id "$thread"})]
+    (with-redefs [bridge/send-message
+                  (fn [client room-id sent-message bridge-timeout on-success _]
+                    (swap! calls conj [client room-id sent-message bridge-timeout])
+                    (on-success "$txn")
+                    (->StubCloseable (atom 0)))]
+      (is (= "$txn"
+             (realize-task
+              (sut/send-message :client-handle "!room:example.org" emote
+                                {::schemas/timeout timeout}))))
+      (is (= "$txn"
+             (realize-task
+              (sut/send-message :client-handle "!room:example.org" audio)))))
+    (is (= [[:client-handle "!room:example.org" emote timeout]
+            [:client-handle "!room:example.org" audio nil]]
+           @calls))))
+
 (deftest join-room-task-surface-returns-a-missionary-task-test
   (let [join-room-var        (resolve-var 'ol.trixnity.room 'join-room)
         bridge-join-room-var (resolve-var 'ol.trixnity.internal.bridge 'join-room)
@@ -113,22 +143,22 @@
              @calls)))))
 
 (deftest room-task-surface-additions-return-missionary-tasks-test
-  (let [forget-room-var              (resolve-var 'ol.trixnity.room 'forget-room)
-        bridge-forget-room-var       (resolve-var 'ol.trixnity.internal.bridge
-                                                  'forget-room)
-        cancel-send-message-var      (resolve-var 'ol.trixnity.room
-                                                  'cancel-send-message)
-        bridge-cancel-message-var    (resolve-var 'ol.trixnity.internal.bridge
-                                                  'cancel-send-message)
-        retry-send-message-var       (resolve-var 'ol.trixnity.room
-                                                  'retry-send-message)
-        bridge-retry-message-var     (resolve-var 'ol.trixnity.internal.bridge
-                                                  'retry-send-message)
-        fill-timeline-gaps-var       (resolve-var 'ol.trixnity.room
-                                                  'fill-timeline-gaps)
-        bridge-fill-timeline-var     (resolve-var 'ol.trixnity.internal.bridge
-                                                  'fill-timeline-gaps)
-        calls                        (atom [])]
+  (let [forget-room-var           (resolve-var 'ol.trixnity.room 'forget-room)
+        bridge-forget-room-var    (resolve-var 'ol.trixnity.internal.bridge
+                                               'forget-room)
+        cancel-send-message-var   (resolve-var 'ol.trixnity.room
+                                               'cancel-send-message)
+        bridge-cancel-message-var (resolve-var 'ol.trixnity.internal.bridge
+                                               'cancel-send-message)
+        retry-send-message-var    (resolve-var 'ol.trixnity.room
+                                               'retry-send-message)
+        bridge-retry-message-var  (resolve-var 'ol.trixnity.internal.bridge
+                                               'retry-send-message)
+        fill-timeline-gaps-var    (resolve-var 'ol.trixnity.room
+                                               'fill-timeline-gaps)
+        bridge-fill-timeline-var  (resolve-var 'ol.trixnity.internal.bridge
+                                               'fill-timeline-gaps)
+        calls                     (atom [])]
     (is (some? forget-room-var)
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)

@@ -317,3 +317,43 @@ When `key` is omitted, the empty-string state key is used.
 
 [.api-source]
 link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L150-L161[source,window=_blank]
+
+'''
+
+[#get-direct-chats]
+== get-direct-chats
+
+
+
+
+[source,clojure]
+----
+(get-direct-chats client)
+----
+
+Returns a Missionary flow of the current `m.direct` mapping.
+
+The emitted value is a map of Matrix user ids to sets of direct-room ids.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L163-L168[source,window=_blank]
+
+'''
+
+[#set-direct-chats]
+== set-direct-chats
+
+
+
+
+[source,clojure]
+----
+(set-direct-chats client mappings)
+----
+
+Writes the `m.direct` mapping and returns a Missionary task.
+
+`mappings` must be a map of Matrix user ids to sets of room ids.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/user.clj#L170-L178[source,window=_blank]

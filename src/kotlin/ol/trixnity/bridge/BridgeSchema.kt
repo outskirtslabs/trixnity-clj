@@ -86,6 +86,13 @@ internal object BridgeSchema {
     object MessageSpec {
         val kind: Keyword = Keyword.intern(schemaNamespace, "kind")
         val body: Keyword = Keyword.intern(schemaNamespace, "body")
+        val sourcePath: Keyword = Keyword.intern(schemaNamespace, "source-path")
+        val fileName: Keyword = Keyword.intern(schemaNamespace, "file-name")
+        val mimeType: Keyword = Keyword.intern(schemaNamespace, "mime-type")
+        val sizeBytes: Keyword = Keyword.intern(schemaNamespace, "size-bytes")
+        val duration: Keyword = Keyword.intern(schemaNamespace, "duration")
+        val height: Keyword = Keyword.intern(schemaNamespace, "height")
+        val width: Keyword = Keyword.intern(schemaNamespace, "width")
         val format: Keyword = Keyword.intern(schemaNamespace, "format")
         val formattedBody: Keyword = Keyword.intern(schemaNamespace, "formatted-body")
         val replyTo: Keyword = Keyword.intern(schemaNamespace, "reply-to")

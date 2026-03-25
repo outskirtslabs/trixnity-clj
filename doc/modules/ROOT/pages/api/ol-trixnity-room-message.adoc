@@ -6,9 +6,11 @@ Helpers for constructing normalized room message payloads.
 This namespace provides small builders for the message-spec maps accepted by
 xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
 
-The helpers here focus on common text-message cases:
+The helpers here cover the common message-spec cases:
 
 - <<text,`text`>> builds a normalized text message payload
+- <<emote,`emote`>> builds a normalized emote message payload
+- <<audio,`audio`>>, <<image,`image`>>, and <<file,`file`>> build normalized attachment payloads
 - <<reply-to,`reply-to`>> attaches reply metadata from a normalized event map
 
 Use xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`] to inspect the events you are replying to.
@@ -28,7 +30,83 @@ Use xref:api/ol-trixnity-event.adoc[`ol.trixnity.event`] to inspect the events y
 Builds a text message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L19-L30[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L54-L64[source,window=_blank]
+
+'''
+
+[#emote]
+== emote
+
+
+
+
+[source,clojure]
+----
+(emote body)
+(emote body opts)
+----
+
+Builds an emote message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L66-L76[source,window=_blank]
+
+'''
+
+[#audio]
+== audio
+
+
+
+
+[source,clojure]
+----
+(audio source-path)
+(audio source-path opts)
+----
+
+Builds an audio message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L78-L83[source,window=_blank]
+
+'''
+
+[#image]
+== image
+
+
+
+
+[source,clojure]
+----
+(image source-path)
+(image source-path opts)
+----
+
+Builds an image message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L85-L90[source,window=_blank]
+
+'''
+
+[#file]
+== file
+
+
+
+
+[source,clojure]
+----
+(file source-path)
+(file source-path opts)
+----
+
+Builds a file message-spec map understood by xref:api/ol-trixnity-room.adoc#send-message[`ol.trixnity.room/send-message`].
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L92-L97[source,window=_blank]
 
 '''
 
@@ -49,4 +127,4 @@ When `ev` already carries relation metadata, that relation is copied into the
 reply target so upstream threading semantics are preserved.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L32-L45[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room/message.clj#L99-L111[source,window=_blank]

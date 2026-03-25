@@ -3,9 +3,9 @@
    [clojure.test :refer [deftest is]]
    [missionary.core :as m]
    [ol.trixnity.internal :as internal]
-  [ol.trixnity.internal.bridge :as bridge]
-  [ol.trixnity.schemas :as schemas]
-  [ol.trixnity.user :as sut])
+   [ol.trixnity.internal.bridge :as bridge]
+   [ol.trixnity.schemas :as schemas]
+   [ol.trixnity.user :as sut])
   (:import
    [de.connect2x.trixnity.core.model.events EmptyEventContent]
    [java.io Closeable]))

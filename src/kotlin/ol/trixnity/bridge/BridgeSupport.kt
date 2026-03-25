@@ -8,6 +8,9 @@ import de.connect2x.trixnity.client.RepositoriesModule
 import de.connect2x.trixnity.client.media.okio.okio
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
+import de.connect2x.trixnity.utils.ByteArrayFlow
+import de.connect2x.trixnity.utils.byteArrayFlowFromInputStream
+import io.ktor.http.ContentType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -18,6 +21,7 @@ import okio.Path.Companion.toPath
 import java.io.Closeable
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.Duration
 
 internal data class RelationSpec(
@@ -33,13 +37,69 @@ internal data class ReplyTarget(
     val relatesTo: RelationSpec? = null,
 )
 
-internal data class MessageSpec(
-    val kind: String,
-    val body: String,
-    val format: String? = null,
-    val formattedBody: String? = null,
-    val replyTo: ReplyTarget? = null,
-)
+internal sealed interface MessageSpec {
+    val body: String
+    val format: String?
+    val formattedBody: String?
+    val replyTo: ReplyTarget?
+}
+
+internal data class TextMessageSpec(
+    override val body: String,
+    override val format: String? = null,
+    override val formattedBody: String? = null,
+    override val replyTo: ReplyTarget? = null,
+) : MessageSpec
+
+internal data class EmoteMessageSpec(
+    override val body: String,
+    override val format: String? = null,
+    override val formattedBody: String? = null,
+    override val replyTo: ReplyTarget? = null,
+) : MessageSpec
+
+internal sealed interface AttachmentMessageSpec : MessageSpec {
+    val sourcePath: Path
+    val fileName: String?
+    val mimeType: ContentType?
+    val sizeBytes: Long?
+}
+
+internal data class AudioMessageSpec(
+    override val body: String,
+    override val sourcePath: Path,
+    override val fileName: String? = null,
+    override val mimeType: ContentType? = null,
+    override val sizeBytes: Long? = null,
+    val durationMillis: Long? = null,
+    override val format: String? = null,
+    override val formattedBody: String? = null,
+    override val replyTo: ReplyTarget? = null,
+) : AttachmentMessageSpec
+
+internal data class ImageMessageSpec(
+    override val body: String,
+    override val sourcePath: Path,
+    override val fileName: String? = null,
+    override val mimeType: ContentType? = null,
+    override val sizeBytes: Long? = null,
+    val height: Int? = null,
+    val width: Int? = null,
+    override val format: String? = null,
+    override val formattedBody: String? = null,
+    override val replyTo: ReplyTarget? = null,
+) : AttachmentMessageSpec
+
+internal data class FileMessageSpec(
+    override val body: String,
+    override val sourcePath: Path,
+    override val fileName: String? = null,
+    override val mimeType: ContentType? = null,
+    override val sizeBytes: Long? = null,
+    override val format: String? = null,
+    override val formattedBody: String? = null,
+    override val replyTo: ReplyTarget? = null,
+) : AttachmentMessageSpec
 
 internal fun requireKeywordString(payload: Map<*, *>, key: Keyword): String =
     payload[key]?.toString()?.takeIf { it.isNotBlank() }
@@ -58,8 +118,39 @@ internal fun requireKeywordValue(payload: Map<*, *>, key: Keyword): Any =
 internal fun optionalKeywordDuration(payload: KeywordMap, key: Keyword): Duration? =
     payload[key] as? Duration
 
+internal fun optionalKeywordLong(payload: Map<*, *>, key: Keyword): Long? =
+    (payload[key] as? Number)?.toLong()
+
+internal fun optionalKeywordInt(payload: Map<*, *>, key: Keyword): Int? =
+    (payload[key] as? Number)?.toInt()
+
+internal fun parseContentType(value: String, key: Keyword): ContentType =
+    try {
+        ContentType.parse(value)
+    } catch (error: Throwable) {
+        throw IllegalArgumentException("invalid MIME type for $key: $value", error)
+    }
+
+internal fun optionalKeywordContentType(payload: Map<*, *>, key: Keyword): ContentType? =
+    optionalKeywordString(payload, key)?.let { parseContentType(it, key) }
+
+internal fun requireReadablePath(payload: Map<*, *>, key: Keyword): Path {
+    val path = try {
+        Paths.get(requireKeywordString(payload, key)).toAbsolutePath().normalize()
+    } catch (error: Throwable) {
+        throw IllegalArgumentException("message source path for $key is invalid", error)
+    }
+    if (!Files.isReadable(path) || !Files.isRegularFile(path)) {
+        throw IllegalArgumentException("message source path is not readable: $path")
+    }
+    return path
+}
+
+internal fun byteArrayFlowFromPath(path: Path): ByteArrayFlow =
+    byteArrayFlowFromInputStream { Files.newInputStream(path) }
+
 internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec {
-    val raw = requireKeywordValue(payload, key) as? Map<*, *>
+    val raw = requireKeywordValue(payload, key) as? KeywordMap
         ?: throw IllegalArgumentException("request payload is missing message map under $key")
 
     val replyTo = (raw[BridgeSchema.MessageSpec.replyTo] as? Map<*, *>)?.let {
@@ -80,13 +171,64 @@ internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec 
         )
     }
 
-    return MessageSpec(
-        kind = requireKeywordString(raw, BridgeSchema.MessageSpec.kind),
-        body = requireKeywordString(raw, BridgeSchema.MessageSpec.body),
-        format = optionalKeywordString(raw, BridgeSchema.MessageSpec.format),
-        formattedBody = optionalKeywordString(raw, BridgeSchema.MessageSpec.formattedBody),
-        replyTo = replyTo,
-    )
+    val kind = requireKeywordString(raw, BridgeSchema.MessageSpec.kind).removePrefix(":")
+    val body = requireKeywordString(raw, BridgeSchema.MessageSpec.body)
+    val format = optionalKeywordString(raw, BridgeSchema.MessageSpec.format)
+    val formattedBody = optionalKeywordString(raw, BridgeSchema.MessageSpec.formattedBody)
+
+    return when (kind) {
+        "text" -> TextMessageSpec(
+            body = body,
+            format = format,
+            formattedBody = formattedBody,
+            replyTo = replyTo,
+        )
+
+        "emote" -> EmoteMessageSpec(
+            body = body,
+            format = format,
+            formattedBody = formattedBody,
+            replyTo = replyTo,
+        )
+
+        "audio" -> AudioMessageSpec(
+            body = body,
+            sourcePath = requireReadablePath(raw, BridgeSchema.MessageSpec.sourcePath),
+            fileName = optionalKeywordString(raw, BridgeSchema.MessageSpec.fileName),
+            mimeType = optionalKeywordContentType(raw, BridgeSchema.MessageSpec.mimeType),
+            sizeBytes = optionalKeywordLong(raw, BridgeSchema.MessageSpec.sizeBytes),
+            durationMillis = optionalKeywordDuration(raw, BridgeSchema.MessageSpec.duration)?.toMillis(),
+            format = format,
+            formattedBody = formattedBody,
+            replyTo = replyTo,
+        )
+
+        "image" -> ImageMessageSpec(
+            body = body,
+            sourcePath = requireReadablePath(raw, BridgeSchema.MessageSpec.sourcePath),
+            fileName = optionalKeywordString(raw, BridgeSchema.MessageSpec.fileName),
+            mimeType = optionalKeywordContentType(raw, BridgeSchema.MessageSpec.mimeType),
+            sizeBytes = optionalKeywordLong(raw, BridgeSchema.MessageSpec.sizeBytes),
+            height = optionalKeywordInt(raw, BridgeSchema.MessageSpec.height),
+            width = optionalKeywordInt(raw, BridgeSchema.MessageSpec.width),
+            format = format,
+            formattedBody = formattedBody,
+            replyTo = replyTo,
+        )
+
+        "file" -> FileMessageSpec(
+            body = body,
+            sourcePath = requireReadablePath(raw, BridgeSchema.MessageSpec.sourcePath),
+            fileName = optionalKeywordString(raw, BridgeSchema.MessageSpec.fileName),
+            mimeType = optionalKeywordContentType(raw, BridgeSchema.MessageSpec.mimeType),
+            sizeBytes = optionalKeywordLong(raw, BridgeSchema.MessageSpec.sizeBytes),
+            format = format,
+            formattedBody = formattedBody,
+            replyTo = replyTo,
+        )
+
+        else -> error("unsupported message kind: $kind")
+    }
 }
 
 internal fun relationFrom(spec: RelationSpec?): RelatesTo? =

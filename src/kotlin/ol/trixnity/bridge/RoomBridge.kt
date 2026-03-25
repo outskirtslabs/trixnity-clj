@@ -4,6 +4,11 @@ import clojure.lang.Keyword
 import de.connect2x.trixnity.client.flatten
 import de.connect2x.trixnity.client.flattenValues
 import de.connect2x.trixnity.client.room
+import de.connect2x.trixnity.client.room.message.MessageBuilder
+import de.connect2x.trixnity.client.room.message.audio
+import de.connect2x.trixnity.client.room.message.emote
+import de.connect2x.trixnity.client.room.message.file
+import de.connect2x.trixnity.client.room.message.image
 import de.connect2x.trixnity.clientserverapi.model.room.CreateRoom
 import de.connect2x.trixnity.clientserverapi.model.room.DirectoryVisibility
 import de.connect2x.trixnity.client.room.message.react
@@ -22,6 +27,66 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.Closeable
 import java.time.Duration
+
+internal suspend fun MessageBuilder.applyMessageSpec(messageSpec: MessageSpec) {
+    when (messageSpec) {
+        is TextMessageSpec -> text(
+            body = messageSpec.body,
+            format = messageSpec.format,
+            formattedBody = messageSpec.formattedBody,
+        )
+
+        is EmoteMessageSpec -> emote(
+            body = messageSpec.body,
+            format = messageSpec.format,
+            formattedBody = messageSpec.formattedBody,
+        )
+
+        is AudioMessageSpec -> audio(
+            body = messageSpec.body,
+            audio = byteArrayFlowFromPath(messageSpec.sourcePath),
+            format = messageSpec.format,
+            formattedBody = messageSpec.formattedBody,
+            fileName = messageSpec.fileName,
+            type = messageSpec.mimeType,
+            size = messageSpec.sizeBytes,
+            duration = messageSpec.durationMillis,
+        )
+
+        is ImageMessageSpec -> image(
+            body = messageSpec.body,
+            image = byteArrayFlowFromPath(messageSpec.sourcePath),
+            format = messageSpec.format,
+            formattedBody = messageSpec.formattedBody,
+            fileName = messageSpec.fileName,
+            type = messageSpec.mimeType,
+            size = messageSpec.sizeBytes,
+            height = messageSpec.height,
+            width = messageSpec.width,
+        )
+
+        is FileMessageSpec -> file(
+            body = messageSpec.body,
+            file = byteArrayFlowFromPath(messageSpec.sourcePath),
+            format = messageSpec.format,
+            formattedBody = messageSpec.formattedBody,
+            fileName = messageSpec.fileName,
+            type = messageSpec.mimeType,
+            size = messageSpec.sizeBytes,
+        )
+    }
+
+    messageSpec.replyTo?.let {
+        reply(EventId(it.eventId), relationFrom(it.relatesTo))
+    }
+}
+
+internal suspend fun buildMessageContent(
+    messageBuilder: MessageBuilder,
+    messageSpec: MessageSpec,
+) = messageBuilder.build {
+    applyMessageSpec(messageSpec)
+}
 
 object RoomBridge {
     private data class CreateRoomSpec(
@@ -183,19 +248,7 @@ object RoomBridge {
         )
 
         client.room.sendMessage(RoomId(roomId)) {
-            when (parsedMessage.kind) {
-                "text", ":text" -> text(
-                    body = parsedMessage.body,
-                    format = parsedMessage.format,
-                    formattedBody = parsedMessage.formattedBody,
-                )
-
-                else -> error("unsupported message kind: ${parsedMessage.kind}")
-            }
-
-            parsedMessage.replyTo?.let {
-                reply(EventId(it.eventId), relationFrom(it.relatesTo))
-            }
+            applyMessageSpec(parsedMessage)
         }
     }
 

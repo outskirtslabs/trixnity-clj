@@ -58,3 +58,43 @@
              clojure.lang.ExceptionInfo
              #"Schema validation failed"
              (sut/validate! custom-registry ::even-int 3)))))))
+
+(deftest message-spec-schema-dispatches-by-kind-test
+  (let [schema   (m/schema ::sut/MessageSpec {:registry (sut/registry {})})
+        duration (Duration/ofSeconds 5)]
+    (is (m/validate schema {::sut/kind :text
+                            ::sut/body "hello"}))
+    (is (m/validate schema {::sut/kind           :emote
+                            ::sut/body           "/me waves"
+                            ::sut/formatted-body "<em>waves</em>"}))
+    (is (m/validate schema {::sut/kind        :audio
+                            ::sut/body        "Voice note"
+                            ::sut/source-path "/tmp/voice-note.opus"
+                            ::sut/file-name   "voice-note.opus"
+                            ::sut/mime-type   "audio/ogg"
+                            ::sut/size-bytes  1024
+                            ::sut/duration    duration}))
+    (is (m/validate schema {::sut/kind        :image
+                            ::sut/body        "Poster"
+                            ::sut/source-path "/tmp/poster.png"
+                            ::sut/file-name   "poster.png"
+                            ::sut/height      800
+                            ::sut/width       600}))
+    (is (m/validate schema {::sut/kind        :file
+                            ::sut/body        "Spec sheet"
+                            ::sut/source-path "/tmp/spec-sheet.pdf"
+                            ::sut/file-name   "spec-sheet.pdf"
+                            ::sut/mime-type   "application/pdf"}))
+    (is (not (m/validate schema {::sut/kind :audio
+                                 ::sut/body "Voice note"})))
+    (is (not (m/validate schema {::sut/kind        :audio
+                                 ::sut/body        "Voice note"
+                                 ::sut/source-path ""})))
+    (is (not (m/validate schema {::sut/kind        :image
+                                 ::sut/body        "Poster"
+                                 ::sut/source-path "/tmp/poster.png"
+                                 ::sut/height      -1})))
+    (is (not (m/validate schema {::sut/kind        :file
+                                 ::sut/body        "Spec sheet"
+                                 ::sut/source-path "/tmp/spec-sheet.pdf"
+                                 ::sut/size-bytes  -1})))))

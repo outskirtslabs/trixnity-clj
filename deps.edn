@@ -1,37 +1,47 @@
-{:paths   ["src/clj" "target/classes"]
- :deps    {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.2.0"}
-           de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.2.0"}
-           de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.2.0"}
-           io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.4.1"}
-           io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.4.1"}
-           org.slf4j/slf4j-nop                                              {:mvn/version "2.0.17"}
-           missionary/missionary                                            {:mvn/version "b.47"}
-           andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
-                                                                             :git/sha    "8b9234061a033c06438b3a0542d987046abf06db"
-                                                                             :exclusions [org.suskalo/coffi]}
-           org.suskalo/coffi                                                {:git/sha "cf4891a8d33cb9119eb96ad1ad66db483dd0beb2"
-                                                                             :git/url "https://github.com/ramblurr/coffi"}
-           org.babashka/http-client                                         {:mvn/version "0.4.23"}
-           com.fulcrologic/guardrails                                       {:mvn/version "1.2.16"}
-           metosin/malli                                                    {:mvn/version "0.20.1"}}
- :aliases {:kaocha {:extra-paths ["test"]
-                    :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
-                    :main-opts   ["-m" "kaocha.runner"]}
-           :dev    {:extra-paths ["dev"]
-                    :jvm-opts    ["-Dguardrails.enabled=true"
-                                  "--enable-native-access=ALL-UNNAMED"]
-                    :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
-                                  io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
-                                  djblue/portal                            {:mvn/version "0.63.0"}
-                                  com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}}
-           :build  {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.13"}
-                                 slipset/deps-deploy           {:mvn/version "0.2.2"}}
-                    :ns-default build}
-           :neil   {:project {:name        com.outskirtslabs/trixnity-clj
-                              :license     {:id "Apache-2.0"}
-                              :description "A Clojure adapter for Trixnity, a Matrix SDK."
-                              :platforms   [:clj]
-                              :created     "2026-03-09"
-                              :status      :experimental
-                              :url         "https://github.com/outskirtslabs/trixnity-clj"
-                              :version     "0.0.1"}}}}
+{:paths
+ ["src/clj" "target/classes"]
+
+ :deps
+ {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.2.0"}
+  de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.2.0"}
+  de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.2.0"}
+  io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.4.1"}
+  io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.4.1"}
+  org.slf4j/slf4j-nop                                              {:mvn/version "2.0.17"}
+  missionary/missionary                                            {:mvn/version "b.47"}
+  andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
+                                                                    :git/sha    "8b9234061a033c06438b3a0542d987046abf06db"
+                                                                    :exclusions [org.suskalo/coffi]}
+  org.suskalo/coffi                                                {:git/sha "cf4891a8d33cb9119eb96ad1ad66db483dd0beb2"
+                                                                    :git/url "https://github.com/ramblurr/coffi"}
+  org.babashka/http-client                                         {:mvn/version "0.4.23"}
+  com.fulcrologic/guardrails                                       {:mvn/version "1.2.16"}
+  metosin/malli                                                    {:mvn/version "0.20.1"}}
+
+ :deps/prep-lib
+ {:alias  :build
+  :fn     build/prep-lib
+  :ensure "target/classes"}
+
+ :aliases
+ {:kaocha {:extra-paths ["test"]
+           :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+           :main-opts   ["-m" "kaocha.runner"]}
+  :dev    {:extra-paths ["dev"]
+           :jvm-opts    ["-Dguardrails.enabled=true"
+                         "--enable-native-access=ALL-UNNAMED"]
+           :extra-deps  {dev.weavejester/hashp                    {:mvn/version "0.5.1"}
+                         io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
+                         djblue/portal                            {:mvn/version "0.63.0"}
+                         com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}}
+  :build  {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.13"}
+                        slipset/deps-deploy           {:mvn/version "0.2.2"}}
+           :ns-default build}
+  :neil   {:project {:name        com.outskirtslabs/trixnity-clj
+                     :license     {:id "Apache-2.0"}
+                     :description "A Clojure adapter for Trixnity, a Matrix SDK."
+                     :platforms   [:clj]
+                     :created     "2026-03-09"
+                     :status      :experimental
+                     :url         "https://github.com/outskirtslabs/trixnity-clj"
+                     :version     "0.0.1"}}}}

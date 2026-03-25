@@ -3,6 +3,7 @@
 (ns build
   (:require
    [clojure.edn :as edn]
+   [clojure.java.shell :as sh]
    [clojure.string :as str]
    [clojure.tools.build.api :as b]))
 
@@ -57,6 +58,19 @@
 
 (defn clean [_]
   (b/delete {:path "target"}))
+
+(defn prep-lib [_]
+  (let [{:keys [exit out err]} (sh/sh "mvn" "-q" "clean" "test")]
+    (when-not (zero? exit)
+      (throw (ex-info "Bridge compilation failed during deps prep."
+                      {:exit exit
+                       :out  out
+                       :err  err})))
+    (when-not (existing-dir? "target/classes")
+      (throw (ex-info "Bridge compilation did not produce target/classes."
+                      {:out out
+                       :err err})))
+    {:ensured "target/classes"}))
 
 (defn jar [_]
   (b/write-pom {:class-dir class-dir

@@ -98,21 +98,21 @@
                             (get opts ::mx/timeout)))))
 
 (defn join-room
-  "Joins `room-id` and returns a Missionary task.
+  "Joins `room-id-or-alias` and returns a Missionary task.
 
   Supported opts:
 
   | key | description
   |-----|-------------
   | `::mx/timeout` | Maximum time to wait for the join request |"
-  ([client room-id]
-   (join-room client room-id {}))
-  ([client room-id opts]
-   (mx/validate! ::mx/room-id room-id)
+  ([client room-id-or-alias]
+   (join-room client room-id-or-alias {}))
+  ([client room-id-or-alias opts]
+   (mx/validate! ::mx/room-id-or-alias room-id-or-alias)
    (let [opts (mx/validate! ::mx/JoinOpts opts)]
      (internal/suspend-task bridge/join-room
                             client
-                            room-id
+                            room-id-or-alias
                             (get opts ::mx/timeout)))))
 
 (defn forget-room

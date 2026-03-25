@@ -47,6 +47,12 @@
   (and (string? value)
        (not (str/blank? value))))
 
+(defn- matrix-id?
+  [sigil value]
+  (and (non-blank-string? value)
+       (str/starts-with? value sigil)
+       (str/includes? value ":")))
+
 (defn- message-kind-schema
   [kind]
   [:enum kind (name kind) (str kind)])
@@ -62,6 +68,9 @@
    ::room-name                                     :string
    ::topic                                         :string
    ::room-id                                       :string
+   ::room-alias-id                                 [:fn #(matrix-id? "#" %)]
+   ::room-id-or-alias                              [:fn #(or (matrix-id? "!" %)
+                                                             (matrix-id? "#" %))]
    ::membership                                    [:and
                                                     :keyword
                                                     [:fn #(= (name %)

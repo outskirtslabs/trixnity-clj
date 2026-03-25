@@ -98,3 +98,9 @@
                                  ::sut/body        "Spec sheet"
                                  ::sut/source-path "/tmp/spec-sheet.pdf"
                                  ::sut/size-bytes  -1})))))
+
+(deftest room-id-or-alias-schema-accepts-matrix-room-targets-test
+  (let [schema (m/schema ::sut/room-id-or-alias {:registry (sut/registry {})})]
+    (is (m/validate schema "!room:example.org"))
+    (is (m/validate schema "#ops:example.org"))
+    (is (not (m/validate schema "ops")))))

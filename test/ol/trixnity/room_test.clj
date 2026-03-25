@@ -142,6 +142,26 @@
       (is (= [:client-handle "!room:example.org" timeout]
              @calls)))))
 
+(deftest join-room-allows-room-aliases-and-rejects-invalid-targets-test
+  (let [calls   (atom [])
+        timeout (Duration/ofSeconds 5)]
+    (with-redefs [bridge/join-room
+                  (fn [client room-id-or-alias bridge-timeout on-success _]
+                    (swap! calls conj [client room-id-or-alias bridge-timeout])
+                    (on-success "!joined:example.org")
+                    (->StubCloseable (atom 0)))]
+      (is (= "!joined:example.org"
+             (realize-task
+              (sut/join-room :client-handle "#ops:example.org"
+                             {::schemas/timeout timeout}))))
+      (is (thrown-with-msg?
+           clojure.lang.ExceptionInfo
+           #"Schema validation failed"
+           (realize-task
+            (sut/join-room :client-handle "ops")))))
+    (is (= [[:client-handle "#ops:example.org" timeout]]
+           @calls))))
+
 (deftest room-task-surface-additions-return-missionary-tasks-test
   (let [forget-room-var           (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var    (resolve-var 'ol.trixnity.internal.bridge

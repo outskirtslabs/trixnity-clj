@@ -16,6 +16,7 @@ import de.connect2x.trixnity.client.room.message.reply
 import de.connect2x.trixnity.client.room.message.text
 import de.connect2x.trixnity.client.store.Room
 import de.connect2x.trixnity.core.model.EventId
+import de.connect2x.trixnity.core.model.RoomAliasId
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.InitialStateEvent
@@ -87,6 +88,15 @@ internal suspend fun buildMessageContent(
 ) = messageBuilder.build {
     applyMessageSpec(messageSpec)
 }
+
+internal fun parseJoinRoomTarget(roomIdOrAlias: String): Any =
+    when {
+        roomIdOrAlias.startsWith(RoomAliasId.sigilCharacter) -> RoomAliasId(roomIdOrAlias)
+        roomIdOrAlias.startsWith(RoomId.sigilCharacter) -> RoomId(roomIdOrAlias)
+        else -> throw IllegalArgumentException(
+            "join room target must be a Matrix room id or room alias: $roomIdOrAlias",
+        )
+    }
 
 object RoomBridge {
     private data class CreateRoomSpec(
@@ -199,7 +209,7 @@ object RoomBridge {
     @JvmStatic
     fun joinRoom(
         client: de.connect2x.trixnity.client.MatrixClient,
-        roomId: String,
+        roomIdOrAlias: String,
         timeout: Duration?,
         onSuccess: Any,
         onFailure: Any,
@@ -209,7 +219,11 @@ object RoomBridge {
         onFailure = onFailure,
         timeout = timeout,
     ) {
-        client.api.room.joinRoom(RoomId(roomId)).getOrThrow().full
+        when (val target = parseJoinRoomTarget(roomIdOrAlias)) {
+            is RoomAliasId -> client.api.room.joinRoom(target).getOrThrow().full
+            is RoomId -> client.api.room.joinRoom(target).getOrThrow().full
+            else -> error("unsupported join room target: $target")
+        }
     }
 
     @JvmStatic

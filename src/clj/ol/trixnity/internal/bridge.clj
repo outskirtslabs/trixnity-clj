@@ -80,8 +80,8 @@
 (defn invite-user [^MatrixClient client room-id user-id ^Duration timeout on-success on-failure]
   (RoomBridge/inviteUser client room-id user-id timeout on-success on-failure))
 
-(defn join-room [^MatrixClient client room-id ^Duration timeout on-success on-failure]
-  (RoomBridge/joinRoom client room-id timeout on-success on-failure))
+(defn join-room [^MatrixClient client room-id-or-alias ^Duration timeout on-success on-failure]
+  (RoomBridge/joinRoom client room-id-or-alias timeout on-success on-failure))
 
 (defn forget-room [^MatrixClient client room-id force on-success on-failure]
   (RoomBridge/forgetRoom client room-id force on-success on-failure))

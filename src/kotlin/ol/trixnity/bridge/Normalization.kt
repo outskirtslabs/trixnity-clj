@@ -112,7 +112,7 @@ internal suspend fun normalizeTimelineEvent(
             }
 
             is ReactionEventContent -> {
-                val annotation = content.relatesTo as? RelatesTo.Annotation
+                val annotation = content.relatesTo
                 annotation?.key?.let { put(BridgeSchema.Event.key, it) }
                 annotation?.let { put(BridgeSchema.Event.relatesTo, normalizeRelation(it)) }
             }

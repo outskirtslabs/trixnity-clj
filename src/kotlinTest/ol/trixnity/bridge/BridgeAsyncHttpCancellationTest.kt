@@ -79,7 +79,7 @@ class BridgeAsyncHttpCancellationTest {
 
         val handle = submitBridgeTask(
             scope = scope,
-            onSuccess = { value: Any? -> success.complete(value as List<String>) },
+            onSuccess = { value: Any? -> success.complete(requireStringList(value)) },
             onFailure = { error: Any? -> failure.complete(error as Throwable) },
         ) {
             try {
@@ -91,6 +91,11 @@ class BridgeAsyncHttpCancellationTest {
 
         return TaskProbe(handle, success, failure)
     }
+
+    private fun requireStringList(value: Any?): List<String> =
+        (value as? List<*>)?.map { entry ->
+            entry as? String ?: error("expected String callback entry, got ${entry?.javaClass?.name}")
+        } ?: error("expected List callback value, got ${value?.javaClass?.name}")
 
     @Test
     fun realHttpBackedOperationCompletesNormally() {

@@ -90,6 +90,7 @@ object NotificationBridge {
 
     @JvmStatic
     @Deprecated("use getAll/getById/getAllUpdates instead")
+    @Suppress("DEPRECATION")
     fun notifications(
         client: de.connect2x.trixnity.client.MatrixClient,
         decryptionTimeoutMs: Long?,
@@ -135,6 +136,7 @@ object NotificationBridge {
 
     @JvmStatic
     @Deprecated("use getAll/getById/getAllUpdates instead")
+    @Suppress("DEPRECATION")
     fun notificationsFromResponse(
         client: de.connect2x.trixnity.client.MatrixClient,
         response: Sync.Response,

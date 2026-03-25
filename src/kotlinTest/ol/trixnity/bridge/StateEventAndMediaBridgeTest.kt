@@ -5,7 +5,6 @@ import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
-import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.toByteArray
 import io.ktor.http.ContentType
 import java.lang.reflect.Proxy
@@ -19,8 +18,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 
 class StateEventAndMediaBridgeTest {
@@ -152,14 +153,14 @@ class StateEventAndMediaBridgeTest {
         val prepared: MutableList<ByteArray> = mutableListOf(),
         val contentTypes: MutableList<ContentType?> = mutableListOf(),
         val uploaded: MutableList<Pair<String, Boolean>> = mutableListOf(),
-        val uploadProgress: MutableList<MutableStateFlow<FileTransferProgress?>?> = mutableListOf(),
+        val uploadProgress: MutableList<Any?> = mutableListOf(),
     )
 
     private fun mediaService(recorder: MediaRecorder): MediaService =
         proxy(MediaService::class.java) { proxy, method, args ->
             when {
                 method.name.startsWith("prepareUploadMedia") -> {
-                    val content = runBlocking { (args[0] as ByteArrayFlow).toByteArray() }
+                    val content = runBlocking { requireByteArrayFlow(args[0]).toByteArray() }
                     recorder.prepared += content
                     recorder.contentTypes += args[1] as ContentType?
                     "upload://plain/${recorder.prepared.size}"
@@ -167,11 +168,11 @@ class StateEventAndMediaBridgeTest {
 
                 method.name.startsWith("uploadMedia") -> {
                     val cacheUri = args[0] as String
-                    val progress = args[1] as MutableStateFlow<FileTransferProgress?>?
+                    val progress = args[1]
                     val keepInCache = args[2] as Boolean
                     recorder.uploadProgress += progress
-                    progress?.value = FileTransferProgress(0, 4)
-                    progress?.value = FileTransferProgress(4, 4)
+                    emitProgress(progress, FileTransferProgress(0, 4))
+                    emitProgress(progress, FileTransferProgress(4, 4))
                     recorder.uploaded += cacheUri to keepInCache
                     "mxc://example.org/plain/${cacheUri.substringAfterLast('/')}"
                 }
@@ -182,6 +183,28 @@ class StateEventAndMediaBridgeTest {
                 else -> error("unexpected MediaService method ${method.name}")
             }
         }
+
+    private fun requireByteArrayFlow(value: Any?): Flow<ByteArray> =
+        (value as? Flow<*>)?.let { flow ->
+            flow.transformValues { chunk ->
+                chunk as? ByteArray ?: error("expected ByteArray chunk, got ${chunk?.javaClass?.name}")
+            }
+        } ?: error("expected Flow callback value, got ${value?.javaClass?.name}")
+
+    private fun Flow<*>.transformValues(requireValue: (Any?) -> ByteArray): Flow<ByteArray> =
+        kotlinx.coroutines.flow.flow {
+            collect { emit(requireValue(it)) }
+        }
+
+    private fun emitProgress(progress: Any?, value: FileTransferProgress) {
+        if (progress == null) return
+        require(progress is MutableStateFlow<*>) {
+            "expected MutableStateFlow progress sink, got ${progress.javaClass.name}"
+        }
+        progress.javaClass.methods.firstOrNull {
+            it.name == "tryEmit" && it.parameterCount == 1
+        }?.invoke(progress, value) ?: error("progress sink ${progress.javaClass.name} does not expose tryEmit(value)")
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> proxy(

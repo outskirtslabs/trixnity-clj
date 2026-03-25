@@ -14,12 +14,14 @@ import de.connect2x.trixnity.crypto.olm.StoredInboundMegolmMessageIndex
 import de.connect2x.trixnity.crypto.olm.StoredInboundMegolmSession
 import de.connect2x.trixnity.crypto.olm.StoredOlmSession
 import de.connect2x.trixnity.crypto.olm.StoredOutboundMegolmSession
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
+@OptIn(ExperimentalSerializationApi::class)
 object Sqlite4cljSerializers {
     @JvmStatic fun account(): KSerializer<Account> = Account.serializer()
     @JvmStatic fun authentication(): KSerializer<Authentication> = Authentication.serializer()
@@ -72,7 +74,6 @@ object Sqlite4cljSerializers {
         contentType: String,
     ): KSerializer<RoomOutboxMessage<MessageEventContent>> {
         val serializer = requireNotNull(mappings.message.find { it.type == contentType }).serializer
-        @Suppress("UNCHECKED_CAST")
-        return RoomOutboxMessage.Companion.serializer(serializer as KSerializer<MessageEventContent>)
+        return RoomOutboxMessage.Companion.serializer(serializer)
     }
 }

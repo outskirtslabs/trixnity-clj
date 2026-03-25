@@ -1,3 +1,8 @@
+@file:OptIn(
+    kotlinx.coroutines.ExperimentalCoroutinesApi::class,
+    kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi::class,
+)
+
 package ol.trixnity.bridge
 
 import clojure.lang.IFn
@@ -19,6 +24,7 @@ import de.connect2x.trixnity.utils.byteArrayFlowFromInputStream
 import io.ktor.http.ContentType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
@@ -149,7 +155,11 @@ internal fun requireKeywordClient(payload: KeywordMap, key: Keyword): MatrixClie
 internal fun requireKeywordValue(payload: Map<*, *>, key: Keyword): Any =
     payload[key] ?: throw IllegalArgumentException("request payload is missing required key $key")
 
-internal fun optionalKeywordDuration(payload: KeywordMap, key: Keyword): Duration? =
+internal fun requireKeywordMap(payload: Map<*, *>, key: Keyword): Map<*, *> =
+    payload[key] as? Map<*, *>
+        ?: throw IllegalArgumentException("request payload is missing map under $key")
+
+internal fun optionalKeywordDuration(payload: Map<*, *>, key: Keyword): Duration? =
     payload[key] as? Duration
 
 internal fun optionalKeywordLong(payload: Map<*, *>, key: Keyword): Long? =
@@ -191,8 +201,7 @@ internal fun byteArrayFlowFromPath(path: Path): ByteArrayFlow =
     byteArrayFlowFromInputStream { Files.newInputStream(path) }
 
 internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec {
-    val raw = requireKeywordValue(payload, key) as? KeywordMap
-        ?: throw IllegalArgumentException("request payload is missing message map under $key")
+    val raw = requireKeywordMap(payload, key)
 
     val replyTo = (raw[BridgeSchema.MessageSpec.replyTo] as? Map<*, *>)?.let {
         ReplyTarget(
@@ -273,8 +282,7 @@ internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec 
 }
 
 internal fun requireStateEventSpec(payload: KeywordMap, key: Keyword): StateEventSpec {
-    val raw = requireKeywordValue(payload, key) as? KeywordMap
-        ?: throw IllegalArgumentException("request payload is missing state-event map under $key")
+    val raw = requireKeywordMap(payload, key)
 
     val type = requireKeywordString(raw, BridgeSchema.type)
     val stateKey = optionalKeywordString(raw, BridgeSchema.stateKey) ?: ""
@@ -313,6 +321,7 @@ internal suspend fun uploadPreparedMedia(
 ): String =
     mediaService.uploadMedia(cacheUri, keepMediaInCache = keepInCache).getOrThrow()
 
+@ExperimentalCoroutinesApi
 private class ProgressCallbackStateFlow(
     private val onProgress: (FileTransferProgress) -> Unit,
 ) : MutableStateFlow<FileTransferProgress?> {
@@ -385,10 +394,15 @@ internal fun relationFrom(spec: RelationSpec?): RelatesTo? =
         else -> null
     }
 
+@Suppress("UNCHECKED_CAST")
+private fun invokeUntypedFunction1(callback: Function1<*, *>, value: Any?) {
+    (callback as Function1<Any?, Any?>).invoke(value)
+}
+
 internal fun invokeCallback(callback: Any, value: Any?) {
     when (callback) {
         is IFn -> callback.invoke(value)
-        is Function1<*, *> -> (callback as Function1<Any?, Any?>).invoke(value)
+        is Function1<*, *> -> invokeUntypedFunction1(callback, value)
         else -> {
             val invokeMethod = callback.javaClass.methods.firstOrNull {
                 it.name == "invoke" && it.parameterCount == 1

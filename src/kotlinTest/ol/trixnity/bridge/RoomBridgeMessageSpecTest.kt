@@ -10,7 +10,6 @@ import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.RoomMessageEventContent
-import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.toByteArray
 import io.ktor.http.ContentType
 import java.lang.reflect.Proxy
@@ -27,6 +26,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -269,14 +270,14 @@ class RoomBridgeMessageSpecTest {
         proxy(MediaService::class.java) { proxy, method, args ->
             when {
                 method.name.startsWith("prepareUploadMedia") -> {
-                    val content = runBlocking { (args[0] as ByteArrayFlow).toByteArray() }
+                    val content = runBlocking { requireByteArrayFlow(args[0]).toByteArray() }
                     recorder.uploadedPlain += content
                     recorder.plainContentTypes += args[1] as ContentType?
                     "upload://plain/${recorder.uploadedPlain.size}"
                 }
 
                 method.name.startsWith("prepareUploadEncryptedMedia") -> {
-                    val content = runBlocking { (args[0] as ByteArrayFlow).toByteArray() }
+                    val content = runBlocking { requireByteArrayFlow(args[0]).toByteArray() }
                     recorder.uploadedEncrypted += content
                     EncryptedFile(
                         url = "upload://encrypted/${recorder.uploadedEncrypted.size}",
@@ -291,6 +292,18 @@ class RoomBridgeMessageSpecTest {
                 method.name == "equals" -> proxy === args[0]
                 else -> error("unexpected MediaService method ${method.name}")
             }
+        }
+
+    private fun requireByteArrayFlow(value: Any?): Flow<ByteArray> =
+        (value as? Flow<*>)?.let { flow ->
+            flow.transformValues { chunk ->
+                chunk as? ByteArray ?: error("expected ByteArray chunk, got ${chunk?.javaClass?.name}")
+            }
+        } ?: error("expected Flow callback value, got ${value?.javaClass?.name}")
+
+    private fun Flow<*>.transformValues(requireValue: (Any?) -> ByteArray): Flow<ByteArray> =
+        kotlinx.coroutines.flow.flow {
+            collect { emit(requireValue(it)) }
         }
 
     @Suppress("UNCHECKED_CAST")

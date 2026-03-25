@@ -135,6 +135,7 @@
     </dependency>
   </dependencies>
   <build>
+    <sourceDirectory>${project.basedir}/src/kotlin</sourceDirectory>
     <resources>
       <resource>
         <directory>src/clj</directory>

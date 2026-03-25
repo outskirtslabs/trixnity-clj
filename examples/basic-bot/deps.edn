@@ -1,5 +1,6 @@
 {:paths ["src"]
- :deps  {com.outskirtslabs/trixnity-clj {:local/root "../../"}}
+ :deps  {com.outskirtslabs/trixnity-clj {:git/url "https://github.com/outskirtslabs/trixnity-clj.git"
+                                         :git/sha "0d3bf7df9863c1c6941f93bba87eab704db4815e"}}
  :aliases
  {:run  {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
          :main-opts ["-m" "basic-bot.main"]}

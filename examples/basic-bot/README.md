@@ -15,16 +15,10 @@ It demonstrates:
 
 ## Requirements
 
-Build the bridge classes from the repo root first:
-
-```bash
-bb bridge:build
-```
-
 Set these environment variables:
 
 - `MATRIX_HOMESERVER_URL`
-- `MATRIX_BOT_USERNAME`
+- `MATRIX_BOT_USER_ID`
 - `MATRIX_BOT_PASSWORD`
 
 ## Run
@@ -32,6 +26,7 @@ Set these environment variables:
 From this directory:
 
 ```bash
+clojure -X:deps prep
 clojure -M:run
 ```
 

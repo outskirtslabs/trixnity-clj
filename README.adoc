@@ -17,6 +17,21 @@ The flow-heavy parts are especially awkward because they are long-lived Kotlin s
 
 Project status: *https://docs.outskirtslabs.com/open-source-vital-signs#experimental[Experimental]*.
 
+== Installation
+
+`trixnity-clj` currently prepares its Kotlin bridge via `:deps/prep-lib`, so users must:
+
+* have `mvn` available on `PATH`
+* run `clojure -X:deps prep` before first use
+
+[source,clojure]
+----
+;; deps.edn
+{:deps {com.outskirtslabs/trixnity-clj
+        {:git/url "https://github.com/outskirtslabs/trixnity-clj.git"
+         :git/sha "0d3bf7df9863c1c6941f93bba87eab704db4815e"}}}
+----
+
 == Repository Backend
 
 In Trixnity, a repository module is the persistence backend for all the client state it needs to keep around: sync tokens, rooms, timelines, outbox entries, encryption keys, notifications, and the rest of the Matrix baggage.

@@ -31,6 +31,8 @@ object ClientBridge {
         val homeserverUrl = requireKeywordString(request, BridgeSchema.OpenClientRequest.homeserverUrl)
         val userId = requireKeywordString(request, BridgeSchema.OpenClientRequest.userId)
         val password = requireKeywordString(request, BridgeSchema.OpenClientRequest.password)
+        val deviceName = optionalKeywordString(request, BridgeSchema.OpenClientRequest.deviceName)
+        val deviceId = optionalKeywordString(request, BridgeSchema.OpenClientRequest.deviceId)
         val databasePath = requireKeywordString(request, BridgeSchema.OpenClientRequest.databasePath)
         val mediaPath = requireKeywordString(request, BridgeSchema.OpenClientRequest.mediaPath)
         val repositoriesModule = createRepositoriesModule(databasePath)
@@ -52,6 +54,8 @@ object ClientBridge {
                     baseUrl = URLBuilder().takeFrom(homeserverUrl).build(),
                     identifier = IdentifierType.User(userId),
                     password = password,
+                    deviceId = deviceId,
+                    initialDeviceDisplayName = deviceName,
                     refreshToken = true,
                 ).getOrThrow(),
             ).getOrThrow()

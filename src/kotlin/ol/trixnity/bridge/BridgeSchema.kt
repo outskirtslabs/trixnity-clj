@@ -28,6 +28,7 @@ internal object BridgeSchema {
     val wait: Keyword = Keyword.intern(schemaNamespace, "wait")
     val force: Keyword = Keyword.intern(schemaNamespace, "force")
     val limit: Keyword = Keyword.intern(schemaNamespace, "limit")
+    val deviceName: Keyword = Keyword.intern(schemaNamespace, "device-name")
     val displayName: Keyword = Keyword.intern(schemaNamespace, "display-name")
     val senderDisplayName: Keyword = Keyword.intern(schemaNamespace, "sender-display-name")
     val avatarUrl: Keyword = Keyword.intern(schemaNamespace, "avatar-url")
@@ -262,6 +263,8 @@ internal object BridgeSchema {
         val homeserverUrl: Keyword = BridgeSchema.homeserverUrl
         val userId: Keyword = BridgeSchema.userId
         val password: Keyword = BridgeSchema.password
+        val deviceName: Keyword = BridgeSchema.deviceName
+        val deviceId: Keyword = BridgeSchema.deviceId
         val databasePath: Keyword = BridgeSchema.databasePath
         val mediaPath: Keyword = BridgeSchema.mediaPath
     }

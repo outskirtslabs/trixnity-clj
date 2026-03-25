@@ -54,108 +54,109 @@
 (defn schemas
   "Returns the project Malli schema map for `opts`."
   [_]
-  {::homeserver-url                     :string
-   ::password                           :string
-   ::database-path                      :string
-   ::media-path                         :string
-   ::client                             [:fn #(instance? MatrixClient %)]
-   ::room-name                          :string
-   ::topic                              :string
-   ::room-id                            :string
-   ::membership                         [:and
-                                         :keyword
-                                         [:fn #(= (name %)
-                                                  (str/lower-case
-                                                   (name %)))]]
-   ::user-id                            :string
-   ::invite                             [:vector ::user-id]
-   ::preset                             [:enum :private-chat :public-chat :trusted-private-chat]
-   ::visibility                         [:enum :public :private]
-   ::users                              [:set ::user-id]
-   ::event-id                           :string
-   ::version                            :string
-   ::state-key                          :string
-   ::transaction-id                     :string
-   ::device-id                          :string
-   ::body                               :string
-   ::source-path                        [:fn non-blank-string?]
-   ::file-name                          [:fn non-blank-string?]
-   ::mime-type                          [:fn non-blank-string?]
-   ::size-bytes                         nat-int?
-   ::height                             pos-int?
-   ::width                              pos-int?
-   ::key                                :string
-   ::display-name                       :string
-   ::avatar-url                         :string
-   ::time-zone                          :string
-   ::duration                           [:fn #(instance? Duration %)]
-   ::timeout                            ::duration
-   ::decryption-timeout                 ::duration
-   ::wait                               :boolean
-   ::force                              :boolean
-   ::limit                              pos-int?
-   ::fetch-timeout                      ::duration
-   ::fetch-size                         pos-int?
-   ::allow-replace-content              :boolean
-   ::min-size                           nat-int?
-   ::max-size                           nat-int?
-   ::sync-response-buffer-size          nat-int?
-   ::direction                          [:enum :backwards :forwards]
-   ::response                           [:fn #(instance? Sync$Response %)]
-   ::room-event-content-class           [:fn #(class-assignable-to? RoomEventContent %)]
-   ::state-event-content-class          [:fn #(class-assignable-to? StateEventContent %)]
+  {::homeserver-url                                :string
+   ::password                                      :string
+   ::database-path                                 :string
+   ::media-path                                    :string
+   ::client                                        [:fn #(instance? MatrixClient %)]
+   ::room-name                                     :string
+   ::topic                                         :string
+   ::room-id                                       :string
+   ::membership                                    [:and
+                                                    :keyword
+                                                    [:fn #(= (name %)
+                                                             (str/lower-case
+                                                              (name %)))]]
+   ::user-id                                       :string
+   ::invite                                        [:vector ::user-id]
+   ::preset                                        [:enum :private-chat :public-chat :trusted-private-chat]
+   ::visibility                                    [:enum :public :private]
+   ::users                                         [:set ::user-id]
+   ::event-id                                      :string
+   ::version                                       :string
+   ::state-key                                     :string
+   ::transaction-id                                :string
+   ::device-name                                   :string
+   ::device-id                                     :string
+   ::body                                          :string
+   ::source-path                                   [:fn non-blank-string?]
+   ::file-name                                     [:fn non-blank-string?]
+   ::mime-type                                     [:fn non-blank-string?]
+   ::size-bytes                                    nat-int?
+   ::height                                        pos-int?
+   ::width                                         pos-int?
+   ::key                                           :string
+   ::display-name                                  :string
+   ::avatar-url                                    :string
+   ::time-zone                                     :string
+   ::duration                                      [:fn #(instance? Duration %)]
+   ::timeout                                       ::duration
+   ::decryption-timeout                            ::duration
+   ::wait                                          :boolean
+   ::force                                         :boolean
+   ::limit                                         pos-int?
+   ::fetch-timeout                                 ::duration
+   ::fetch-size                                    pos-int?
+   ::allow-replace-content                         :boolean
+   ::min-size                                      nat-int?
+   ::max-size                                      nat-int?
+   ::sync-response-buffer-size                     nat-int?
+   ::direction                                     [:enum :backwards :forwards]
+   ::response                                      [:fn #(instance? Sync$Response %)]
+   ::room-event-content-class                      [:fn #(class-assignable-to? RoomEventContent %)]
+   ::state-event-content-class                     [:fn #(class-assignable-to? StateEventContent %)]
    ::global-account-data-event-content-class
    [:fn #(class-assignable-to? GlobalAccountDataEventContent %)]
    ::room-account-data-event-content-class
    [:fn #(class-assignable-to? RoomAccountDataEventContent %)]
-   ::room-event-content                 [:fn #(instance? RoomEventContent %)]
-   ::closeable                          [:fn #(instance? Closeable %)]
-   ::kind                               [:or :keyword :string]
-   ::id                                 :string
-   ::format                             :string
-   ::formatted-body                     :string
-   ::type                               :string
-   ::sender                             :string
-   ::sender-display-name                :string
-   ::is-direct                          :boolean
-   ::content                            :any
-   ::created-at                         :string
-   ::sent-at                            :string
-   ::send-error                         :string
-   ::receipt-type                       :string
-   ::name                               :string
-   ::presence                           [:or :keyword :string]
-   ::last-update                        :string
-   ::last-active                        :string
-   ::currently-active                   :boolean
-   ::status-message                     :string
-   ::level                              int?
-   ::verified                           :boolean
-   ::reason                             :string
-   ::dismissed                          :boolean
-   ::sort-key                           :string
-   ::actions                            [:set :string]
-   ::notification-kind                  [:or :keyword :string]
-   ::notification-update-kind           [:or :keyword :string]
-   ::timestamp                          int?
-   ::their-user-id                      :string
-   ::their-device-id                    :string
-   ::request-event-id                   :string
-   ::methods                            [:set [:or :keyword :string]]
-   ::reasons                            [:set [:or :keyword :string]]
-   ::algorithm                          :string
-   ::raw                                :any
-   ::direct-chat-room-ids               [:set ::room-id]
-   ::direct-chat-mappings               [:map-of ::user-id ::direct-chat-room-ids]
-   ::relation-type                      :string
-   ::relation-event-id                  :string
-   ::reply-to-event-id                  :string
-   ::is-falling-back                    :boolean
-   ::server-versions                    [:fn #(instance? GetVersions$Response %)]
-   ::server-media-config                [:fn #(instance? GetMediaConfig$Response %)]
-   ::server-capabilities                [:fn #(instance? GetCapabilities$Response %)]
-   ::server-auth                        [:fn #(instance? ServerMetadata %)]
-   ::backup-auth                        [:fn #(instance? RoomKeyBackupAuthData %)]
+   ::room-event-content                            [:fn #(instance? RoomEventContent %)]
+   ::closeable                                     [:fn #(instance? Closeable %)]
+   ::kind                                          [:or :keyword :string]
+   ::id                                            :string
+   ::format                                        :string
+   ::formatted-body                                :string
+   ::type                                          :string
+   ::sender                                        :string
+   ::sender-display-name                           :string
+   ::is-direct                                     :boolean
+   ::content                                       :any
+   ::created-at                                    :string
+   ::sent-at                                       :string
+   ::send-error                                    :string
+   ::receipt-type                                  :string
+   ::name                                          :string
+   ::presence                                      [:or :keyword :string]
+   ::last-update                                   :string
+   ::last-active                                   :string
+   ::currently-active                              :boolean
+   ::status-message                                :string
+   ::level                                         int?
+   ::verified                                      :boolean
+   ::reason                                        :string
+   ::dismissed                                     :boolean
+   ::sort-key                                      :string
+   ::actions                                       [:set :string]
+   ::notification-kind                             [:or :keyword :string]
+   ::notification-update-kind                      [:or :keyword :string]
+   ::timestamp                                     int?
+   ::their-user-id                                 :string
+   ::their-device-id                               :string
+   ::request-event-id                              :string
+   ::methods                                       [:set [:or :keyword :string]]
+   ::reasons                                       [:set [:or :keyword :string]]
+   ::algorithm                                     :string
+   ::raw                                           :any
+   ::direct-chat-room-ids                          [:set ::room-id]
+   ::direct-chat-mappings                          [:map-of ::user-id ::direct-chat-room-ids]
+   ::relation-type                                 :string
+   ::relation-event-id                             :string
+   ::reply-to-event-id                             :string
+   ::is-falling-back                               :boolean
+   ::server-versions                               [:fn #(instance? GetVersions$Response %)]
+   ::server-media-config                           [:fn #(instance? GetMediaConfig$Response %)]
+   ::server-capabilities                           [:fn #(instance? GetCapabilities$Response %)]
+   ::server-auth                                   [:fn #(instance? ServerMetadata %)]
+   ::backup-auth                                   [:fn #(instance? RoomKeyBackupAuthData %)]
 
    ::OneShotOpts
    [:map
@@ -476,6 +477,8 @@
     [::homeserver-url ::homeserver-url]
     [::user-id ::user-id]
     [::password ::password]
+    [::device-name {:optional true} ::device-name]
+    [::device-id {:optional true} ::device-id]
     [::database-path ::database-path]
     [::media-path ::media-path]]})
 

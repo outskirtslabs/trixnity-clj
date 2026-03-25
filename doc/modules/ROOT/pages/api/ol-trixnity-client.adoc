@@ -38,8 +38,18 @@ repository configuration.
 If `config` already contains a client under `::mx/client`, the returned task
 resolves to that client immediately.
 
+Supported config keys include:
+
+- `::mx/homeserver-url`
+- `::mx/user-id`
+- `::mx/password`
+- `::mx/device-name` optional initial Matrix device display name
+- `::mx/device-id` optional Matrix device id to request at login
+- `::mx/database-path`
+- `::mx/media-path`
+
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L39-L50[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L39-L60[source,window=_blank]
 
 '''
 
@@ -57,7 +67,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Starts sync for `client` and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L52-L55[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L62-L65[source,window=_blank]
 
 '''
 
@@ -80,7 +90,7 @@ Supported opts:
 `{::mx/timeout java.time.Duration}`
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L57-L69[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L67-L79[source,window=_blank]
 
 '''
 
@@ -98,7 +108,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Stops sync for `client` and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L71-L74[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L81-L84[source,window=_blank]
 
 '''
 
@@ -116,7 +126,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Closes `client` and tears down its bridge-owned coroutine scope.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L76-L79[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L86-L89[source,window=_blank]
 
 '''
 
@@ -134,7 +144,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the Matrix user id of `client` as a string.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L81-L84[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L91-L94[source,window=_blank]
 
 '''
 
@@ -152,7 +162,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the current sync state as a lower-case keyword.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L86-L89[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L96-L99[source,window=_blank]
 
 '''
 
@@ -170,7 +180,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the current normalized client profile.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L91-L94[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L101-L104[source,window=_blank]
 
 '''
 
@@ -188,7 +198,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of the current normalized client profile.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L96-L100[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L106-L110[source,window=_blank]
 
 '''
 
@@ -206,7 +216,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the current normalized server data snapshot.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L102-L105[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L112-L115[source,window=_blank]
 
 '''
 
@@ -224,7 +234,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of normalized server data snapshots.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L107-L111[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L117-L121[source,window=_blank]
 
 '''
 
@@ -242,7 +252,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of the current sync state.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L113-L118[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L123-L128[source,window=_blank]
 
 '''
 
@@ -260,7 +270,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns whether initial sync has completed.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L120-L123[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L130-L133[source,window=_blank]
 
 '''
 
@@ -278,7 +288,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of initial-sync completion state.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L125-L129[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L135-L139[source,window=_blank]
 
 '''
 
@@ -296,7 +306,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the current login state as a lower-case keyword or nil.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L131-L134[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L141-L144[source,window=_blank]
 
 '''
 
@@ -314,7 +324,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of lower-case login-state keywords or nil.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L136-L141[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L146-L151[source,window=_blank]
 
 '''
 
@@ -332,7 +342,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns whether sync has been started for `client`.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L143-L146[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L153-L156[source,window=_blank]
 
 '''
 
@@ -350,4 +360,4 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of `client` started state.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L148-L152[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/client.clj#L158-L162[source,window=_blank]

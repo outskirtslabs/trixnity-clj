@@ -41,7 +41,17 @@
   repository configuration.
 
   If `config` already contains a client under `::mx/client`, the returned task
-  resolves to that client immediately."
+  resolves to that client immediately.
+
+  Supported config keys include:
+
+  - `::mx/homeserver-url`
+  - `::mx/user-id`
+  - `::mx/password`
+  - `::mx/device-name` optional initial Matrix device display name
+  - `::mx/device-id` optional Matrix device id to request at login
+  - `::mx/database-path`
+  - `::mx/media-path`"
   [config]
   (if-let [client (existing-client config)]
     (m/sp client)

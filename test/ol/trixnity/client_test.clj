@@ -28,6 +28,8 @@
         config {::schemas/homeserver-url "https://matrix.example.org"
                 ::schemas/user-id        "@bot:example.org"
                 ::schemas/password       "secret"
+                ::schemas/device-name    "bot host"
+                ::schemas/device-id      "BOTDEVICE1"
                 ::schemas/database-path  "./tmp/state/trixnity.sqlite"
                 ::schemas/media-path     "./tmp/media"}]
     (with-redefs [bridge/open-client

@@ -18,11 +18,10 @@
   };
 
   outputs =
-    inputs@{
-      self,
-      devenv,
-      flakelight,
-      ...
+    inputs@{ self
+    , devenv
+    , flakelight
+    , ...
     }:
     let
       jdk = "jdk25";

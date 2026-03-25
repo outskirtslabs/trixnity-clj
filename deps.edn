@@ -9,10 +9,8 @@
            andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
                                                                              :git/sha    "8b9234061a033c06438b3a0542d987046abf06db"
                                                                              :exclusions [org.suskalo/coffi]}
-           ;; insn is a coffi dep, once we dont use vendored coffi we can remove this
-           insn/insn                                                        {:mvn/version "0.5.4"}
-           ;; coffi is vendored because clj-nix does not play well with it
-           org.suskalo/coffi                                                {:local/root "vendor/coffi/coffi-ae3e38a449c88b998db98b0d4bffa9908dea1c79.jar"}
+           org.suskalo/coffi                                                {:git/sha "cf4891a8d33cb9119eb96ad1ad66db483dd0beb2"
+                                                                             :git/url "https://github.com/ramblurr/coffi"}
            org.babashka/http-client                                         {:mvn/version "0.4.23"}
            com.fulcrologic/guardrails                                       {:mvn/version "1.2.16"}
            metosin/malli                                                    {:mvn/version "0.20.1"}}
@@ -26,8 +24,7 @@
                                   io.github.tonsky/clj-reload              {:mvn/version "1.0.0"}
                                   djblue/portal                            {:mvn/version "0.63.0"}
                                   com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}}
-           :build  {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.12"
-                                                                :git/sha "97c5562"}
+           :build  {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.13"}
                                  slipset/deps-deploy           {:mvn/version "0.2.2"}}
                     :ns-default build}
            :neil   {:project {:name        com.outskirtslabs/trixnity-clj

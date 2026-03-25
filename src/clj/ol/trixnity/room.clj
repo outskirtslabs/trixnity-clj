@@ -116,6 +116,26 @@
                             room-id-or-alias
                             (get opts ::mx/timeout)))))
 
+(defn leave-room
+  "Leaves `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/reason` | Optional Matrix leave reason passed through to Trixnity |
+  | `::mx/timeout` | Maximum time to wait for the leave request |"
+  ([client room-id]
+   (leave-room client room-id {}))
+  ([client room-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (let [opts (mx/validate! ::mx/LeaveRoomOpts opts)]
+     (internal/suspend-task bridge/leave-room
+                            client
+                            room-id
+                            (get opts ::mx/reason)
+                            (get opts ::mx/timeout)))))
+
 (defn forget-room
   "Forgets `room-id` locally and returns a Missionary task.
 

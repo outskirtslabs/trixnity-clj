@@ -180,6 +180,40 @@
     (is (= [[:client-handle "#ops:example.org" timeout]]
            @calls))))
 
+(deftest leave-room-task-surface-returns-a-missionary-task-test
+  (let [leave-room-var        (resolve-var 'ol.trixnity.room 'leave-room)
+        bridge-leave-room-var (resolve-var 'ol.trixnity.internal.bridge
+                                           'leave-room)
+        timeout               (Duration/ofSeconds 5)
+        calls                 (atom [])]
+    (is (some? leave-room-var)
+        "ol.trixnity.room/leave-room is missing")
+    (is (some? bridge-leave-room-var)
+        "ol.trixnity.internal.bridge/leave-room is missing")
+    (when (every? some? [leave-room-var bridge-leave-room-var])
+      (with-redefs-fn
+        {bridge-leave-room-var
+         (fn [client room-id reason bridge-timeout on-success _]
+           (swap! calls conj [client room-id reason bridge-timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))}
+        (fn []
+          (is (nil?
+               (realize-task
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"))))
+          (is (nil?
+               (realize-task
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/reason  "bye"
+                  ::schemas/timeout timeout})))))))
+    (is (= [[:client-handle "!room:example.org" nil nil]
+            [:client-handle "!room:example.org" "bye" timeout]]
+           @calls))))
+
 (deftest set-typing-task-surface-returns-a-missionary-task-test
   (let [set-typing-var        (resolve-var 'ol.trixnity.room 'set-typing)
         bridge-set-typing-var (resolve-var 'ol.trixnity.internal.bridge
@@ -216,7 +250,10 @@
            @calls))))
 
 (deftest room-task-surface-additions-return-missionary-tasks-test
-  (let [forget-room-var           (resolve-var 'ol.trixnity.room 'forget-room)
+  (let [leave-room-var            (resolve-var 'ol.trixnity.room 'leave-room)
+        bridge-leave-room-var     (resolve-var 'ol.trixnity.internal.bridge
+                                               'leave-room)
+        forget-room-var           (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var    (resolve-var 'ol.trixnity.internal.bridge
                                                'forget-room)
         redact-event-var          (resolve-var 'ol.trixnity.room 'redact-event)
@@ -235,6 +272,10 @@
         bridge-fill-timeline-var  (resolve-var 'ol.trixnity.internal.bridge
                                                'fill-timeline-gaps)
         calls                     (atom [])]
+    (is (some? leave-room-var)
+        "ol.trixnity.room/leave-room is missing")
+    (is (some? bridge-leave-room-var)
+        "ol.trixnity.internal.bridge/leave-room is missing")
     (is (some? forget-room-var)
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)
@@ -255,7 +296,9 @@
         "ol.trixnity.room/fill-timeline-gaps is missing")
     (is (some? bridge-fill-timeline-var)
         "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
-    (when (every? some? [forget-room-var
+    (when (every? some? [leave-room-var
+                         bridge-leave-room-var
+                         forget-room-var
                          bridge-forget-room-var
                          redact-event-var
                          bridge-redact-event-var
@@ -266,7 +309,13 @@
                          fill-timeline-gaps-var
                          bridge-fill-timeline-var])
       (with-redefs-fn
-        {bridge-forget-room-var
+        {bridge-leave-room-var
+         (fn [client room-id reason timeout on-success _]
+           (swap! calls conj [:leave client room-id reason timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-forget-room-var
          (fn [client room-id force on-success _]
            (swap! calls conj [:forget client room-id force])
            (on-success nil)
@@ -296,6 +345,18 @@
            (on-success nil)
            (->StubCloseable (atom 0)))}
         (fn []
+          (is (nil?
+               (realize-task
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"))))
+          (is (nil?
+               (realize-task
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/reason  "later"
+                  ::schemas/timeout (Duration/ofSeconds 5)}))))
           (is (nil?
                (realize-task
                 ((var-get forget-room-var)
@@ -346,7 +407,10 @@
                  "!room:example.org"
                  "$event"
                  {::schemas/limit 7}))))))
-      (is (= [[:forget :client-handle "!room:example.org" false]
+      (is (= [[:leave :client-handle "!room:example.org" nil nil]
+              [:leave :client-handle "!room:example.org" "later"
+               (Duration/ofSeconds 5)]
+              [:forget :client-handle "!room:example.org" false]
               [:forget :client-handle "!room:example.org" true]
               [:redact :client-handle "!room:example.org" "$event" nil nil]
               [:redact :client-handle "!room:example.org" "$event" "spam" (Duration/ofSeconds 5)]
@@ -357,7 +421,10 @@
              @calls)))))
 
 (deftest room-task-surface-additions-validate-options-before-bridge-test
-  (let [forget-room-var          (resolve-var 'ol.trixnity.room 'forget-room)
+  (let [leave-room-var           (resolve-var 'ol.trixnity.room 'leave-room)
+        bridge-leave-room-var    (resolve-var 'ol.trixnity.internal.bridge
+                                              'leave-room)
+        forget-room-var          (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var   (resolve-var 'ol.trixnity.internal.bridge
                                               'forget-room)
         redact-event-var         (resolve-var 'ol.trixnity.room 'redact-event)
@@ -374,6 +441,10 @@
         bridge-fill-timeline-var (resolve-var 'ol.trixnity.internal.bridge
                                               'fill-timeline-gaps)
         calls                    (atom [])]
+    (is (some? leave-room-var)
+        "ol.trixnity.room/leave-room is missing")
+    (is (some? bridge-leave-room-var)
+        "ol.trixnity.internal.bridge/leave-room is missing")
     (is (some? forget-room-var)
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)
@@ -394,7 +465,9 @@
         "ol.trixnity.room/fill-timeline-gaps is missing")
     (is (some? bridge-fill-timeline-var)
         "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
-    (when (every? some? [forget-room-var
+    (when (every? some? [leave-room-var
+                         bridge-leave-room-var
+                         forget-room-var
                          bridge-forget-room-var
                          redact-event-var
                          bridge-redact-event-var
@@ -405,7 +478,12 @@
                          fill-timeline-gaps-var
                          bridge-fill-timeline-var])
       (with-redefs-fn
-        {bridge-forget-room-var
+        {bridge-leave-room-var
+         (fn [& _]
+           (swap! calls conj :leave)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-forget-room-var
          (fn [& _]
            (swap! calls conj :forget)
            (throw (ex-info "bridge should not be called" {})))
@@ -430,6 +508,22 @@
            (swap! calls conj :fill)
            (throw (ex-info "bridge should not be called" {})))}
         (fn []
+          (is (try
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/reason  :bye
+                  ::schemas/timeout (Duration/ofSeconds 5)})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get leave-room-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/reason  "bye"
+                  ::schemas/timeout :soon})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
           (is (try
                 ((var-get forget-room-var)
                  :client-handle

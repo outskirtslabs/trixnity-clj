@@ -227,6 +227,24 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun leaveRoom(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        reason: String?,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.leaveRoom(RoomId(roomId), reason).getOrThrow()
+        null
+    }
+
+    @JvmStatic
     fun forgetRoom(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,

@@ -87,6 +87,9 @@
 (defn join-room [^MatrixClient client room-id-or-alias ^Duration timeout on-success on-failure]
   (RoomBridge/joinRoom client room-id-or-alias timeout on-success on-failure))
 
+(defn leave-room [^MatrixClient client room-id reason ^Duration timeout on-success on-failure]
+  (RoomBridge/leaveRoom client room-id reason timeout on-success on-failure))
+
 (defn forget-room [^MatrixClient client room-id force on-success on-failure]
   (RoomBridge/forgetRoom client room-id force on-success on-failure))
 

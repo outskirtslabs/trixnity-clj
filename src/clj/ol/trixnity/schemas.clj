@@ -223,6 +223,11 @@
    ::JoinOpts
    ::OneShotOpts
 
+   ::LeaveRoomOpts
+   [:map
+    [::reason {:optional true} ::reason]
+    [::timeout {:optional true} ::timeout]]
+
    ::SetTypingOpts
    ::OneShotOpts
 

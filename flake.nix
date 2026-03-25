@@ -15,14 +15,15 @@
       url = "https://flakehub.com/f/ramblurr/nix-devenv/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    clojure-nix-locker = {
-      url = "github:bevuta/clojure-nix-locker";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
-    inputs@{ self, flakelight, ... }:
+    inputs@{
+      self,
+      devenv,
+      flakelight,
+      ...
+    }:
     let
       jdk = "jdk25";
     in
@@ -32,21 +33,19 @@
 
       withOverlays = [
         inputs.devshell.overlays.default
-        inputs.devenv.overlays.default
+        devenv.overlays.default
       ];
 
       packages = {
         locker =
           pkgs:
           let
-            lockerPkgs = pkgs // {
-              clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-            };
             clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-            clojureLocker = (import "${inputs.clojure-nix-locker}/default.nix" { pkgs = lockerPkgs; }).lockfile {
+            clojureLocker = devenv.clojure.mkLockfile {
+              inherit pkgs;
+              jdk = pkgs.${jdk};
               src = ./.;
               lockfile = "./deps-lock.json";
-              extraPrepInputs = [ pkgs.git ];
             };
           in
           clojureLocker.commandLocker ''
@@ -61,15 +60,13 @@
       package =
         pkgs:
         let
-          lockerPkgs = pkgs // {
-            clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-          };
           clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
           sqlite4cljRev = "8b9234061a033c06438b3a0542d987046abf06db";
-          clojureLocker = (import "${inputs.clojure-nix-locker}/default.nix" { pkgs = lockerPkgs; }).lockfile {
+          clojureLocker = devenv.clojure.mkLockfile {
+            inherit pkgs;
+            jdk = pkgs.${jdk};
             src = ./.;
             lockfile = "./deps-lock.json";
-            extraPrepInputs = [ pkgs.git ];
           };
           bridge-package = pkgs.maven.buildMavenPackage {
             pname = "trixnity-clj-bridge";
@@ -151,8 +148,8 @@
         pkgs:
         pkgs.devshell.mkShell {
           imports = [
-            inputs.devenv.capsules.base
-            inputs.devenv.capsules.clojure
+            devenv.capsules.base
+            devenv.capsules.clojure
           ];
           env = [
             {

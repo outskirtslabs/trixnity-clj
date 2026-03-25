@@ -1,5 +1,6 @@
 (ns ol.trixnity.media
-  "Generic media upload and download helpers built on top of Trixnity's media service.
+  "Generic media upload and download helpers built on top of Trixnity's media
+  service.
 
   Uploads happen in two steps:
 
@@ -10,8 +11,30 @@
   - [[get-media]], [[get-encrypted-media]], and [[get-thumbnail]] download media
     as normalized handle maps carrying a JVM `InputStream`
 
+  Download selection follows the normalized event data:
+
+  - use [[get-media]] for plain `::mx/url` attachment references
+  - use [[get-encrypted-media]] for `::mx/encrypted-file` or
+    `::mx/thumbnail-encrypted-file`
+  - use [[get-media]] or [[get-encrypted-media]] for event-provided thumbnail
+    references already present on the event
+  - use [[get-thumbnail]] only when asking the homeserver to generate a new
+    thumbnail for an MXC URI at explicit dimensions
+  - use [[temporary-file]] only when a filesystem path is required for an
+    existing media handle
+
   The public shapes here stay normalized as namespaced keyword maps so callers
-  do not need to work with Kotlin media APIs directly."
+  do not need to work with Kotlin media APIs directly.
+
+  Resolved download handles all share the same shape:
+
+  ```clojure
+  {::mx/input-stream <java.io.InputStream>
+   ::mx/raw          <opaque upstream platform media>}
+  ```
+
+  `::mx/input-stream` is the supported happy path. `::mx/raw` exists only so
+  [[temporary-file]] can compose on top of an already fetched handle."
   (:require
    [clojure.java.io :as io]
    [missionary.core :as m]
@@ -227,15 +250,26 @@
       ::mx/progress (:flow progress)})))
 
 (defn get-media
-  "Downloads media identified by `uri` and returns a Missionary task of a media handle.
+  "Downloads plain media identified by `uri`.
 
-  The resolved handle contains:
+  Returns a Missionary task of a normalized media handle:
 
   - `::mx/input-stream`, the primary public readable stream
   - `::mx/raw`, an opaque upstream media value used only for composition with
     [[temporary-file]]
 
-  `uri` should be an MXC URI such as `mxc://example.org/abc`."
+  `uri` should be an MXC URI such as `mxc://example.org/abc`.
+
+  Use this for event fields that already carry a plain media reference, such as
+  `::mx/url` or `::mx/thumbnail-url`.
+
+  Example:
+
+  ```clojure
+  (m/sp
+    (let [handle (m/? (get-media client (::mx/url ev)))]
+      (slurp (::mx/input-stream handle))))
+  ```"
   [client uri]
   (let [uri (mx/validate! ::mx/url uri)]
     (deferred-task
@@ -249,7 +283,20 @@
   "Downloads encrypted media from normalized `encrypted-file` metadata.
 
   `encrypted-file` must be the normalized encrypted-file map exposed on events
-  under `::mx/encrypted-file` or `::mx/thumbnail-encrypted-file`."
+  under `::mx/encrypted-file` or `::mx/thumbnail-encrypted-file`.
+
+  Returns the same normalized media-handle shape as [[get-media]], with
+  `::mx/input-stream` as the public happy path and `::mx/raw` kept opaque for
+  [[temporary-file]] composition.
+
+  Example:
+
+  ```clojure
+  (m/sp
+    (let [handle (m/? (get-encrypted-media client
+                                           (::mx/encrypted-file ev)))]
+      (slurp (::mx/input-stream handle))))
+  ```"
   [client encrypted-file]
   (let [encrypted-file (mx/validate! ::mx/EncryptedFile encrypted-file)]
     (deferred-task
@@ -260,21 +307,34 @@
                                    encrypted-file))))))
 
 (defn get-thumbnail
-  "Downloads a homeserver-generated thumbnail for `uri` and returns a Missionary task
-  of a media handle.
+  "Downloads a homeserver-generated thumbnail for `uri`.
 
-  This mirrors upstream Trixnity `getThumbnail`: it requests a generated
-  thumbnail for an MXC URI using explicit dimensions. It does not read
-  event-provided `thumbnail_url` or `thumbnail_file` references. For those,
-  use [[get-media]] or [[get-encrypted-media]] with the thumbnail fields already
-  present on the event.
+  This mirrors upstream Trixnity `getThumbnail`: it asks the homeserver to
+  generate a thumbnail for an MXC URI using explicit dimensions. It does not
+  read event-provided thumbnail references already present on an event. For
+  those, use [[get-media]] or [[get-encrypted-media]] with
+  `::mx/thumbnail-url` or `::mx/thumbnail-encrypted-file`.
+
+  Returns the same normalized media-handle shape as [[get-media]].
 
   Supported opts:
 
   | key | description
   |-----|-------------
   | `::mx/method` | Thumbnail resize method, either `:crop` or `:scale` |
-  | `::mx/animated` | Request animated thumbnails when upstream supports them |"
+  | `::mx/animated` | Request animated thumbnails when upstream supports them |
+
+  Example:
+
+  ```clojure
+  (m/sp
+    (let [handle (m/? (get-thumbnail client
+                                      (::mx/url ev)
+                                      320
+                                      200
+                                      {::mx/method :scale}))]
+      (slurp (::mx/input-stream handle))))
+  ```"
   ([client uri width height]
    (get-thumbnail client uri width height {}))
   ([client uri width height opts]
@@ -294,15 +354,30 @@
                                     (::mx/animated opts))))))))
 
 (defn temporary-file
-  "Creates a temporary file from `media`, returning a Missionary task of a closeable
-  [[TemporaryMediaFile]] record.
+  "Creates a temporary file from `media`.
 
   `media` may be either a resolved media handle or a media-handle task returned
   by [[get-media]], [[get-encrypted-media]], or [[get-thumbnail]].
 
-  The returned record exposes `:path` directly and may be used with
-  `with-open`. Treat `::mx/raw` on media handles as opaque; it exists only so
-  this helper can compose with already-fetched media."
+  Returns a Missionary task of a closeable [[TemporaryMediaFile]] record. The
+  record exposes `:path` directly as a slurpable string path and should usually
+  be used with `with-open`.
+
+  Treat `::mx/raw` on media handles as opaque; it exists only so this helper
+  can compose with already-fetched media.
+
+  This is an opt-in JVM convenience for integrations that need a filesystem
+  path. If the underlying media handle cannot produce a temporary file, the task
+  fails with an exception from the bridge layer.
+
+  Example:
+
+  ```clojure
+  (m/sp
+    (with-open [tmp (m/? (temporary-file
+                          (get-media client (::mx/url ev))))]
+      (slurp (:path tmp))))
+  ```"
   [media]
   (let [media (if (map? media)
                 (mx/validate! ::mx/MediaHandle media)

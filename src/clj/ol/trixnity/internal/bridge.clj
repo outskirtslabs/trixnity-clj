@@ -329,12 +329,6 @@
 (defn set-direct-chats [^MatrixClient client mappings on-success on-failure]
   (UserBridge/setDirectChats client mappings on-success on-failure))
 
-(defn notifications [^MatrixClient client decryption-timeout-ms sync-response-buffer-size]
-  (NotificationBridge/notifications client decryption-timeout-ms sync-response-buffer-size))
-
-(defn notifications-from-response [^MatrixClient client ^Sync$Response response decryption-timeout-ms]
-  (NotificationBridge/notificationsFromResponse client response decryption-timeout-ms))
-
 (defn notification-all [^MatrixClient client]
   (NotificationBridge/all client))
 

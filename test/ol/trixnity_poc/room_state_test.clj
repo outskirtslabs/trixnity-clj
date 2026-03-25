@@ -9,6 +9,10 @@
     (when (.exists file)
       (.delete file))))
 
+(defn- ensure-parent-dir! [path]
+  (io/make-parents path)
+  path)
+
 (deftest load-test
   (testing "returns nil when file missing"
     (let [path "./kotlin/build/test-room-state-missing.txt"]
@@ -16,12 +20,12 @@
       (is (nil? (sut/load-room-id path)))))
 
   (testing "returns stored non-blank room id text"
-    (let [path "./kotlin/build/test-room-state-invalid.txt"]
+    (let [path (ensure-parent-dir! "./kotlin/build/test-room-state-invalid.txt")]
       (spit path "room-not-an-id")
       (is (= "room-not-an-id" (sut/load-room-id path))))))
 
 (deftest save-and-load-roundtrip-test
-  (let [path    "./kotlin/build/test-room-state-roundtrip-clj.txt"
+  (let [path    (ensure-parent-dir! "./kotlin/build/test-room-state-roundtrip-clj.txt")
         room-id "!abc123:example.org"]
     (delete-file-if-exists! path)
     (sut/save-room-id! path room-id)

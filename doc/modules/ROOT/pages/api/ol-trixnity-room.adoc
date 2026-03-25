@@ -298,6 +298,33 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
+[#set-typing]
+== set-typing
+
+
+
+
+[source,clojure]
+----
+(set-typing client room-id typing?)
+(set-typing client room-id typing? opts)
+----
+
+Sets the typing status for `room-id` and returns a Missionary task.
+
+Supported opts:
+
+[options="header"]
+|===
+| key | description
+| `::mx/timeout` | How long the typing notification should remain active
+|===
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L221-L239[source,window=_blank]
+
+'''
+
 [#get-account-data]
 == get-account-data
 
@@ -315,7 +342,7 @@ Returns a Missionary flow of room account-data content.
 When `key` is omitted, the empty-string key is used.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L221-L235[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L241-L255[source,window=_blank]
 
 '''
 
@@ -336,7 +363,7 @@ Returns a Missionary flow of room state for `event-content-class`.
 When `state-key` is omitted, the empty-string state key is used.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L237-L251[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L257-L271[source,window=_blank]
 
 '''
 
@@ -354,7 +381,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of state-event flows keyed by state key.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L253-L262[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L273-L282[source,window=_blank]
 
 '''
 
@@ -381,7 +408,7 @@ Arities:
   entry flow for that transaction id
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L264-L281[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L284-L301[source,window=_blank]
 
 '''
 
@@ -402,7 +429,7 @@ Returns flattened Missionary flows over room outbox state.
 With `room-id`, scopes the flattened outbox view to a single room.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L283-L291[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L303-L311[source,window=_blank]
 
 '''
 
@@ -427,7 +454,7 @@ Supported opts:
 | `::mx/limit` | Maximum number of events to request while filling gaps (default `20`) |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L293-L311[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L313-L331[source,window=_blank]
 
 '''
 
@@ -458,7 +485,7 @@ Supported opts:
 | `::mx/allow-replace-content` | Replace event content when an `m.replace` relation is present |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L313-L343[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L333-L363[source,window=_blank]
 
 '''
 
@@ -479,7 +506,7 @@ Returns a Missionary flow of the previous timeline event relative to `timeline-e
 Returns nil when upstream cannot traverse backward from the supplied event.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L345-L361[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L365-L381[source,window=_blank]
 
 '''
 
@@ -500,7 +527,7 @@ Returns a Missionary flow of the next timeline event relative to `timeline-event
 Returns nil when upstream cannot traverse forward from the supplied event.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L363-L379[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L383-L399[source,window=_blank]
 
 '''
 
@@ -519,7 +546,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary outer flow whose values are flows of the latest timeline event.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L381-L397[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L401-L417[source,window=_blank]
 
 '''
 
@@ -551,7 +578,7 @@ may fetch missing events from the server, and can be bounded with
 `::mx/min-size` and `::mx/max-size`.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L399-L442[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L419-L462[source,window=_blank]
 
 '''
 
@@ -573,7 +600,7 @@ This mirrors upstream's nested-flow shape for continuously updated room-end
 traversal.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L444-L465[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L464-L485[source,window=_blank]
 
 '''
 
@@ -594,7 +621,7 @@ Returns a Missionary flow of timeline-event lists starting from `start-from`.
 `max-size` and `min-size` bound the list-shaped traversal directly.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L467-L493[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L487-L513[source,window=_blank]
 
 '''
 
@@ -613,7 +640,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of the latest timeline events as lists.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L495-L515[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L515-L535[source,window=_blank]
 
 '''
 
@@ -632,7 +659,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of timeline-event lists centered around `start-from`.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L517-L539[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L537-L559[source,window=_blank]
 
 '''
 
@@ -661,7 +688,7 @@ Supported opts:
 | `::mx/sync-response-buffer-size` | Number of sync responses buffered while events are consumed |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L541-L562[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L561-L582[source,window=_blank]
 
 '''
 
@@ -679,4 +706,4 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of related timeline-event flows keyed by related event id.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L564-L572[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/room.clj#L584-L592[source,window=_blank]

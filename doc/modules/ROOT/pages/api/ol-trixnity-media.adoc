@@ -8,7 +8,7 @@ Uploads happen in two steps:
 - <<prepare-upload,`prepare-upload`>> stages local bytes in Trixnity's media store and returns
   a prepared upload map containing an `upload://...` cache URI
 - <<upload,`upload`>> uploads either a prepared upload map or a local path-like source
-  and returns the final `mxc://...` URI plus the prepared metadata
+  and returns a handle exposing upload progress plus the final uploaded media
 
 The public shapes here stay normalized as namespaced keyword maps so callers
 do not need to work with Kotlin media APIs directly.
@@ -38,7 +38,7 @@ Supported opts:
 | `::mx/mime-type` | Optional MIME type forwarded to upstream media upload preparation |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L46-L71[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L122-L147[source,window=_blank]
 
 '''
 
@@ -54,11 +54,20 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 (upload client source opts)
 ----
 
-Uploads a prepared upload map or local media source and returns a Missionary
-task of an uploaded media map.
+Uploads a prepared upload map or local media source and returns a handle map.
 
 When `source` is path-like, this first stages the file through
 <<prepare-upload,`prepare-upload`>> and then uploads the resulting cache URI.
+
+Return value:
+
+- `::mx/result` is a Missionary task that resolves to the uploaded media map
+- `::mx/progress` is a Missionary flow of normalized progress snapshots with
+  `::mx/transferred` and optional `::mx/total`
+
+This intentionally replaces the previous task-only return contract so one
+`upload` call can drive both progress observation and the final upload result
+from the same underlying operation.
 
 Supported opts:
 
@@ -69,4 +78,4 @@ Supported opts:
 | `::mx/keep-in-cache` | Keep the staged media in the local cache after upload, defaults to `true` |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L73-L103[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L149-L207[source,window=_blank]

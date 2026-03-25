@@ -807,7 +807,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [source,clojure]
 ----
-(upload-media client cache-uri keep-in-cache on-success on-failure)
+(upload-media client cache-uri keep-in-cache on-progress on-success on-failure)
 ----
 
 

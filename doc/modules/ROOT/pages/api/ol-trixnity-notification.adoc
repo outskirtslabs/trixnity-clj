@@ -144,6 +144,44 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
+[#mark-read]
+== mark-read
+
+
+
+
+[source,clojure]
+----
+(mark-read client room-id event-id)
+----
+
+Marks `room-id` as read through `event-id` and returns a Missionary task.
+
+This advances both the room's read markers and clears explicit unread state.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L93-L103[source,window=_blank]
+
+'''
+
+[#mark-unread]
+== mark-unread
+
+
+
+
+[source,clojure]
+----
+(mark-unread client room-id)
+----
+
+Marks `room-id` as unread and returns a Missionary task.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L105-L111[source,window=_blank]
+
+'''
+
 [#dismiss]
 == dismiss
 
@@ -158,7 +196,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Marks the notification with `id` as dismissed and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L93-L97[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L113-L117[source,window=_blank]
 
 '''
 
@@ -176,7 +214,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Dismisses all notifications and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L99-L102[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L119-L122[source,window=_blank]
 
 '''
 
@@ -197,4 +235,4 @@ Upstream notes that this stream should not be buffered because consumed
 updates are removed from the backing store as new values are requested.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L104-L110[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L124-L130[source,window=_blank]

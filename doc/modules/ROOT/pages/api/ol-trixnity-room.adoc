@@ -84,11 +84,11 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [source,clojure]
 ----
-(join-room client room-id)
-(join-room client room-id opts)
+(join-room client room-id-or-alias)
+(join-room client room-id-or-alias opts)
 ----
 
-Joins `room-id` and returns a Missionary task.
+Joins `room-id-or-alias` and returns a Missionary task.
 
 Supported opts:
 

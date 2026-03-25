@@ -382,7 +382,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 [source,clojure]
 ----
-(join-room client room-id timeout on-success on-failure)
+(join-room client room-id-or-alias timeout on-success on-failure)
 ----
 
 

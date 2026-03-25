@@ -52,10 +52,10 @@
 
   Options:
 
-  | key | description
-  |-----|-------------
-  | `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`
-  | `::mx/media-path` | Directory used by the okio-backed media store
+  | key                  | description                                   |
+  |----------------------|-----------------------------------------------|
+  | `::mx/database-path` | SQLite file path used by `ol.trixnity.repo`   |
+  | `::mx/media-path`    | Directory used by the okio-backed media store |
 
   Example:
 

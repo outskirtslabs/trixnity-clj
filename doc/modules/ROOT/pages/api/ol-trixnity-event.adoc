@@ -119,6 +119,24 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
+[#msgtype]
+== msgtype
+
+
+
+
+[source,clojure]
+----
+(msgtype event)
+----
+
+Returns the Matrix room-message subtype from normalized `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L47-L50[source,window=_blank]
+
+'''
+
 [#key]
 == key
 
@@ -133,7 +151,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the normalized reaction key or relation key from `event`, if present.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L47-L50[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L52-L55[source,window=_blank]
 
 '''
 
@@ -151,7 +169,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the normalized `::mx/relates-to` map from `event`, if present.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L52-L55[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L57-L60[source,window=_blank]
 
 '''
 
@@ -169,7 +187,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the related event id from `event` reply or relation metadata, if present.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L57-L60[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L62-L65[source,window=_blank]
 
 '''
 
@@ -187,7 +205,187 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the upstream raw event object carried by normalized `event`, if present.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L62-L65[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L67-L70[source,window=_blank]
+
+'''
+
+[#url]
+== url
+
+
+
+
+[source,clojure]
+----
+(url event)
+----
+
+Returns the normalized MXC URI from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L72-L75[source,window=_blank]
+
+'''
+
+[#encrypted-file]
+== encrypted-file
+
+
+
+
+[source,clojure]
+----
+(encrypted-file event)
+----
+
+Returns the normalized encrypted-file map from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L77-L80[source,window=_blank]
+
+'''
+
+[#file-name]
+== file-name
+
+
+
+
+[source,clojure]
+----
+(file-name event)
+----
+
+Returns the normalized file name from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L82-L85[source,window=_blank]
+
+'''
+
+[#mime-type]
+== mime-type
+
+
+
+
+[source,clojure]
+----
+(mime-type event)
+----
+
+Returns the normalized MIME type from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L87-L90[source,window=_blank]
+
+'''
+
+[#size-bytes]
+== size-bytes
+
+
+
+
+[source,clojure]
+----
+(size-bytes event)
+----
+
+Returns the normalized byte size from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L92-L95[source,window=_blank]
+
+'''
+
+[#duration]
+== duration
+
+
+
+
+[source,clojure]
+----
+(duration event)
+----
+
+Returns the normalized `java.time.Duration` from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L97-L100[source,window=_blank]
+
+'''
+
+[#height]
+== height
+
+
+
+
+[source,clojure]
+----
+(height event)
+----
+
+Returns the normalized media height from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L102-L105[source,window=_blank]
+
+'''
+
+[#width]
+== width
+
+
+
+
+[source,clojure]
+----
+(width event)
+----
+
+Returns the normalized media width from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L107-L110[source,window=_blank]
+
+'''
+
+[#thumbnail-url]
+== thumbnail-url
+
+
+
+
+[source,clojure]
+----
+(thumbnail-url event)
+----
+
+Returns the event-provided thumbnail MXC URI from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L112-L115[source,window=_blank]
+
+'''
+
+[#thumbnail-encrypted-file]
+== thumbnail-encrypted-file
+
+
+
+
+[source,clojure]
+----
+(thumbnail-encrypted-file event)
+----
+
+Returns the event-provided encrypted thumbnail map from `event`, if present.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L117-L120[source,window=_blank]
 
 '''
 
@@ -205,7 +403,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns true when `event` is a Matrix room-message event.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L67-L70[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L122-L125[source,window=_blank]
 
 '''
 
@@ -223,4 +421,4 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns true when `event` is a Matrix reaction event.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L72-L75[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/event.clj#L127-L130[source,window=_blank]

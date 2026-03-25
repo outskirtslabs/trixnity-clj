@@ -1,7 +1,8 @@
 = ol.trixnity.media
 
 
-Generic media upload helpers built on top of Trixnity's staged upload flow.
+Generic media upload and download helpers built on top of Trixnity's media
+service.
 
 Uploads happen in two steps:
 
@@ -9,9 +10,81 @@ Uploads happen in two steps:
   a prepared upload map containing an `upload://...` cache URI
 - <<upload,`upload`>> uploads either a prepared upload map or a local path-like source
   and returns a handle exposing upload progress plus the final uploaded media
+- <<get-media,`get-media`>>, <<get-encrypted-media,`get-encrypted-media`>>, and <<get-thumbnail,`get-thumbnail`>> download media
+  as normalized handle maps carrying a JVM `InputStream`
+
+Download selection follows the normalized event data:
+
+- use <<get-media,`get-media`>> for plain `::mx/url` attachment references
+- use <<get-encrypted-media,`get-encrypted-media`>> for `::mx/encrypted-file` or
+  `::mx/thumbnail-encrypted-file`
+- use <<get-media,`get-media`>> or <<get-encrypted-media,`get-encrypted-media`>> for event-provided thumbnail
+  references already present on the event
+- use <<get-thumbnail,`get-thumbnail`>> only when asking the homeserver to generate a new
+  thumbnail for an MXC URI at explicit dimensions
+- use <<temporary-file,`temporary-file`>> only when a filesystem path is required for an
+  existing media handle
 
 The public shapes here stay normalized as namespaced keyword maps so callers
 do not need to work with Kotlin media APIs directly.
+
+Resolved download handles all share the same shape:
+
+[source,clojure]
+----
+{::mx/input-stream <java.io.InputStream>
+ ::mx/raw          <opaque upstream platform media>}
+----
+
+`::mx/input-stream` is the supported happy path. `::mx/raw` exists only so
+<<temporary-file,`temporary-file`>> can compose on top of an already fetched handle.
+
+[#--GT-TemporaryMediaFile]
+== ->TemporaryMediaFile
+
+
+
+
+[source,clojure]
+----
+(->TemporaryMediaFile path raw)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+
+'''
+
+[#TemporaryMediaFile]
+== TemporaryMediaFile
+
+
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+
+'''
+
+[#map--GT-TemporaryMediaFile]
+== map->TemporaryMediaFile
+
+
+
+
+[source,clojure]
+----
+(map->TemporaryMediaFile m)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+
+'''
 
 [#prepare-upload]
 == prepare-upload
@@ -32,13 +105,15 @@ Missionary task of a prepared upload map.
 
 Supported opts:
 
+[options="header"]
+|===
 | key | description
-|-----|-------------
-| `::mx/file-name` | Optional logical file name stored in the returned metadata |
-| `::mx/mime-type` | Optional MIME type forwarded to upstream media upload preparation |
+| `::mx/file-name` | Optional logical file name stored in the returned metadata
+| `::mx/mime-type` | Optional MIME type forwarded to upstream media upload preparation
+|===
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L122-L147[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L165-L190[source,window=_blank]
 
 '''
 
@@ -78,4 +153,166 @@ Supported opts:
 | `::mx/keep-in-cache` | Keep the staged media in the local cache after upload, defaults to `true` |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L149-L207[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L192-L250[source,window=_blank]
+
+'''
+
+[#get-media]
+== get-media
+
+
+
+
+[source,clojure]
+----
+(get-media client uri)
+----
+
+Downloads plain media identified by `uri`.
+
+Returns a Missionary task of a normalized media handle:
+
+- `::mx/input-stream`, the primary public readable stream
+- `::mx/raw`, an opaque upstream media value used only for composition with
+  <<temporary-file,`temporary-file`>>
+
+`uri` should be an MXC URI such as `mxc://example.org/abc`.
+
+Use this for event fields that already carry a plain media reference, such as
+`::mx/url` or `::mx/thumbnail-url`.
+
+Example:
+
+[source,clojure]
+----
+(m/sp
+  (let [handle (m/? (get-media client (::mx/url ev)))]
+    (slurp (::mx/input-stream handle))))
+----
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L252-L280[source,window=_blank]
+
+'''
+
+[#get-encrypted-media]
+== get-encrypted-media
+
+
+
+
+[source,clojure]
+----
+(get-encrypted-media client encrypted-file)
+----
+
+Downloads encrypted media from normalized `encrypted-file` metadata.
+
+`encrypted-file` must be the normalized encrypted-file map exposed on events
+under `::mx/encrypted-file` or `::mx/thumbnail-encrypted-file`.
+
+Returns the same normalized media-handle shape as <<get-media,`get-media`>>, with
+`::mx/input-stream` as the public happy path and `::mx/raw` kept opaque for
+<<temporary-file,`temporary-file`>> composition.
+
+Example:
+
+[source,clojure]
+----
+(m/sp
+  (let [handle (m/? (get-encrypted-media client
+                                         (::mx/encrypted-file ev)))]
+    (slurp (::mx/input-stream handle))))
+----
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L282-L307[source,window=_blank]
+
+'''
+
+[#get-thumbnail]
+== get-thumbnail
+
+
+
+
+[source,clojure]
+----
+(get-thumbnail client uri width height)
+(get-thumbnail client uri width height opts)
+----
+
+Downloads a homeserver-generated thumbnail for `uri`.
+
+This mirrors upstream Trixnity `getThumbnail`: it asks the homeserver to
+generate a thumbnail for an MXC URI using explicit dimensions. It does not
+read event-provided thumbnail references already present on an event. For
+those, use <<get-media,`get-media`>> or <<get-encrypted-media,`get-encrypted-media`>> with
+`::mx/thumbnail-url` or `::mx/thumbnail-encrypted-file`.
+
+Returns the same normalized media-handle shape as <<get-media,`get-media`>>.
+
+Supported opts:
+
+| key | description
+|-----|-------------
+| `::mx/method` | Thumbnail resize method, either `:crop` or `:scale` |
+| `::mx/animated` | Request animated thumbnails when upstream supports them |
+
+Example:
+
+[source,clojure]
+----
+(m/sp
+  (let [handle (m/? (get-thumbnail client
+                                    (::mx/url ev)
+                                    320
+                                    200
+                                    {::mx/method :scale}))]
+    (slurp (::mx/input-stream handle))))
+----
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L309-L354[source,window=_blank]
+
+'''
+
+[#temporary-file]
+== temporary-file
+
+
+
+
+[source,clojure]
+----
+(temporary-file media)
+----
+
+Creates a temporary file from `media`.
+
+`media` may be either a resolved media handle or a media-handle task returned
+by <<get-media,`get-media`>>, <<get-encrypted-media,`get-encrypted-media`>>, or <<get-thumbnail,`get-thumbnail`>>.
+
+Returns a Missionary task of a closeable <<TemporaryMediaFile,`TemporaryMediaFile`>> record. The
+record exposes `:path` directly as a slurpable string path and should usually
+be used with `with-open`.
+
+Treat `::mx/raw` on media handles as opaque; it exists only so this helper
+can compose with already-fetched media.
+
+This is an opt-in JVM convenience for integrations that need a filesystem
+path. If the underlying media handle cannot produce a temporary file, the task
+fails with an exception from the bridge layer.
+
+Example:
+
+[source,clojure]
+----
+(m/sp
+  (with-open [tmp (m/? (temporary-file
+                        (get-media client (::mx/url ev))))]
+    (slurp (:path tmp))))
+----
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L356-L395[source,window=_blank]

@@ -22,7 +22,7 @@ This release publishes 14 namespaces.
 | Encryption-key state, backup state, and trust-level queries.
 
 | xref:api/ol-trixnity-media.adoc[`ol.trixnity.media`]
-| Generic media upload helpers built on top of Trixnity's staged upload flow.
+| Generic media upload and download helpers built on top of Trixnity's media service.
 
 | xref:api/ol-trixnity-notification.adoc[`ol.trixnity.notification`]
 | Notification snapshots and notification update flows.

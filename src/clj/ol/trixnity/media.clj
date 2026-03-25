@@ -170,9 +170,9 @@
 
   Supported opts:
 
-  | key | description
-  |-----|-------------
-  | `::mx/file-name` | Optional logical file name stored in the returned metadata |
+  | key              | description                                                       |
+  |------------------|-------------------------------------------------------------------|
+  | `::mx/file-name` | Optional logical file name stored in the returned metadata        |
   | `::mx/mime-type` | Optional MIME type forwarded to upstream media upload preparation |"
   ([client source]
    (prepare-upload client source {}))

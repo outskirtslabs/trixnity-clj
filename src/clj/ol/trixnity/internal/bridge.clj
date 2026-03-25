@@ -99,6 +99,9 @@
 (defn send-state-event [^MatrixClient client room-id state-event ^Duration timeout on-success on-failure]
   (RoomBridge/sendStateEvent client room-id state-event timeout on-success on-failure))
 
+(defn redact-event [^MatrixClient client room-id event-id reason ^Duration timeout on-success on-failure]
+  (RoomBridge/redactEvent client room-id event-id reason timeout on-success on-failure))
+
 (defn cancel-send-message [^MatrixClient client room-id transaction-id on-success on-failure]
   (RoomBridge/cancelSendMessage client room-id transaction-id on-success on-failure))
 

@@ -9,7 +9,7 @@
   The public wrappers here cover three upstream groupings:
 
   - room mutations such as room creation, invites, messages, reactions, and
-    supported room state events
+    supported room state events and redactions
   - room observation and state operations such as `getById`, `getAll`,
     `getAccountData`, `getState`, and `getOutbox`
   - room-scoped timeline lookup and traversal helpers exposed through the
@@ -198,6 +198,28 @@
                             client
                             room-id
                             state-event
+                            (get opts ::mx/timeout)))))
+
+(defn redact-event
+  "Redacts `event-id` in `room-id` and returns a Missionary task of the redaction event id.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/reason` | Optional redaction reason sent to the homeserver |
+  | `::mx/timeout` | Maximum time to wait for the redact operation |"
+  ([client room-id event-id]
+   (redact-event client room-id event-id {}))
+  ([client room-id event-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/event-id event-id)
+   (let [opts (mx/validate! ::mx/RedactEventOpts opts)]
+     (internal/suspend-task bridge/redact-event
+                            client
+                            room-id
+                            event-id
+                            (::mx/reason opts)
                             (get opts ::mx/timeout)))))
 
 (defn cancel-send-message

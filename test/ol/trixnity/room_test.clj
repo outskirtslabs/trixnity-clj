@@ -219,6 +219,9 @@
   (let [forget-room-var           (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var    (resolve-var 'ol.trixnity.internal.bridge
                                                'forget-room)
+        redact-event-var          (resolve-var 'ol.trixnity.room 'redact-event)
+        bridge-redact-event-var   (resolve-var 'ol.trixnity.internal.bridge
+                                               'redact-event)
         cancel-send-message-var   (resolve-var 'ol.trixnity.room
                                                'cancel-send-message)
         bridge-cancel-message-var (resolve-var 'ol.trixnity.internal.bridge
@@ -236,6 +239,10 @@
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)
         "ol.trixnity.internal.bridge/forget-room is missing")
+    (is (some? redact-event-var)
+        "ol.trixnity.room/redact-event is missing")
+    (is (some? bridge-redact-event-var)
+        "ol.trixnity.internal.bridge/redact-event is missing")
     (is (some? cancel-send-message-var)
         "ol.trixnity.room/cancel-send-message is missing")
     (is (some? bridge-cancel-message-var)
@@ -250,6 +257,8 @@
         "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
     (when (every? some? [forget-room-var
                          bridge-forget-room-var
+                         redact-event-var
+                         bridge-redact-event-var
                          cancel-send-message-var
                          bridge-cancel-message-var
                          retry-send-message-var
@@ -261,6 +270,12 @@
          (fn [client room-id force on-success _]
            (swap! calls conj [:forget client room-id force])
            (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-redact-event-var
+         (fn [client room-id event-id reason bridge-timeout on-success _]
+           (swap! calls conj [:redact client room-id event-id reason bridge-timeout])
+           (on-success "$redaction")
            (->StubCloseable (atom 0)))
 
          bridge-cancel-message-var
@@ -292,6 +307,20 @@
                  :client-handle
                  "!room:example.org"
                  {::schemas/force true}))))
+          (is (= "$redaction"
+                 (realize-task
+                  ((var-get redact-event-var)
+                   :client-handle
+                   "!room:example.org"
+                   "$event"))))
+          (is (= "$redaction"
+                 (realize-task
+                  ((var-get redact-event-var)
+                   :client-handle
+                   "!room:example.org"
+                   "$event"
+                   {::schemas/reason  "spam"
+                    ::schemas/timeout (Duration/ofSeconds 5)}))))
           (is (nil?
                (realize-task
                 ((var-get cancel-send-message-var)
@@ -319,6 +348,8 @@
                  {::schemas/limit 7}))))))
       (is (= [[:forget :client-handle "!room:example.org" false]
               [:forget :client-handle "!room:example.org" true]
+              [:redact :client-handle "!room:example.org" "$event" nil nil]
+              [:redact :client-handle "!room:example.org" "$event" "spam" (Duration/ofSeconds 5)]
               [:cancel :client-handle "!room:example.org" "txn-1"]
               [:retry :client-handle "!room:example.org" "txn-2"]
               [:fill :client-handle "!room:example.org" "$event" 20]
@@ -329,6 +360,9 @@
   (let [forget-room-var          (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var   (resolve-var 'ol.trixnity.internal.bridge
                                               'forget-room)
+        redact-event-var         (resolve-var 'ol.trixnity.room 'redact-event)
+        bridge-redact-event-var  (resolve-var 'ol.trixnity.internal.bridge
+                                              'redact-event)
         set-typing-var           (resolve-var 'ol.trixnity.room 'set-typing)
         bridge-set-typing-var    (resolve-var 'ol.trixnity.internal.bridge
                                               'set-typing)
@@ -344,6 +378,10 @@
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)
         "ol.trixnity.internal.bridge/forget-room is missing")
+    (is (some? redact-event-var)
+        "ol.trixnity.room/redact-event is missing")
+    (is (some? bridge-redact-event-var)
+        "ol.trixnity.internal.bridge/redact-event is missing")
     (is (some? set-typing-var)
         "ol.trixnity.room/set-typing is missing")
     (is (some? bridge-set-typing-var)
@@ -358,6 +396,8 @@
         "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
     (when (every? some? [forget-room-var
                          bridge-forget-room-var
+                         redact-event-var
+                         bridge-redact-event-var
                          set-typing-var
                          bridge-set-typing-var
                          send-state-event-var
@@ -368,6 +408,11 @@
         {bridge-forget-room-var
          (fn [& _]
            (swap! calls conj :forget)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-redact-event-var
+         (fn [& _]
+           (swap! calls conj :redact)
            (throw (ex-info "bridge should not be called" {})))
 
          bridge-set-typing-var
@@ -390,6 +435,14 @@
                  :client-handle
                  "!room:example.org"
                  {::schemas/force :yes})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get redact-event-var)
+                 :client-handle
+                 "!room:example.org"
+                 "$event"
+                 {::schemas/reason [:not-a-string]})
                 false
                 (catch clojure.lang.ExceptionInfo _ true)))
           (is (try

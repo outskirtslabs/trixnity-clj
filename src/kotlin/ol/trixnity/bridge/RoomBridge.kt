@@ -313,6 +313,28 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun redactEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        eventId: String,
+        reason: String?,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.redactEvent(
+            roomId = RoomId(roomId),
+            eventId = EventId(eventId),
+            reason = reason,
+        ).getOrThrow().full
+    }
+
+    @JvmStatic
     fun cancelSendMessage(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,

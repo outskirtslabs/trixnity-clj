@@ -238,6 +238,11 @@
    [:map
     [::limit {:optional true} ::limit]]
 
+   ::RedactEventOpts
+   [:map
+    [::reason {:optional true} ::reason]
+    [::timeout {:optional true} ::timeout]]
+
    ::SendOpts
    ::OneShotOpts
 

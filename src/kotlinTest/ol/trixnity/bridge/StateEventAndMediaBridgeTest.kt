@@ -1,6 +1,7 @@
 package ol.trixnity.bridge
 
 import de.connect2x.trixnity.client.media.MediaService
+import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
@@ -17,7 +18,9 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
 class StateEventAndMediaBridgeTest {
@@ -88,6 +91,37 @@ class StateEventAndMediaBridgeTest {
     }
 
     @Test
+    fun uploadPreparedMediaWithProgressReportsSnapshotsAndFinalSuccessFromOneOperation() = runTest {
+        val recorder = MediaRecorder()
+        val seenProgress = mutableListOf<Map<*, *>>()
+
+        val mxcUri =
+            uploadPreparedMediaWithProgress(
+                mediaService(recorder),
+                cacheUri = "upload://plain/1",
+                keepInCache = false,
+                onProgress = { value: Any? -> seenProgress += assertIs<Map<*, *>>(value) },
+            )
+
+        assertEquals("mxc://example.org/plain/1", mxcUri)
+        assertEquals(1, recorder.uploaded.size)
+        assertNotNull(recorder.uploadProgress.single())
+        assertEquals(
+            listOf<Map<*, *>>(
+                mapOf(
+                    BridgeSchema.transferred to 0L,
+                    BridgeSchema.total to 4L,
+                ),
+                mapOf(
+                    BridgeSchema.transferred to 4L,
+                    BridgeSchema.total to 4L,
+                ),
+            ),
+            seenProgress,
+        )
+    }
+
+    @Test
     fun roomNameAndTopicStateEventsMapToTheirUpstreamClasses() {
         val name = requireStateEventSpec(
             mapOf(
@@ -118,6 +152,7 @@ class StateEventAndMediaBridgeTest {
         val prepared: MutableList<ByteArray> = mutableListOf(),
         val contentTypes: MutableList<ContentType?> = mutableListOf(),
         val uploaded: MutableList<Pair<String, Boolean>> = mutableListOf(),
+        val uploadProgress: MutableList<MutableStateFlow<FileTransferProgress?>?> = mutableListOf(),
     )
 
     private fun mediaService(recorder: MediaRecorder): MediaService =
@@ -132,7 +167,11 @@ class StateEventAndMediaBridgeTest {
 
                 method.name.startsWith("uploadMedia") -> {
                     val cacheUri = args[0] as String
+                    val progress = args[1] as MutableStateFlow<FileTransferProgress?>?
                     val keepInCache = args[2] as Boolean
+                    recorder.uploadProgress += progress
+                    progress?.value = FileTransferProgress(0, 4)
+                    progress?.value = FileTransferProgress(4, 4)
                     recorder.uploaded += cacheUri to keepInCache
                     "mxc://example.org/plain/${cacheUri.substringAfterLast('/')}"
                 }

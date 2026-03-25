@@ -30,10 +30,10 @@
     (swap! closed-count inc)))
 
 (deftest task-surfaces-return-missionary-tasks-test
-  (let [calls   (atom {})
-        timeout (Duration/ofSeconds 5)
-        ev      {::schemas/room-id  "!room:example.org"
-                 ::schemas/event-id "$event"}
+  (let [calls                                       (atom {})
+        timeout                                     (Duration/ofSeconds 5)
+        ev                                          {::schemas/room-id  "!room:example.org"
+                                                     ::schemas/event-id "$event"}
         state-event
         {::schemas/type "m.room.name"
          ::schemas/name "Ops Bot"}
@@ -42,9 +42,7 @@
          ::schemas/topic     "Control room"
          ::schemas/invite    ["@alice:example.org"]
          ::schemas/preset    :private-chat
-         ::schemas/is-direct true}
-        message (-> (msg/text "pong")
-                    (msg/reply-to {::schemas/event-id "$parent"}))]
+         ::schemas/is-direct true}]
     (with-redefs [bridge/create-room
                   (fn [client request on-success _]
                     (swap! calls assoc :create-room [client request])
@@ -55,12 +53,6 @@
                   (fn [client room-id user-id bridge-timeout on-success _]
                     (swap! calls assoc :invite-user [client room-id user-id bridge-timeout])
                     (on-success :invited)
-                    (->StubCloseable (atom 0)))
-
-                  bridge/send-message
-                  (fn [client room-id sent-message bridge-timeout on-success _]
-                    (swap! calls assoc :send-message [client room-id sent-message bridge-timeout])
-                    (on-success "$txn")
                     (->StubCloseable (atom 0)))
 
                   bridge/send-reaction
@@ -82,10 +74,6 @@
              (realize-task
               (sut/invite-user :client-handle "!room:example.org" "@alice:example.org"
                                {::schemas/timeout timeout}))))
-      (is (= "$txn"
-             (realize-task
-              (sut/send-message :client-handle "!room:example.org" message
-                                {::schemas/timeout timeout}))))
       (is (= "$reaction"
              (realize-task
               (sut/send-reaction :client-handle "!room:example.org" ev "🔥"))))
@@ -98,12 +86,53 @@
       (is (= [:client-handle room-opts] (:create-room @calls)))
       (is (= [:client-handle "!room:example.org" "@alice:example.org" timeout]
              (:invite-user @calls)))
-      (is (= [:client-handle "!room:example.org" message timeout]
-             (:send-message @calls)))
       (is (= [:client-handle "!room:example.org" "$event" "🔥" nil]
              (:send-reaction @calls)))
       (is (= [:client-handle "!room:example.org" state-event timeout]
              (:send-state-event @calls))))))
+
+(deftest send-message-returns-a-send-handle-with-transaction-id-and-status-flow-test
+  (let [calls         (atom {})
+        timeout       (Duration/ofSeconds 5)
+        message       (-> (msg/text "pong")
+                          (msg/reply-to {::schemas/event-id "$parent"}))
+        status-values [{::schemas/transaction-id "txn-123"
+                        ::schemas/content        {:body "pong"}}
+                       nil]]
+    (with-redefs [bridge/send-message
+                  (fn [client room-id sent-message bridge-timeout on-success _]
+                    (swap! calls assoc :send-message [client room-id sent-message bridge-timeout])
+                    (on-success "txn-123")
+                    (->StubCloseable (atom 0)))
+
+                  bridge/outbox-message
+                  (fn [client room-id transaction-id]
+                    (swap! calls assoc :outbox-message [client room-id transaction-id])
+                    ::outbox-message-flow)
+
+                  internal/observe-flow
+                  (fn [_ kotlin-flow]
+                    (is (= ::outbox-message-flow kotlin-flow))
+                    (m/observe
+                     (fn [emit]
+                       (future
+                         (doseq [status status-values]
+                           (emit status)))
+                       (constantly nil))))]
+      (let [handle (realize-task
+                    (sut/send-message :client-handle
+                                      "!room:example.org"
+                                      message
+                                      {::schemas/timeout timeout}))]
+        (is (map? handle))
+        (when (map? handle)
+          (is (= "txn-123" (::schemas/transaction-id handle)))
+          (is (= status-values
+                 (collect-values (::schemas/status handle) 2))))))
+    (is (= [:client-handle "!room:example.org" message timeout]
+           (:send-message @calls)))
+    (is (= [:client-handle "!room:example.org" "txn-123"]
+           (:outbox-message @calls)))))
 
 (deftest send-message-accepts-and-forwards-rich-message-specs-test
   (let [calls   (atom [])
@@ -123,14 +152,28 @@
                   (fn [client room-id sent-message bridge-timeout on-success _]
                     (swap! calls conj [client room-id sent-message bridge-timeout])
                     (on-success "$txn")
-                    (->StubCloseable (atom 0)))]
-      (is (= "$txn"
-             (realize-task
-              (sut/send-message :client-handle "!room:example.org" emote
-                                {::schemas/timeout timeout}))))
-      (is (= "$txn"
-             (realize-task
-              (sut/send-message :client-handle "!room:example.org" audio)))))
+                    (->StubCloseable (atom 0)))
+
+                  bridge/outbox-message
+                  (fn [_ _ transaction-id]
+                    (case transaction-id
+                      "$txn" ::outbox-message-flow))
+
+                  internal/observe-flow
+                  (fn [_ kotlin-flow]
+                    (is (= ::outbox-message-flow kotlin-flow))
+                    (m/observe (fn [emit] (future (emit nil)) (constantly nil))))]
+      (let [emote-handle (realize-task
+                          (sut/send-message :client-handle "!room:example.org" emote
+                                            {::schemas/timeout timeout}))
+            audio-handle (realize-task
+                          (sut/send-message :client-handle "!room:example.org" audio))]
+        (is (map? emote-handle))
+        (is (map? audio-handle))
+        (when (and (map? emote-handle)
+                   (map? audio-handle))
+          (is (= "$txn" (::schemas/transaction-id emote-handle)))
+          (is (= "$txn" (::schemas/transaction-id audio-handle))))))
     (is (= [[:client-handle "!room:example.org" emote timeout]
             [:client-handle "!room:example.org" audio nil]]
            @calls))))

@@ -28,6 +28,7 @@ object MediaBridge {
         client: de.connect2x.trixnity.client.MatrixClient,
         cacheUri: String,
         keepInCache: Boolean,
+        onProgress: Any,
         onSuccess: Any,
         onFailure: Any,
     ): Closeable = submitBridgeTask(
@@ -35,10 +36,11 @@ object MediaBridge {
         onSuccess = onSuccess,
         onFailure = onFailure,
     ) {
-        uploadPreparedMedia(
+        uploadPreparedMediaWithProgress(
             mediaService = client.media,
             cacheUri = cacheUri,
             keepInCache = keepInCache,
+            onProgress = onProgress,
         )
     }
 }

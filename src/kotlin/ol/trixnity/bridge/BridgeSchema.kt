@@ -61,6 +61,9 @@ internal object BridgeSchema {
     val createdAt: Keyword = Keyword.intern(schemaNamespace, "created-at")
     val sentAt: Keyword = Keyword.intern(schemaNamespace, "sent-at")
     val sendError: Keyword = Keyword.intern(schemaNamespace, "send-error")
+    val transferred: Keyword = Keyword.intern(schemaNamespace, "transferred")
+    val total: Keyword = Keyword.intern(schemaNamespace, "total")
+    val mediaUploadProgress: Keyword = Keyword.intern(schemaNamespace, "media-upload-progress")
     val receipts: Keyword = Keyword.intern(schemaNamespace, "receipts")
     val receiptType: Keyword = Keyword.intern(schemaNamespace, "receipt-type")
     val name: Keyword = Keyword.intern(schemaNamespace, "name")
@@ -169,6 +172,7 @@ internal object BridgeSchema {
         val createdAt: Keyword = BridgeSchema.createdAt
         val sentAt: Keyword = BridgeSchema.sentAt
         val sendError: Keyword = BridgeSchema.sendError
+        val mediaUploadProgress: Keyword = BridgeSchema.mediaUploadProgress
         val raw: Keyword = BridgeSchema.raw
     }
 

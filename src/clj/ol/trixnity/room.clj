@@ -27,6 +27,8 @@
 
 (set! *warn-on-reflection* true)
 
+(declare get-outbox)
+
 (defn- timeline-event-args [opts]
   (let [opts (mx/validate! ::mx/TimelineEventOpts opts)]
     {:decryption-timeout-ms (internal/duration->millis (::mx/decryption-timeout opts))
@@ -157,7 +159,16 @@
                             (get opts ::mx/force false)))))
 
 (defn send-message
-  "Queues `message` for `room-id` and returns a Missionary task of the transaction id.
+  "Queues `message` for `room-id` and returns a Missionary task of a send handle.
+
+  The task resolves to:
+
+  - `::mx/transaction-id` for the queued outbox entry
+  - `::mx/status`, a Missionary flow backed by [[get-outbox]] for that
+    transaction id
+
+  The status flow may emit `nil` after the message leaves the outbox, which
+  usually means it was echoed back by sync, cancelled, or otherwise removed.
 
   Supported opts:
 
@@ -170,11 +181,14 @@
    (mx/validate! ::mx/room-id room-id)
    (let [message (mx/validate! ::mx/MessageSpec message)
          opts    (mx/validate! ::mx/SendOpts opts)]
-     (internal/suspend-task bridge/send-message
-                            client
-                            room-id
-                            message
-                            (get opts ::mx/timeout)))))
+     (m/sp
+      (let [transaction-id (m/? (internal/suspend-task bridge/send-message
+                                                       client
+                                                       room-id
+                                                       message
+                                                       (get opts ::mx/timeout)))]
+        {::mx/transaction-id transaction-id
+         ::mx/status         (get-outbox client room-id transaction-id)})))))
 
 (defn send-reaction
   "Sends a reaction to event `ev` in `room-id` and returns a Missionary task."
@@ -360,7 +374,8 @@
   - `(get-outbox client)` returns all outbox entries as a list of inner flows
   - `(get-outbox client room-id)` scopes that list to one room
   - `(get-outbox client room-id transaction-id)` returns the single outbox
-    entry flow for that transaction id"
+    entry flow for that transaction id, including attachment upload progress
+    under `::mx/media-upload-progress` when available"
   ([client]
    (internal/observe-flow-list client (bridge/outbox client)))
   ([client room-id]
@@ -374,7 +389,10 @@
 (defn get-outbox-flat
   "Returns flattened Missionary flows over room outbox state.
 
-  With `room-id`, scopes the flattened outbox view to a single room."
+  With `room-id`, scopes the flattened outbox view to a single room.
+
+  Flattened outbox snapshots also include `::mx/media-upload-progress` when an
+  attachment-backed send is still uploading."
   ([client]
    (internal/observe-flow client (bridge/outbox-flat client)))
   ([client room-id]

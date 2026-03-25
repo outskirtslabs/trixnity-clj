@@ -4,6 +4,8 @@ import de.connect2x.trixnity.client.media.MediaService
 import de.connect2x.trixnity.client.room.RoomService
 import de.connect2x.trixnity.client.room.message.MessageBuilder
 import de.connect2x.trixnity.client.store.Room
+import de.connect2x.trixnity.client.store.RoomOutboxMessage
+import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
@@ -25,6 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -205,6 +208,28 @@ class RoomBridgeMessageSpecTest {
         assertEquals(0, recorder.uploadedPlain.size)
         assertEquals(1, recorder.uploadedEncrypted.size)
         assertContentEquals("secret audio".toByteArray(), recorder.uploadedEncrypted.single())
+    }
+
+    @Test
+    fun normalizedOutboxMessagesIncludeMediaUploadProgressWhenPresent() {
+        val outboxMessage =
+            RoomOutboxMessage(
+                roomId = RoomId("!room:example.org"),
+                transactionId = "txn-123",
+                content = RoomMessageEventContent.TextBased.Text("uploading"),
+                createdAt = Clock.System.now(),
+            )
+        outboxMessage.mediaUploadProgress.value = FileTransferProgress(512, 1024)
+
+        val normalized = normalizeRoomOutboxMessage(outboxMessage)
+
+        assertEquals(
+            mapOf(
+                BridgeSchema.transferred to 512L,
+                BridgeSchema.total to 1024L,
+            ),
+            normalized?.get(BridgeSchema.RoomOutboxMessage.mediaUploadProgress),
+        )
     }
 
     private fun createAttachment(suffix: String, bytes: ByteArray): Path =

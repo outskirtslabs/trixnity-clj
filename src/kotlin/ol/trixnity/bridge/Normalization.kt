@@ -15,6 +15,7 @@ import de.connect2x.trixnity.client.verification.ActiveDeviceVerification
 import de.connect2x.trixnity.client.verification.ActiveUserVerification
 import de.connect2x.trixnity.client.verification.ActiveVerification
 import de.connect2x.trixnity.client.verification.VerificationService
+import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.clientserverapi.model.key.GetRoomKeysBackupVersionResponse
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
@@ -149,6 +150,16 @@ internal fun normalizeContent(value: Any?): Map<Keyword, Any?>? =
         BridgeSchema.raw to value,
     )
 
+internal fun normalizeFileTransferProgress(
+    progress: FileTransferProgress?,
+): Map<Keyword, Any?>? {
+    if (progress == null) return null
+    return buildMap {
+        put(BridgeSchema.transferred, progress.transferred)
+        progress.total?.let { put(BridgeSchema.total, it) }
+    }
+}
+
 internal fun normalizeRoomOutboxMessage(
     message: RoomOutboxMessage<*>?,
 ): Map<Keyword, Any?>? {
@@ -161,6 +172,9 @@ internal fun normalizeRoomOutboxMessage(
         put(BridgeSchema.RoomOutboxMessage.createdAt, message.createdAt.toString())
         message.sentAt?.let { put(BridgeSchema.RoomOutboxMessage.sentAt, it.toString()) }
         message.sendError?.let { put(BridgeSchema.RoomOutboxMessage.sendError, normalizedKind(it::class.simpleName)) }
+        normalizeFileTransferProgress(message.mediaUploadProgress.value)?.let {
+            put(BridgeSchema.RoomOutboxMessage.mediaUploadProgress, it)
+        }
         put(BridgeSchema.RoomOutboxMessage.raw, message)
     }
 }

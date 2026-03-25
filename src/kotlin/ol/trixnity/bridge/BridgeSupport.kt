@@ -7,6 +7,7 @@ import de.connect2x.trixnity.client.MediaStoreModule
 import de.connect2x.trixnity.client.media.MediaService
 import de.connect2x.trixnity.client.RepositoriesModule
 import de.connect2x.trixnity.client.media.okio.okio
+import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.flow.MutableStateFlow
 import okio.Path.Companion.toPath
 import java.io.Closeable
 import java.nio.file.Files
@@ -310,6 +312,63 @@ internal suspend fun uploadPreparedMedia(
     keepInCache: Boolean,
 ): String =
     mediaService.uploadMedia(cacheUri, keepMediaInCache = keepInCache).getOrThrow()
+
+private class ProgressCallbackStateFlow(
+    private val onProgress: (FileTransferProgress) -> Unit,
+) : MutableStateFlow<FileTransferProgress?> {
+    private val delegate = MutableStateFlow<FileTransferProgress?>(null)
+
+    override var value: FileTransferProgress?
+        get() = delegate.value
+        set(value) {
+            delegate.value = value
+            value?.let(onProgress)
+        }
+
+    override val replayCache: List<FileTransferProgress?>
+        get() = delegate.replayCache
+
+    override val subscriptionCount
+        get() = delegate.subscriptionCount
+
+    override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<FileTransferProgress?>): Nothing =
+        delegate.collect(collector)
+
+    override suspend fun emit(value: FileTransferProgress?) {
+        this.value = value
+    }
+
+    override fun compareAndSet(expect: FileTransferProgress?, update: FileTransferProgress?): Boolean {
+        val changed = delegate.compareAndSet(expect, update)
+        if (changed) update?.let(onProgress)
+        return changed
+    }
+
+    override fun resetReplayCache() {
+        delegate.resetReplayCache()
+    }
+
+    override fun tryEmit(value: FileTransferProgress?): Boolean {
+        this.value = value
+        return true
+    }
+}
+
+internal suspend fun uploadPreparedMediaWithProgress(
+    mediaService: MediaService,
+    cacheUri: String,
+    keepInCache: Boolean,
+    onProgress: Any,
+): String =
+    mediaService.uploadMedia(
+        cacheUri,
+        progress = ProgressCallbackStateFlow { snapshot ->
+            normalizeFileTransferProgress(snapshot)?.let {
+                invokeCallbackSafely(onProgress, it)
+            }
+        },
+        keepMediaInCache = keepInCache,
+    ).getOrThrow()
 
 internal fun relationFrom(spec: RelationSpec?): RelatesTo? =
     when (spec?.type) {

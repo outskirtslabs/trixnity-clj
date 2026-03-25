@@ -160,8 +160,8 @@
 (defn prepare-upload-media [^MatrixClient client source-path mime-type on-success on-failure]
   (MediaBridge/prepareUploadMedia client source-path mime-type on-success on-failure))
 
-(defn upload-media [^MatrixClient client cache-uri keep-in-cache on-success on-failure]
-  (MediaBridge/uploadMedia client cache-uri keep-in-cache on-success on-failure))
+(defn upload-media [^MatrixClient client cache-uri keep-in-cache on-progress on-success on-failure]
+  (MediaBridge/uploadMedia client cache-uri keep-in-cache on-progress on-success on-failure))
 
 (defn timeline-event
   [^MatrixClient client room-id event-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content]

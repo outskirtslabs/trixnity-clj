@@ -69,12 +69,22 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
       (m/? (m/reduce
             (fn [_ ev]
               (when (event/text? ev)
-                (m/? (room/send-message
-                      client
-                      (event/room-id ev)
-                      (-> (msg/text "pong")
-                          (msg/reply-to ev))
-                      {::mx/timeout (Duration/ofSeconds 5)})))
+                (let [{::mx/keys [transaction-id status]}
+                      (m/? (room/send-message
+                            client
+                            (event/room-id ev)
+                            (-> (msg/text "pong")
+                                (msg/reply-to ev))
+                            {::mx/timeout (Duration/ofSeconds 5)}))]
+                  (println "Queued reply with transaction id:" transaction-id)
+                  (future
+                    (m/? (m/reduce
+                          (fn [_ outbox-snapshot]
+                            (when-let [progress (::mx/media-upload-progress outbox-snapshot)]
+                              (println "Attachment upload progress:" progress))
+                            nil)
+                          nil
+                          status)))))
               nil)
             nil
             (room/get-timeline-events-from-now-on
@@ -82,6 +92,10 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
              {::mx/decryption-timeout (Duration/ofSeconds 8)}))))
     {:client client}))
 ----
+
+`ol.trixnity.media/upload` now returns `{::mx/result ::mx/progress}` for the
+same reason: callers can observe upload progress while awaiting the final
+uploaded media map from one operation.
 
 If you want a different repository implementation, construct a `MatrixClient` yourself and pass it to `client/open` as `::mx/client`.
 

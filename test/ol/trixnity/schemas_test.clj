@@ -138,3 +138,27 @@
                           ::sut/source-path "/tmp/avatar.png"
                           ::sut/file-name   "avatar.png"
                           ::sut/size-bytes  42})))))
+
+(deftest upload-progress-schema-normalizes-transferred-bytes-and-optional-total-test
+  (let [schema (m/schema ::sut/UploadProgress {:registry (sut/registry {})})]
+    (is (m/validate schema {::sut/transferred 32768
+                            ::sut/total       1048576}))
+    (is (m/validate schema {::sut/transferred 32768}))
+    (is (not (m/validate schema {::sut/total 1048576})))
+    (is (not (m/validate schema {::sut/transferred -1})))))
+
+(deftest room-outbox-message-schema-allows-attachment-upload-progress-test
+  (let [schema       (m/schema ::sut/RoomOutboxMessage {:registry (sut/registry {})})
+        schema-entry (get (sut/schemas {}) ::sut/RoomOutboxMessage)]
+    (is (some #{[::sut/media-upload-progress {:optional true} ::sut/UploadProgress]}
+              (rest schema-entry)))
+    (is (m/validate schema {::sut/room-id               "!room:example.org"
+                            ::sut/transaction-id        "txn-123"
+                            ::sut/content               {::sut/body "uploading"}
+                            ::sut/created-at            "2026-03-25T10:15:30Z"
+                            ::sut/media-upload-progress {::sut/transferred 512
+                                                         ::sut/total       1024}}))
+    (is (m/validate schema {::sut/room-id        "!room:example.org"
+                            ::sut/transaction-id "txn-123"
+                            ::sut/content        {::sut/body "queued"}
+                            ::sut/created-at     "2026-03-25T10:15:30Z"}))))

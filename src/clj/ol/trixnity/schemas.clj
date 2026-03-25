@@ -137,6 +137,8 @@
    ::created-at                                    :string
    ::sent-at                                       :string
    ::send-error                                    :string
+   ::transferred                                   nat-int?
+   ::total                                         nat-int?
    ::receipt-type                                  :string
    ::name                                          :string
    ::presence                                      [:or :keyword :string]
@@ -159,6 +161,7 @@
    ::methods                                       [:set [:or :keyword :string]]
    ::reasons                                       [:set [:or :keyword :string]]
    ::algorithm                                     :string
+   ::media-upload-progress                         ::UploadProgress
    ::raw                                           :any
    ::direct-chat-room-ids                          [:set ::room-id]
    ::direct-chat-mappings                          [:map-of ::user-id ::direct-chat-room-ids]
@@ -379,6 +382,11 @@
     [::mime-type {:optional true} ::mime-type]
     [::size-bytes ::size-bytes]]
 
+   ::UploadProgress
+   [:map {:closed true}
+    [::transferred ::transferred]
+    [::total {:optional true} ::total]]
+
    ::Event
    [:map
     [::type {:optional true} ::type]
@@ -448,6 +456,7 @@
     [::created-at ::created-at]
     [::sent-at {:optional true} ::sent-at]
     [::send-error {:optional true} ::send-error]
+    [::media-upload-progress {:optional true} ::UploadProgress]
     [::raw {:optional true} ::raw]]
 
    ::RoomUser

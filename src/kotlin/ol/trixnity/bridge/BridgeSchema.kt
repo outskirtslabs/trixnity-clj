@@ -45,6 +45,7 @@ internal object BridgeSchema {
     val message: Keyword = Keyword.intern(schemaNamespace, "message")
     val timeout: Keyword = Keyword.intern(schemaNamespace, "timeout")
     val type: Keyword = Keyword.intern(schemaNamespace, "type")
+    val msgtype: Keyword = Keyword.intern(schemaNamespace, "msgtype")
     val decryptionTimeout: Keyword = Keyword.intern(schemaNamespace, "decryption-timeout")
     val fetchTimeout: Keyword = Keyword.intern(schemaNamespace, "fetch-timeout")
     val fetchSize: Keyword = Keyword.intern(schemaNamespace, "fetch-size")
@@ -89,6 +90,21 @@ internal object BridgeSchema {
     val methods: Keyword = Keyword.intern(schemaNamespace, "methods")
     val reasons: Keyword = Keyword.intern(schemaNamespace, "reasons")
     val algorithm: Keyword = Keyword.intern(schemaNamespace, "algorithm")
+    val jwk: Keyword = Keyword.intern(schemaNamespace, "jwk")
+    val jwkKey: Keyword = Keyword.intern(schemaNamespace, "jwk-key")
+    val keyType: Keyword = Keyword.intern(schemaNamespace, "key-type")
+    val keyOperations: Keyword = Keyword.intern(schemaNamespace, "key-operations")
+    val extractable: Keyword = Keyword.intern(schemaNamespace, "extractable")
+    val initializationVector: Keyword = Keyword.intern(schemaNamespace, "initialization-vector")
+    val hashes: Keyword = Keyword.intern(schemaNamespace, "hashes")
+    val version: Keyword = Keyword.intern(schemaNamespace, "version")
+    val encryptedFile: Keyword = Keyword.intern(schemaNamespace, "encrypted-file")
+    val thumbnailUrl: Keyword = Keyword.intern(schemaNamespace, "thumbnail-url")
+    val thumbnailEncryptedFile: Keyword = Keyword.intern(schemaNamespace, "thumbnail-encrypted-file")
+    val inputStream: Keyword = Keyword.intern(schemaNamespace, "input-stream")
+    val path: Keyword = Keyword.intern(schemaNamespace, "path")
+    val method: Keyword = Keyword.intern(schemaNamespace, "method")
+    val animated: Keyword = Keyword.intern(schemaNamespace, "animated")
     val raw: Keyword = Keyword.intern(schemaNamespace, "raw")
 
     object MessageSpec {
@@ -113,6 +129,17 @@ internal object BridgeSchema {
         val sender: Keyword = Keyword.intern(schemaNamespace, "sender")
         val senderDisplayName: Keyword = BridgeSchema.senderDisplayName
         val body: Keyword = Keyword.intern(schemaNamespace, "body")
+        val msgtype: Keyword = BridgeSchema.msgtype
+        val url: Keyword = BridgeSchema.url
+        val encryptedFile: Keyword = BridgeSchema.encryptedFile
+        val fileName: Keyword = MessageSpec.fileName
+        val mimeType: Keyword = MessageSpec.mimeType
+        val sizeBytes: Keyword = MessageSpec.sizeBytes
+        val duration: Keyword = MessageSpec.duration
+        val height: Keyword = MessageSpec.height
+        val width: Keyword = MessageSpec.width
+        val thumbnailUrl: Keyword = BridgeSchema.thumbnailUrl
+        val thumbnailEncryptedFile: Keyword = BridgeSchema.thumbnailEncryptedFile
         val key: Keyword = Keyword.intern(schemaNamespace, "key")
         val relatesTo: Keyword = Keyword.intern(schemaNamespace, "relates-to")
         val raw: Keyword = Keyword.intern(schemaNamespace, "raw")

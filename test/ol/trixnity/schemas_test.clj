@@ -5,6 +5,7 @@
    [ol.trixnity.schemas :as sut])
   (:import
    [de.connect2x.trixnity.core.model.events EmptyEventContent]
+   [java.io ByteArrayInputStream]
    [java.time Duration]))
 
 (deftest timeout-schemas-reference-the-named-duration-schema-test
@@ -162,3 +163,55 @@
                             ::sut/transaction-id "txn-123"
                             ::sut/content        {::sut/body "queued"}
                             ::sut/created-at     "2026-03-25T10:15:30Z"}))))
+
+(deftest encrypted-file-event-and-media-handle-schemas-cover-media-download-shapes-test
+  (let [registry       (sut/registry {})
+        encrypted-file {::sut/url                   "mxc://example.org/encrypted"
+                        ::sut/jwk                   {::sut/jwk-key        "secret"
+                                                     ::sut/key-type       "oct"
+                                                     ::sut/key-operations #{"encrypt"
+                                                                            "decrypt"}
+                                                     ::sut/algorithm      "A256CTR"
+                                                     ::sut/extractable    true}
+                        ::sut/initialization-vector "iv"
+                        ::sut/hashes                {"sha256" "hash"}
+                        ::sut/version               "v2"}
+        timeline-event {::sut/type                     "m.room.message"
+                        ::sut/room-id                  "!room:example.org"
+                        ::sut/event-id                 "$event"
+                        ::sut/msgtype                  "m.image"
+                        ::sut/url                      "mxc://example.org/image"
+                        ::sut/encrypted-file           encrypted-file
+                        ::sut/file-name                "poster.png"
+                        ::sut/mime-type                "image/png"
+                        ::sut/size-bytes               4096
+                        ::sut/height                   800
+                        ::sut/width                    600
+                        ::sut/thumbnail-url            "mxc://example.org/thumb"
+                        ::sut/thumbnail-encrypted-file encrypted-file
+                        ::sut/duration                 (Duration/ofSeconds 2)
+                        ::sut/raw                      :raw}
+        media-handle   {::sut/input-stream (ByteArrayInputStream. (.getBytes "media"))
+                        ::sut/raw          :platform-media}]
+    (is (m/validate (m/schema ::sut/EncryptedFile {:registry registry})
+                    encrypted-file))
+    (is (m/validate (m/schema ::sut/TimelineEvent {:registry registry})
+                    timeline-event))
+    (is (m/validate (m/schema ::sut/MediaHandle {:registry registry})
+                    media-handle))
+    (is (not (m/validate (m/schema ::sut/EncryptedFile {:registry registry})
+                         {::sut/url "mxc://example.org/encrypted"})))
+    (is (not (m/validate (m/schema ::sut/MediaHandle {:registry registry})
+                         {::sut/raw :platform-media})))
+    (is (not (m/validate (m/schema ::sut/TimelineEvent {:registry registry})
+                         {::sut/room-id  "!room:example.org"
+                          ::sut/event-id "$event"
+                          ::sut/msgtype  :image})))))
+
+(deftest thumbnail-options-schema-stays-close-to-upstream-thumbnail-parameters-test
+  (let [schema (m/schema ::sut/GetThumbnailOpts {:registry (sut/registry {})})]
+    (is (m/validate schema {::sut/method   :crop
+                            ::sut/animated false}))
+    (is (m/validate schema {::sut/method :scale}))
+    (is (not (m/validate schema {::sut/method :stretch})))
+    (is (not (m/validate schema {::sut/animated :sometimes})))))

@@ -163,6 +163,22 @@
 (defn upload-media [^MatrixClient client cache-uri keep-in-cache on-progress on-success on-failure]
   (MediaBridge/uploadMedia client cache-uri keep-in-cache on-progress on-success on-failure))
 
+(defn get-media [^MatrixClient client uri on-success on-failure]
+  (MediaBridge/getMedia client uri on-success on-failure))
+
+(defn get-encrypted-media [^MatrixClient client encrypted-file on-success on-failure]
+  (MediaBridge/getEncryptedMedia client encrypted-file on-success on-failure))
+
+(defn get-thumbnail
+  [^MatrixClient client uri width height method animated on-success on-failure]
+  (MediaBridge/getThumbnail client uri width height method animated on-success on-failure))
+
+(defn media-temporary-file [platform-media on-success on-failure]
+  (MediaBridge/mediaTemporaryFile platform-media on-success on-failure))
+
+(defn delete-media-temporary-file [temporary-file]
+  (MediaBridge/deleteMediaTemporaryFile temporary-file))
+
 (defn timeline-event
   [^MatrixClient client room-id event-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content]
   (TimelineBridge/timelineEvent

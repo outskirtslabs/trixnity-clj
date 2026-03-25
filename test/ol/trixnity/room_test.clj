@@ -925,3 +925,103 @@
             (catch clojure.lang.ExceptionInfo _ true)))
       (is (false? @previous-called?))
       (is (false? @next-called?)))))
+
+(deftest timeline-attachment-accessors-cover-normalized-download-fields-test
+  (let [msgtype-var                                                   (resolve-var 'ol.trixnity.event 'msgtype)
+        url-var                                                       (resolve-var 'ol.trixnity.event 'url)
+        encrypted-file-var                                            (resolve-var 'ol.trixnity.event
+                                                                                   'encrypted-file)
+        file-name-var                                                 (resolve-var 'ol.trixnity.event 'file-name)
+        mime-type-var                                                 (resolve-var 'ol.trixnity.event 'mime-type)
+        size-bytes-var                                                (resolve-var 'ol.trixnity.event 'size-bytes)
+        duration-var                                                  (resolve-var 'ol.trixnity.event 'duration)
+        height-var                                                    (resolve-var 'ol.trixnity.event 'height)
+        width-var                                                     (resolve-var 'ol.trixnity.event 'width)
+        thumbnail-url-var                                             (resolve-var 'ol.trixnity.event
+                                                                                   'thumbnail-url)
+        thumbnail-encrypted-file-var                                  (resolve-var 'ol.trixnity.event
+                                                                                   'thumbnail-encrypted-file)
+        encrypted-file
+        {::schemas/url                   "mxc://example.org/encrypted"
+         ::schemas/jwk                   {::schemas/jwk-key        "secret"
+                                          ::schemas/key-type       "oct"
+                                          ::schemas/key-operations #{"encrypt"
+                                                                     "decrypt"}
+                                          ::schemas/algorithm      "A256CTR"
+                                          ::schemas/extractable    true}
+         ::schemas/initialization-vector "iv"
+         ::schemas/hashes                {"sha256" "hash"}
+         ::schemas/version               "v2"}
+        timeline-event
+        {::schemas/type                     "m.room.message"
+         ::schemas/msgtype                  "m.video"
+         ::schemas/url                      "mxc://example.org/video"
+         ::schemas/encrypted-file           encrypted-file
+         ::schemas/file-name                "clip.mp4"
+         ::schemas/mime-type                "video/mp4"
+         ::schemas/size-bytes               2048
+         ::schemas/duration                 (Duration/ofSeconds 9)
+         ::schemas/height                   720
+         ::schemas/width                    1280
+         ::schemas/thumbnail-url            "mxc://example.org/thumb"
+         ::schemas/thumbnail-encrypted-file encrypted-file}]
+    (is (some? msgtype-var)
+        "ol.trixnity.event/msgtype is missing")
+    (is (some? url-var)
+        "ol.trixnity.event/url is missing")
+    (is (some? encrypted-file-var)
+        "ol.trixnity.event/encrypted-file is missing")
+    (is (some? file-name-var)
+        "ol.trixnity.event/file-name is missing")
+    (is (some? mime-type-var)
+        "ol.trixnity.event/mime-type is missing")
+    (is (some? size-bytes-var)
+        "ol.trixnity.event/size-bytes is missing")
+    (is (some? duration-var)
+        "ol.trixnity.event/duration is missing")
+    (is (some? height-var)
+        "ol.trixnity.event/height is missing")
+    (is (some? width-var)
+        "ol.trixnity.event/width is missing")
+    (is (some? thumbnail-url-var)
+        "ol.trixnity.event/thumbnail-url is missing")
+    (is (some? thumbnail-encrypted-file-var)
+        "ol.trixnity.event/thumbnail-encrypted-file is missing")
+    (when (every? some? [msgtype-var
+                         url-var
+                         encrypted-file-var
+                         file-name-var
+                         mime-type-var
+                         size-bytes-var
+                         duration-var
+                         height-var
+                         width-var
+                         thumbnail-url-var
+                         thumbnail-encrypted-file-var])
+      (with-redefs [bridge/timeline-events-from-now-on
+                    (fn [_ _ _]
+                      ::from-now-on-flow)
+
+                    internal/observe-flow
+                    (fn [_ kotlin-flow]
+                      (is (= ::from-now-on-flow kotlin-flow))
+                      (m/observe
+                       (fn [emit]
+                         (future
+                           (emit timeline-event))
+                         (constantly nil))))]
+        (let [event (first (collect-values
+                            (sut/get-timeline-events-from-now-on :client-handle)
+                            1))]
+          (is (= "m.video" ((var-get msgtype-var) event)))
+          (is (= "mxc://example.org/video" ((var-get url-var) event)))
+          (is (= encrypted-file ((var-get encrypted-file-var) event)))
+          (is (= "clip.mp4" ((var-get file-name-var) event)))
+          (is (= "video/mp4" ((var-get mime-type-var) event)))
+          (is (= 2048 ((var-get size-bytes-var) event)))
+          (is (= (Duration/ofSeconds 9) ((var-get duration-var) event)))
+          (is (= 720 ((var-get height-var) event)))
+          (is (= 1280 ((var-get width-var) event)))
+          (is (= "mxc://example.org/thumb" ((var-get thumbnail-url-var) event)))
+          (is (= encrypted-file
+                 ((var-get thumbnail-encrypted-file-var) event))))))))

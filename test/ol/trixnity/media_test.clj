@@ -6,7 +6,8 @@
    [ol.trixnity.media :as sut]
    [ol.trixnity.schemas :as schemas])
   (:import
-   [java.io Closeable]
+   [java.io ByteArrayInputStream Closeable InputStream]
+   [java.nio.charset StandardCharsets]
    [java.nio.file Files Paths]))
 
 (defn- realize-task [task]
@@ -16,6 +17,13 @@
   (m/? (->> flow
             (m/eduction (take n))
             (m/reduce conj []))))
+
+(defn- resolve-var [ns-sym var-sym]
+  (ns-resolve ns-sym var-sym))
+
+(defn- slurp-stream [input-stream]
+  (String. (.readAllBytes ^InputStream input-stream)
+           StandardCharsets/UTF_8))
 
 (deftype StubCloseable [closed-count]
   Closeable
@@ -192,4 +200,275 @@
                                         ::schemas/source-path "/tmp/x"})
             false
             (catch clojure.lang.ExceptionInfo _ true))))
+    (is (empty? @calls))))
+
+(deftest download-media-surfaces-return-stream-first-media-handle-tasks-test
+  (let [get-media-var                                                           (resolve-var 'ol.trixnity.media 'get-media)
+        get-encrypted-media-var                                                 (resolve-var 'ol.trixnity.media
+                                                                                             'get-encrypted-media)
+        get-thumbnail-var                                                       (resolve-var 'ol.trixnity.media
+                                                                                             'get-thumbnail)
+        bridge-get-media-var                                                    (resolve-var 'ol.trixnity.internal.bridge
+                                                                                             'get-media)
+        bridge-get-encrypted-media-var                                          (resolve-var 'ol.trixnity.internal.bridge
+                                                                                             'get-encrypted-media)
+        bridge-get-thumbnail-var                                                (resolve-var 'ol.trixnity.internal.bridge
+                                                                                             'get-thumbnail)
+        calls                                                                   (atom [])
+        encrypted-file
+        {::schemas/url                   "mxc://example.org/encrypted"
+         ::schemas/jwk                   {::schemas/jwk-key        "secret"
+                                          ::schemas/key-type       "oct"
+                                          ::schemas/key-operations #{"encrypt"
+                                                                     "decrypt"}
+                                          ::schemas/algorithm      "A256CTR"
+                                          ::schemas/extractable    true}
+         ::schemas/initialization-vector "iv"
+         ::schemas/hashes                {"sha256" "hash"}
+         ::schemas/version               "v2"}]
+    (is (some? get-media-var)
+        "ol.trixnity.media/get-media is missing")
+    (is (some? get-encrypted-media-var)
+        "ol.trixnity.media/get-encrypted-media is missing")
+    (is (some? get-thumbnail-var)
+        "ol.trixnity.media/get-thumbnail is missing")
+    (is (some? bridge-get-media-var)
+        "ol.trixnity.internal.bridge/get-media is missing")
+    (is (some? bridge-get-encrypted-media-var)
+        "ol.trixnity.internal.bridge/get-encrypted-media is missing")
+    (is (some? bridge-get-thumbnail-var)
+        "ol.trixnity.internal.bridge/get-thumbnail is missing")
+    (when (every? some? [get-media-var
+                         get-encrypted-media-var
+                         get-thumbnail-var
+                         bridge-get-media-var
+                         bridge-get-encrypted-media-var
+                         bridge-get-thumbnail-var])
+      (let [plain-raw     (Object.)
+            encrypted-raw (Object.)
+            thumb-raw     (Object.)]
+        (with-redefs-fn
+          {bridge-get-media-var
+           (fn [client uri on-success _]
+             (swap! calls conj [:get-media client uri])
+             (on-success {::schemas/input-stream
+                          (ByteArrayInputStream. (.getBytes "plain"
+                                                            StandardCharsets/UTF_8))
+                          ::schemas/raw          plain-raw})
+             (->StubCloseable (atom 0)))
+
+           bridge-get-encrypted-media-var
+           (fn [client payload on-success _]
+             (swap! calls conj [:get-encrypted-media client payload])
+             (on-success {::schemas/input-stream
+                          (ByteArrayInputStream. (.getBytes "secret"
+                                                            StandardCharsets/UTF_8))
+                          ::schemas/raw          encrypted-raw})
+             (->StubCloseable (atom 0)))
+
+           bridge-get-thumbnail-var
+           (fn [client uri width height method animated on-success _]
+             (swap! calls conj [:get-thumbnail client uri width height method animated])
+             (on-success {::schemas/input-stream
+                          (ByteArrayInputStream. (.getBytes "thumb"
+                                                            StandardCharsets/UTF_8))
+                          ::schemas/raw          thumb-raw})
+             (->StubCloseable (atom 0)))}
+          (fn []
+            (let [plain-handle     ((var-get get-media-var)
+                                    :client-handle
+                                    "mxc://example.org/plain")
+                  encrypted-handle ((var-get get-encrypted-media-var)
+                                    :client-handle
+                                    encrypted-file)
+                  thumbnail-handle ((var-get get-thumbnail-var)
+                                    :client-handle
+                                    "mxc://example.org/plain"
+                                    320
+                                    200
+                                    {::schemas/method   :scale
+                                     ::schemas/animated true})]
+              (is (= "plain"
+                     (slurp-stream
+                      (::schemas/input-stream (realize-task plain-handle)))))
+              (is (identical? plain-raw (::schemas/raw (realize-task plain-handle))))
+              (is (= "secret"
+                     (slurp-stream
+                      (::schemas/input-stream (realize-task encrypted-handle)))))
+              (is (identical? encrypted-raw
+                              (::schemas/raw (realize-task encrypted-handle))))
+              (is (= "thumb"
+                     (slurp-stream
+                      (::schemas/input-stream (realize-task thumbnail-handle)))))
+              (is (identical? thumb-raw
+                              (::schemas/raw (realize-task thumbnail-handle)))))))))
+    (is (= [[:get-media :client-handle "mxc://example.org/plain"]
+            [:get-encrypted-media :client-handle encrypted-file]
+            [:get-thumbnail :client-handle "mxc://example.org/plain" 320 200 "scale" true]]
+           @calls))))
+
+(deftest temporary-file-composes-with-media-handle-tasks-and-resolved-handles-test
+  (let [temporary-file-var          (resolve-var 'ol.trixnity.media 'temporary-file)
+        get-media-var               (resolve-var 'ol.trixnity.media 'get-media)
+        bridge-get-media-var        (resolve-var 'ol.trixnity.internal.bridge
+                                                 'get-media)
+        bridge-temp-file-var        (resolve-var 'ol.trixnity.internal.bridge
+                                                 'media-temporary-file)
+        bridge-delete-temp-file-var (resolve-var 'ol.trixnity.internal.bridge
+                                                 'delete-media-temporary-file)
+        calls                       (atom [])
+        deletes                     (atom [])
+        handle-raw                  (Object.)
+        temp-raw                    (Object.)
+        path                        (temp-file ".txt" "downloaded")]
+    (is (some? temporary-file-var)
+        "ol.trixnity.media/temporary-file is missing")
+    (is (some? get-media-var)
+        "ol.trixnity.media/get-media is missing")
+    (is (some? bridge-get-media-var)
+        "ol.trixnity.internal.bridge/get-media is missing")
+    (is (some? bridge-temp-file-var)
+        "ol.trixnity.internal.bridge/media-temporary-file is missing")
+    (is (some? bridge-delete-temp-file-var)
+        "ol.trixnity.internal.bridge/delete-media-temporary-file is missing")
+    (when (every? some? [temporary-file-var
+                         get-media-var
+                         bridge-get-media-var
+                         bridge-temp-file-var
+                         bridge-delete-temp-file-var])
+      (with-redefs-fn
+        {bridge-get-media-var
+         (fn [client uri on-success _]
+           (swap! calls conj [:get-media client uri])
+           (on-success {::schemas/input-stream
+                        (ByteArrayInputStream. (.getBytes "downloaded"
+                                                          StandardCharsets/UTF_8))
+                        ::schemas/raw          handle-raw})
+           (->StubCloseable (atom 0)))
+
+         bridge-temp-file-var
+         (fn [raw on-success _]
+           (swap! calls conj [:temporary-file raw])
+           (on-success {::schemas/path path
+                        ::schemas/raw  temp-raw})
+           (->StubCloseable (atom 0)))
+
+         bridge-delete-temp-file-var
+         (fn [raw]
+           (swap! deletes conj raw)
+           nil)}
+        (fn []
+          (with-open [tmp (realize-task
+                           ((var-get temporary-file-var)
+                            ((var-get get-media-var)
+                             :client-handle
+                             "mxc://example.org/plain")))]
+            (is (= "downloaded" (slurp (:path tmp)))))
+          (with-open [tmp (realize-task
+                           ((var-get temporary-file-var)
+                            {::schemas/input-stream
+                             (ByteArrayInputStream. (.getBytes "ignored"
+                                                               StandardCharsets/UTF_8))
+                             ::schemas/raw          handle-raw}))]
+            (is (= "downloaded" (slurp (:path tmp))))))))
+    (is (= [[:get-media :client-handle "mxc://example.org/plain"]
+            [:temporary-file handle-raw]
+            [:temporary-file handle-raw]]
+           @calls))
+    (is (= [temp-raw temp-raw] @deletes))))
+
+(deftest temporary-file-fails-usefully-when-bridge-cannot-produce-one-test
+  (let [temporary-file-var   (resolve-var 'ol.trixnity.media 'temporary-file)
+        bridge-temp-file-var (resolve-var 'ol.trixnity.internal.bridge
+                                          'media-temporary-file)]
+    (is (some? temporary-file-var)
+        "ol.trixnity.media/temporary-file is missing")
+    (is (some? bridge-temp-file-var)
+        "ol.trixnity.internal.bridge/media-temporary-file is missing")
+    (when (every? some? [temporary-file-var bridge-temp-file-var])
+      (with-redefs-fn
+        {bridge-temp-file-var
+         (fn [_ _ on-failure]
+           (on-failure (ex-info "temporary file unavailable" {}))
+           (->StubCloseable (atom 0)))}
+        #(is (thrown-with-msg?
+              clojure.lang.ExceptionInfo
+              #"temporary file unavailable"
+              (realize-task
+               ((var-get temporary-file-var)
+                {::schemas/input-stream
+                 (ByteArrayInputStream. (.getBytes "ignored"
+                                                   StandardCharsets/UTF_8))
+                 ::schemas/raw          (Object.)}))))))))
+
+(deftest media-download-surfaces-validate-before-bridge-test
+  (let [get-media-var                  (resolve-var 'ol.trixnity.media 'get-media)
+        get-encrypted-media-var        (resolve-var 'ol.trixnity.media
+                                                    'get-encrypted-media)
+        get-thumbnail-var              (resolve-var 'ol.trixnity.media
+                                                    'get-thumbnail)
+        temporary-file-var             (resolve-var 'ol.trixnity.media
+                                                    'temporary-file)
+        bridge-get-media-var           (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-media)
+        bridge-get-encrypted-media-var (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-encrypted-media)
+        bridge-get-thumbnail-var       (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-thumbnail)
+        bridge-temp-file-var           (resolve-var 'ol.trixnity.internal.bridge
+                                                    'media-temporary-file)
+        calls                          (atom [])]
+    (when (every? some? [get-media-var
+                         get-encrypted-media-var
+                         get-thumbnail-var
+                         temporary-file-var
+                         bridge-get-media-var
+                         bridge-get-encrypted-media-var
+                         bridge-get-thumbnail-var
+                         bridge-temp-file-var])
+      (with-redefs-fn
+        {bridge-get-media-var
+         (fn [& _]
+           (swap! calls conj :get-media)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-get-encrypted-media-var
+         (fn [& _]
+           (swap! calls conj :get-encrypted-media)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-get-thumbnail-var
+         (fn [& _]
+           (swap! calls conj :get-thumbnail)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-temp-file-var
+         (fn [& _]
+           (swap! calls conj :temporary-file)
+           (throw (ex-info "bridge should not be called" {})))}
+        (fn []
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
+               ((var-get get-media-var) :client-handle "")))
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
+               ((var-get get-encrypted-media-var)
+                :client-handle
+                {::schemas/url "mxc://example.org/encrypted"})))
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
+               ((var-get get-thumbnail-var)
+                :client-handle
+                "mxc://example.org/plain"
+                0
+                200)))
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
+               ((var-get temporary-file-var)
+                {::schemas/input-stream (Object.)
+                 ::schemas/raw          (Object.)}))))))
     (is (empty? @calls))))

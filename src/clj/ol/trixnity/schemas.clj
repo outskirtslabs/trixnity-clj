@@ -32,7 +32,8 @@
    [de.connect2x.trixnity.core.model.events GlobalAccountDataEventContent
     RoomAccountDataEventContent RoomEventContent StateEventContent]
    [de.connect2x.trixnity.core.model.keys RoomKeyBackupAuthData]
-   [java.io Closeable]
+   [java.io Closeable InputStream]
+   [java.nio.file Path]
    [java.time Duration]))
 
 (set! *warn-on-reflection* true)
@@ -130,6 +131,7 @@
    ::format                                        :string
    ::formatted-body                                :string
    ::type                                          :string
+   ::msgtype                                       :string
    ::sender                                        :string
    ::sender-display-name                           :string
    ::is-direct                                     :boolean
@@ -161,6 +163,20 @@
    ::methods                                       [:set [:or :keyword :string]]
    ::reasons                                       [:set [:or :keyword :string]]
    ::algorithm                                     :string
+   ::jwk                                           :map
+   ::jwk-key                                       :string
+   ::key-type                                      :string
+   ::key-operations                                [:set :string]
+   ::extractable                                   :boolean
+   ::initialization-vector                         :string
+   ::hashes                                        [:map-of :string :string]
+   ::encrypted-file                                ::EncryptedFile
+   ::thumbnail-url                                 :string
+   ::thumbnail-encrypted-file                      ::EncryptedFile
+   ::input-stream                                  [:fn #(instance? InputStream %)]
+   ::path                                          [:fn #(instance? Path %)]
+   ::method                                        [:enum :crop :scale]
+   ::animated                                      :boolean
    ::media-upload-progress                         ::UploadProgress
    ::raw                                           :any
    ::direct-chat-room-ids                          [:set ::room-id]
@@ -264,6 +280,11 @@
     [::file-name {:optional true} ::file-name]
     [::mime-type {:optional true} ::mime-type]
     [::keep-in-cache {:optional true} ::keep-in-cache]]
+
+   ::GetThumbnailOpts
+   [:map
+    [::method {:optional true} ::method]
+    [::animated {:optional true} ::animated]]
 
    ::Relation
    [:map
@@ -387,6 +408,32 @@
     [::transferred ::transferred]
     [::total {:optional true} ::total]]
 
+   ::EncryptedFileJwk
+   [:map {:closed true}
+    [::jwk-key ::jwk-key]
+    [::key-type ::key-type]
+    [::key-operations ::key-operations]
+    [::algorithm ::algorithm]
+    [::extractable ::extractable]]
+
+   ::EncryptedFile
+   [:map {:closed true}
+    [::url ::url]
+    [::jwk ::EncryptedFileJwk]
+    [::initialization-vector ::initialization-vector]
+    [::hashes ::hashes]
+    [::version ::version]]
+
+   ::MediaHandle
+   [:map {:closed true}
+    [::input-stream ::input-stream]
+    [::raw ::raw]]
+
+   ::BridgeTemporaryMediaFile
+   [:map {:closed true}
+    [::path ::path]
+    [::raw ::raw]]
+
    ::Event
    [:map
     [::type {:optional true} ::type]
@@ -396,6 +443,17 @@
     [::sender-display-name {:optional true} ::sender-display-name]
     [::body {:optional true} ::body]
     [::key {:optional true} ::key]
+    [::msgtype {:optional true} ::msgtype]
+    [::url {:optional true} ::url]
+    [::encrypted-file {:optional true} ::EncryptedFile]
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes {:optional true} ::size-bytes]
+    [::duration {:optional true} ::duration]
+    [::height {:optional true} ::height]
+    [::width {:optional true} ::width]
+    [::thumbnail-url {:optional true} ::thumbnail-url]
+    [::thumbnail-encrypted-file {:optional true} ::EncryptedFile]
     [::relates-to {:optional true} ::Relation]
     [::content {:optional true} ::content]
     [::raw {:optional true} ::raw]]

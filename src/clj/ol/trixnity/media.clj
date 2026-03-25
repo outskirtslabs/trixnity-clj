@@ -1,5 +1,5 @@
 (ns ol.trixnity.media
-  "Generic media upload helpers built on top of Trixnity's staged upload flow.
+  "Generic media upload and download helpers built on top of Trixnity's media service.
 
   Uploads happen in two steps:
 
@@ -7,6 +7,8 @@
     a prepared upload map containing an `upload://...` cache URI
   - [[upload]] uploads either a prepared upload map or a local path-like source
     and returns a handle exposing upload progress plus the final uploaded media
+  - [[get-media]], [[get-encrypted-media]], and [[get-thumbnail]] download media
+    as normalized handle maps carrying a JVM `InputStream`
 
   The public shapes here stay normalized as namespaced keyword maps so callers
   do not need to work with Kotlin media APIs directly."
@@ -119,6 +121,24 @@
          (reset! cancelled? true)
          (future-cancel worker)))))
 
+(defrecord TemporaryMediaFile [path raw]
+  java.io.Closeable
+  (close [_]
+    (bridge/delete-media-temporary-file raw)))
+
+(defn- deferred-task [thunk]
+  (let [result*  (promise)
+        started? (atom false)]
+    (fn [success failure]
+      (when (compare-and-set! started? false true)
+        (future
+          (deliver result*
+                   (try
+                     {:value (thunk)}
+                     (catch Throwable error
+                       {:error error})))))
+      ((promise-task result*) success failure))))
+
 (defn prepare-upload
   "Stages a local media source in Trixnity's media store and returns a
   Missionary task of a prepared upload map.
@@ -205,3 +225,96 @@
            (deliver result* {:error error}))))
      {::mx/result   (promise-task result*)
       ::mx/progress (:flow progress)})))
+
+(defn get-media
+  "Downloads media identified by `uri` and returns a Missionary task of a media handle.
+
+  The resolved handle contains:
+
+  - `::mx/input-stream`, the primary public readable stream
+  - `::mx/raw`, an opaque upstream media value used only for composition with
+    [[temporary-file]]
+
+  `uri` should be an MXC URI such as `mxc://example.org/abc`."
+  [client uri]
+  (let [uri (mx/validate! ::mx/url uri)]
+    (deferred-task
+     #(mx/validate!
+       ::mx/MediaHandle
+       (m/? (internal/suspend-task bridge/get-media
+                                   client
+                                   uri))))))
+
+(defn get-encrypted-media
+  "Downloads encrypted media from normalized `encrypted-file` metadata.
+
+  `encrypted-file` must be the normalized encrypted-file map exposed on events
+  under `::mx/encrypted-file` or `::mx/thumbnail-encrypted-file`."
+  [client encrypted-file]
+  (let [encrypted-file (mx/validate! ::mx/EncryptedFile encrypted-file)]
+    (deferred-task
+     #(mx/validate!
+       ::mx/MediaHandle
+       (m/? (internal/suspend-task bridge/get-encrypted-media
+                                   client
+                                   encrypted-file))))))
+
+(defn get-thumbnail
+  "Downloads a homeserver-generated thumbnail for `uri` and returns a Missionary task
+  of a media handle.
+
+  This mirrors upstream Trixnity `getThumbnail`: it requests a generated
+  thumbnail for an MXC URI using explicit dimensions. It does not read
+  event-provided `thumbnail_url` or `thumbnail_file` references. For those,
+  use [[get-media]] or [[get-encrypted-media]] with the thumbnail fields already
+  present on the event.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/method` | Thumbnail resize method, either `:crop` or `:scale` |
+  | `::mx/animated` | Request animated thumbnails when upstream supports them |"
+  ([client uri width height]
+   (get-thumbnail client uri width height {}))
+  ([client uri width height opts]
+   (mx/validate! ::mx/url uri)
+   (mx/validate! ::mx/width width)
+   (mx/validate! ::mx/height height)
+   (let [opts (mx/validate! ::mx/GetThumbnailOpts opts)]
+     (deferred-task
+      #(mx/validate!
+        ::mx/MediaHandle
+        (m/? (internal/suspend-task bridge/get-thumbnail
+                                    client
+                                    uri
+                                    (long width)
+                                    (long height)
+                                    (some-> (::mx/method opts) name)
+                                    (::mx/animated opts))))))))
+
+(defn temporary-file
+  "Creates a temporary file from `media`, returning a Missionary task of a closeable
+  [[TemporaryMediaFile]] record.
+
+  `media` may be either a resolved media handle or a media-handle task returned
+  by [[get-media]], [[get-encrypted-media]], or [[get-thumbnail]].
+
+  The returned record exposes `:path` directly and may be used with
+  `with-open`. Treat `::mx/raw` on media handles as opaque; it exists only so
+  this helper can compose with already-fetched media."
+  [media]
+  (let [media (if (map? media)
+                (mx/validate! ::mx/MediaHandle media)
+                media)]
+    (deferred-task
+     #(let [handle          (if (map? media)
+                              media
+                              (mx/validate! ::mx/MediaHandle
+                                            (m/? media)))
+            temporary-file* (mx/validate!
+                             ::mx/BridgeTemporaryMediaFile
+                             (m/? (internal/suspend-task bridge/media-temporary-file
+                                                         (::mx/raw handle))))]
+        (->TemporaryMediaFile (str (::mx/path temporary-file*))
+                              (::mx/raw temporary-file*))))))

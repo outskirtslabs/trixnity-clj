@@ -10,13 +10,17 @@ import clojure.lang.Keyword
 import de.connect2x.trixnity.client.MatrixClient
 import de.connect2x.trixnity.client.MediaStoreModule
 import de.connect2x.trixnity.client.media.MediaService
+import de.connect2x.trixnity.client.media.PlatformMedia
 import de.connect2x.trixnity.client.RepositoriesModule
+import de.connect2x.trixnity.client.media.okio.OkioPlatformMedia
 import de.connect2x.trixnity.client.media.okio.okio
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
+import de.connect2x.trixnity.clientserverapi.model.media.ThumbnailResizingMethod
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
+import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
 import de.connect2x.trixnity.utils.ByteArrayFlow
@@ -25,12 +29,19 @@ import io.ktor.http.ContentType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.flow.MutableStateFlow
 import okio.Path.Companion.toPath
+import java.io.FilterInputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.io.Closeable
 import java.nio.file.Files
 import java.nio.file.Path
@@ -171,11 +182,25 @@ internal fun optionalKeywordInt(payload: Map<*, *>, key: Keyword): Int? =
 internal fun optionalKeywordBoolean(payload: Map<*, *>, key: Keyword): Boolean? =
     payload[key] as? Boolean
 
+internal fun requireKeywordMap(payload: Map<*, *>, key: Keyword): Map<*, *> =
+    requireKeywordValue(payload, key) as? Map<*, *>
+        ?: throw IllegalArgumentException("request payload is missing required map under $key")
+
+internal fun requireKeywordStringMap(payload: Map<*, *>, key: Keyword): Map<String, String> =
+    requireKeywordMap(payload, key).mapKeys { (k, _) -> k.toString() }.mapValues { (_, v) -> v.toString() }
+
 internal fun parseContentType(value: String, key: Keyword): ContentType =
     try {
         ContentType.parse(value)
     } catch (error: Throwable) {
         throw IllegalArgumentException("invalid MIME type for $key: $value", error)
+    }
+
+internal fun parseThumbnailMethod(value: String?, key: Keyword): ThumbnailResizingMethod =
+    when (value?.lowercase()) {
+        null, "crop" -> ThumbnailResizingMethod.CROP
+        "scale" -> ThumbnailResizingMethod.SCALE
+        else -> throw IllegalArgumentException("invalid thumbnail method for $key: $value")
     }
 
 internal fun optionalKeywordContentType(payload: Map<*, *>, key: Keyword): ContentType? =
@@ -199,6 +224,128 @@ internal fun requireReadablePath(pathValue: String, key: Keyword): Path {
 
 internal fun byteArrayFlowFromPath(path: Path): ByteArrayFlow =
     byteArrayFlowFromInputStream { Files.newInputStream(path) }
+
+internal fun requireEncryptedFile(payload: Map<*, *>, key: Keyword): EncryptedFile {
+    val raw = requireKeywordMap(payload, key)
+    val jwk = requireKeywordMap(raw, BridgeSchema.jwk)
+    val keyOperations =
+        (jwk[BridgeSchema.keyOperations] as? Collection<*>)?.map { it.toString() }?.toSet()
+            ?: setOf("encrypt", "decrypt")
+
+    return EncryptedFile(
+        url = requireKeywordString(raw, BridgeSchema.url),
+        key = EncryptedFile.JWK(
+            key = requireKeywordString(jwk, BridgeSchema.jwkKey),
+            keyType = optionalKeywordString(jwk, BridgeSchema.keyType) ?: "oct",
+            keyOperations = keyOperations,
+            algorithm = optionalKeywordString(jwk, BridgeSchema.algorithm) ?: "A256CTR",
+            extractable = optionalKeywordBoolean(jwk, BridgeSchema.extractable) ?: true,
+        ),
+        initialisationVector = requireKeywordString(raw, BridgeSchema.initializationVector),
+        hashes = requireKeywordStringMap(raw, BridgeSchema.hashes),
+        version = optionalKeywordString(raw, BridgeSchema.version) ?: "v2",
+    )
+}
+
+internal fun normalizeEncryptedFile(encryptedFile: EncryptedFile): Map<Keyword, Any?> =
+    mapOf(
+        BridgeSchema.url to encryptedFile.url,
+        BridgeSchema.jwk to
+            mapOf(
+                BridgeSchema.jwkKey to encryptedFile.key.key,
+                BridgeSchema.keyType to encryptedFile.key.keyType,
+                BridgeSchema.keyOperations to encryptedFile.key.keyOperations,
+                BridgeSchema.algorithm to encryptedFile.key.algorithm,
+                BridgeSchema.extractable to encryptedFile.key.extractable,
+            ),
+        BridgeSchema.initializationVector to encryptedFile.initialisationVector,
+        BridgeSchema.hashes to encryptedFile.hashes,
+        BridgeSchema.version to encryptedFile.version,
+    )
+
+internal fun platformMediaInputStream(
+    scope: CoroutineScope,
+    platformMedia: PlatformMedia,
+): InputStream {
+    val input = PipedInputStream(64 * 1024)
+    val output = PipedOutputStream(input)
+    lateinit var writer: Job
+    writer = scope.launch(Dispatchers.IO) {
+        try {
+            platformMedia.collect { chunk ->
+                output.write(chunk)
+            }
+        } catch (_: IOException) {
+            // Reader closed early.
+        } finally {
+            runCatching { output.close() }
+        }
+    }
+    return object : FilterInputStream(input) {
+        override fun close() {
+            runCatching { super.close() }
+            writer.cancel()
+        }
+    }
+}
+
+internal fun normalizeMediaHandle(
+    scope: CoroutineScope,
+    platformMedia: PlatformMedia,
+): Map<Keyword, Any?> =
+    mapOf(
+        BridgeSchema.inputStream to platformMediaInputStream(scope, platformMedia),
+        BridgeSchema.raw to platformMedia,
+    )
+
+internal suspend fun getMedia(
+    scope: CoroutineScope,
+    mediaService: MediaService,
+    uri: String,
+): Map<Keyword, Any?> =
+    normalizeMediaHandle(scope, mediaService.getMedia(uri).getOrThrow())
+
+internal suspend fun getEncryptedMedia(
+    scope: CoroutineScope,
+    mediaService: MediaService,
+    encryptedFile: EncryptedFile,
+): Map<Keyword, Any?> =
+    normalizeMediaHandle(scope, mediaService.getEncryptedMedia(encryptedFile).getOrThrow())
+
+internal suspend fun getThumbnail(
+    scope: CoroutineScope,
+    mediaService: MediaService,
+    uri: String,
+    width: Long,
+    height: Long,
+    method: ThumbnailResizingMethod,
+    animated: Boolean,
+): Map<Keyword, Any?> =
+    normalizeMediaHandle(
+        scope,
+        mediaService.getThumbnail(uri, width, height, method, animated).getOrThrow(),
+    )
+
+internal suspend fun temporaryMediaFile(
+    platformMedia: PlatformMedia,
+): Map<Keyword, Any?> {
+    val temporaryFile =
+        (platformMedia as? OkioPlatformMedia)
+            ?.getTemporaryFile()
+            ?.getOrThrow()
+            ?: throw IllegalStateException("temporary-file requires okio-backed platform media")
+
+    return mapOf(
+        BridgeSchema.path to Paths.get(temporaryFile.path.toString()).toAbsolutePath(),
+        BridgeSchema.raw to temporaryFile,
+    )
+}
+
+internal fun deleteTemporaryMediaFile(temporaryFile: Any) {
+    val okioTemporaryFile = temporaryFile as? OkioPlatformMedia.TemporaryFile
+        ?: throw IllegalArgumentException("unsupported temporary-file value: ${temporaryFile::class.qualifiedName}")
+    runBlocking { okioTemporaryFile.delete() }
+}
 
 internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec {
     val raw = requireKeywordMap(payload, key)

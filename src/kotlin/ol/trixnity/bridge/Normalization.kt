@@ -30,6 +30,7 @@ import de.connect2x.trixnity.crypto.key.DeviceTrustLevel
 import de.connect2x.trixnity.crypto.key.UserTrustLevel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.reflect.KClass
+import java.time.Duration
 
 internal fun normalizedKind(value: String?): String? =
     value
@@ -72,7 +73,7 @@ internal fun relationTypeName(relatesTo: RelatesTo): String =
 
 private fun eventTypeName(content: RoomEventContent?): String? =
     when (content) {
-        is RoomMessageEventContent.TextBased.Text -> "m.room.message"
+        is RoomMessageEventContent -> "m.room.message"
         is ReactionEventContent -> "m.reaction"
         is UnknownEventContent -> content.eventType
         null -> null
@@ -91,6 +92,57 @@ private suspend fun senderDisplayName(
         .firstOrNull()
         ?.name
 
+private fun MutableMap<Keyword, Any?>.putFileBasedMetadata(
+    content: RoomMessageEventContent.FileBased,
+) {
+    put(BridgeSchema.Event.msgtype, content.type)
+    put(BridgeSchema.Event.body, content.body)
+    content.url?.let { put(BridgeSchema.Event.url, it) }
+    content.file?.let { put(BridgeSchema.Event.encryptedFile, normalizeEncryptedFile(it)) }
+    content.fileName?.let { put(BridgeSchema.Event.fileName, it) }
+    when (val info = content.info) {
+        is de.connect2x.trixnity.core.model.events.m.room.AudioInfo -> {
+            info.mimeType?.let { put(BridgeSchema.Event.mimeType, it) }
+            info.size?.let { put(BridgeSchema.Event.sizeBytes, it) }
+            info.duration?.let { put(BridgeSchema.Event.duration, Duration.ofMillis(it)) }
+        }
+
+        is de.connect2x.trixnity.core.model.events.m.room.ImageInfo -> {
+            info.mimeType?.let { put(BridgeSchema.Event.mimeType, it) }
+            info.size?.let { put(BridgeSchema.Event.sizeBytes, it) }
+            info.height?.let { put(BridgeSchema.Event.height, it) }
+            info.width?.let { put(BridgeSchema.Event.width, it) }
+            info.thumbnailUrl?.let { put(BridgeSchema.Event.thumbnailUrl, it) }
+            info.thumbnailFile?.let {
+                put(BridgeSchema.Event.thumbnailEncryptedFile, normalizeEncryptedFile(it))
+            }
+        }
+
+        is de.connect2x.trixnity.core.model.events.m.room.VideoInfo -> {
+            info.mimeType?.let { put(BridgeSchema.Event.mimeType, it) }
+            info.size?.let { put(BridgeSchema.Event.sizeBytes, it) }
+            info.duration?.let { put(BridgeSchema.Event.duration, Duration.ofMillis(it)) }
+            info.height?.let { put(BridgeSchema.Event.height, it) }
+            info.width?.let { put(BridgeSchema.Event.width, it) }
+            info.thumbnailUrl?.let { put(BridgeSchema.Event.thumbnailUrl, it) }
+            info.thumbnailFile?.let {
+                put(BridgeSchema.Event.thumbnailEncryptedFile, normalizeEncryptedFile(it))
+            }
+        }
+
+        is de.connect2x.trixnity.core.model.events.m.room.FileInfo -> {
+            info.mimeType?.let { put(BridgeSchema.Event.mimeType, it) }
+            info.size?.let { put(BridgeSchema.Event.sizeBytes, it) }
+            info.thumbnailUrl?.let { put(BridgeSchema.Event.thumbnailUrl, it) }
+            info.thumbnailFile?.let {
+                put(BridgeSchema.Event.thumbnailEncryptedFile, normalizeEncryptedFile(it))
+            }
+        }
+
+        null -> Unit
+    }
+}
+
 internal suspend fun normalizeTimelineEvent(
     client: de.connect2x.trixnity.client.MatrixClient,
     timelineEvent: TimelineEvent?,
@@ -108,6 +160,11 @@ internal suspend fun normalizeTimelineEvent(
         when (content) {
             is RoomMessageEventContent.TextBased.Text -> {
                 put(BridgeSchema.Event.body, content.body)
+                content.relatesTo?.let { put(BridgeSchema.Event.relatesTo, normalizeRelation(it)) }
+            }
+
+            is RoomMessageEventContent.FileBased -> {
+                putFileBasedMetadata(content)
                 content.relatesTo?.let { put(BridgeSchema.Event.relatesTo, normalizeRelation(it)) }
             }
 

@@ -44,6 +44,11 @@
   [event]
   (::mx/body event))
 
+(defn msgtype
+  "Returns the Matrix room-message subtype from normalized `event`, if present."
+  [event]
+  (::mx/msgtype event))
+
 (defn key
   "Returns the normalized reaction key or relation key from `event`, if present."
   [event]
@@ -63,6 +68,56 @@
   "Returns the upstream raw event object carried by normalized `event`, if present."
   [event]
   (::mx/raw event))
+
+(defn url
+  "Returns the normalized MXC URI from `event`, if present."
+  [event]
+  (::mx/url event))
+
+(defn encrypted-file
+  "Returns the normalized encrypted-file map from `event`, if present."
+  [event]
+  (::mx/encrypted-file event))
+
+(defn file-name
+  "Returns the normalized file name from `event`, if present."
+  [event]
+  (::mx/file-name event))
+
+(defn mime-type
+  "Returns the normalized MIME type from `event`, if present."
+  [event]
+  (::mx/mime-type event))
+
+(defn size-bytes
+  "Returns the normalized byte size from `event`, if present."
+  [event]
+  (::mx/size-bytes event))
+
+(defn duration
+  "Returns the normalized [[java.time.Duration]] from `event`, if present."
+  [event]
+  (::mx/duration event))
+
+(defn height
+  "Returns the normalized media height from `event`, if present."
+  [event]
+  (::mx/height event))
+
+(defn width
+  "Returns the normalized media width from `event`, if present."
+  [event]
+  (::mx/width event))
+
+(defn thumbnail-url
+  "Returns the event-provided thumbnail MXC URI from `event`, if present."
+  [event]
+  (::mx/thumbnail-url event))
+
+(defn thumbnail-encrypted-file
+  "Returns the event-provided encrypted thumbnail map from `event`, if present."
+  [event]
+  (::mx/thumbnail-encrypted-file event))
 
 (defn text?
   "Returns true when `event` is a Matrix room-message event."

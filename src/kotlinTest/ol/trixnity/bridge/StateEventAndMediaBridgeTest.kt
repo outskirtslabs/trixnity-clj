@@ -1,14 +1,19 @@
 package ol.trixnity.bridge
 
 import de.connect2x.trixnity.client.media.MediaService
+import de.connect2x.trixnity.client.media.PlatformMedia
+import de.connect2x.trixnity.client.media.okio.OkioPlatformMedia
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
+import de.connect2x.trixnity.clientserverapi.model.media.ThumbnailResizingMethod
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
+import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
+import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.toByteArray
 import io.ktor.http.ContentType
 import java.lang.reflect.Proxy
-import kotlin.io.path.absolutePathString
+import java.nio.file.Path
 import kotlin.io.path.createTempFile
 import kotlin.io.path.writeBytes
 import kotlin.test.Test
@@ -19,10 +24,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import okio.Path.Companion.toPath
 
 class StateEventAndMediaBridgeTest {
     @Test
@@ -123,6 +130,94 @@ class StateEventAndMediaBridgeTest {
     }
 
     @Test
+    fun getMediaReturnsAStreamFirstHandle() = runTest {
+        val recorder = MediaRecorder()
+
+        val handle =
+            getMedia(
+                scope = backgroundScope,
+                mediaService = mediaService(recorder),
+                uri = "mxc://example.org/plain",
+            )
+
+        val stream = assertIs<java.io.InputStream>(handle[BridgeSchema.inputStream])
+        assertEquals("plain-bytes", stream.reader().readText())
+        assertIs<PlatformMedia>(handle[BridgeSchema.raw])
+        assertEquals(listOf("mxc://example.org/plain"), recorder.downloadedPlain)
+    }
+
+    @Test
+    fun getEncryptedMediaDelegatesToUpstreamEncryptedDownload() = runTest {
+        val recorder = MediaRecorder()
+        val encryptedFile =
+            EncryptedFile(
+                url = "mxc://example.org/encrypted",
+                key = EncryptedFile.JWK("secret"),
+                initialisationVector = "iv",
+                hashes = mapOf("sha256" to "hash"),
+            )
+
+        val handle =
+            getEncryptedMedia(
+                scope = backgroundScope,
+                mediaService = mediaService(recorder),
+                encryptedFile = encryptedFile,
+            )
+
+        val stream = assertIs<java.io.InputStream>(handle[BridgeSchema.inputStream])
+        assertEquals("encrypted-bytes", stream.reader().readText())
+        assertEquals(listOf(encryptedFile), recorder.downloadedEncrypted)
+    }
+
+    @Test
+    fun getThumbnailDelegatesExplicitSizingOptions() = runTest {
+        val recorder = MediaRecorder()
+
+        val handle =
+            getThumbnail(
+                scope = backgroundScope,
+                mediaService = mediaService(recorder),
+                uri = "mxc://example.org/plain",
+                width = 320,
+                height = 200,
+                method = ThumbnailResizingMethod.SCALE,
+                animated = true,
+            )
+
+        val stream = assertIs<java.io.InputStream>(handle[BridgeSchema.inputStream])
+        assertEquals("thumbnail-bytes", stream.reader().readText())
+        assertEquals(
+            listOf(
+                ThumbnailRequest(
+                    uri = "mxc://example.org/plain",
+                    width = 320,
+                    height = 200,
+                    method = ThumbnailResizingMethod.SCALE,
+                    animated = true,
+                ),
+            ),
+            recorder.thumbnailRequests,
+        )
+    }
+
+    @Test
+    fun temporaryMediaFileDelegatesToUpstreamTemporaryFileSupport() = runTest {
+        val path = createTempFile("trixnity-media-", ".tmp")
+        path.writeBytes("temp".toByteArray())
+
+        val tempFile =
+            temporaryMediaFile(
+                platformMedia = TestOkioPlatformMedia(
+                    chunks = listOf("temp".toByteArray()),
+                    temporaryPath = path,
+                ),
+            )
+
+        assertEquals(path.toAbsolutePath(), tempFile[BridgeSchema.path])
+        assertNotNull(tempFile[BridgeSchema.raw])
+    }
+
+    @Test
     fun roomNameAndTopicStateEventsMapToTheirUpstreamClasses() {
         val name = requireStateEventSpec(
             mapOf(
@@ -154,11 +249,50 @@ class StateEventAndMediaBridgeTest {
         val contentTypes: MutableList<ContentType?> = mutableListOf(),
         val uploaded: MutableList<Pair<String, Boolean>> = mutableListOf(),
         val uploadProgress: MutableList<Any?> = mutableListOf(),
+        val downloadedPlain: MutableList<String> = mutableListOf(),
+        val downloadedEncrypted: MutableList<EncryptedFile> = mutableListOf(),
+        val thumbnailRequests: MutableList<ThumbnailRequest> = mutableListOf(),
+    )
+
+    private data class ThumbnailRequest(
+        val uri: String,
+        val width: Long,
+        val height: Long,
+        val method: ThumbnailResizingMethod,
+        val animated: Boolean,
     )
 
     private fun mediaService(recorder: MediaRecorder): MediaService =
         proxy(MediaService::class.java) { proxy, method, args ->
             when {
+                method.name.startsWith("getMedia") -> {
+                    recorder.downloadedPlain += args[0] as String
+                    TestPlatformMedia(
+                        chunks = listOf("plain-".toByteArray(), "bytes".toByteArray()),
+                    )
+                }
+
+                method.name.startsWith("getEncryptedMedia") -> {
+                    recorder.downloadedEncrypted += args[0] as EncryptedFile
+                    TestPlatformMedia(
+                        chunks = listOf("encrypted-".toByteArray(), "bytes".toByteArray()),
+                    )
+                }
+
+                method.name.startsWith("getThumbnail") -> {
+                    recorder.thumbnailRequests +=
+                        ThumbnailRequest(
+                            uri = args[0] as String,
+                            width = args[1] as Long,
+                            height = args[2] as Long,
+                            method = args[3] as ThumbnailResizingMethod,
+                            animated = args[4] as Boolean,
+                        )
+                    TestPlatformMedia(
+                        chunks = listOf("thumbnail-".toByteArray(), "bytes".toByteArray()),
+                    )
+                }
+
                 method.name.startsWith("prepareUploadMedia") -> {
                     val content = runBlocking { requireByteArrayFlow(args[0]).toByteArray() }
                     recorder.prepared += content
@@ -185,14 +319,14 @@ class StateEventAndMediaBridgeTest {
         }
 
     private fun requireByteArrayFlow(value: Any?): Flow<ByteArray> =
-        (value as? Flow<*>)?.let { flow ->
-            flow.transformValues { chunk ->
+        (value as? Flow<*>)?.let { flowValue ->
+            flowValue.transformValues { chunk ->
                 chunk as? ByteArray ?: error("expected ByteArray chunk, got ${chunk?.javaClass?.name}")
             }
         } ?: error("expected Flow callback value, got ${value?.javaClass?.name}")
 
     private fun Flow<*>.transformValues(requireValue: (Any?) -> ByteArray): Flow<ByteArray> =
-        kotlinx.coroutines.flow.flow {
+        flow {
             collect { emit(requireValue(it)) }
         }
 
@@ -204,6 +338,52 @@ class StateEventAndMediaBridgeTest {
         progress.javaClass.methods.firstOrNull {
             it.name == "tryEmit" && it.parameterCount == 1
         }?.invoke(progress, value) ?: error("progress sink ${progress.javaClass.name} does not expose tryEmit(value)")
+    }
+
+    private class TestPlatformMedia(
+        private val chunks: List<ByteArray>,
+        private val delegate: ByteArrayFlow = flow {
+            chunks.forEach { emit(it) }
+        },
+    ) : PlatformMedia, ByteArrayFlow by delegate {
+        override fun transformByteArrayFlow(transformer: (ByteArrayFlow) -> ByteArrayFlow): PlatformMedia =
+            TestPlatformMedia(chunks = chunks, delegate = transformer(delegate))
+
+        override suspend fun toByteArray(
+            coroutineScope: kotlinx.coroutines.CoroutineScope?,
+            expectedSize: Long?,
+            maxSize: Long?,
+        ): ByteArray? = delegate.toByteArray()
+    }
+
+    private class TestOkioPlatformMedia(
+        chunks: List<ByteArray>,
+        private val temporaryPath: Path,
+        private val delegate: ByteArrayFlow = flow {
+            chunks.forEach { emit(it) }
+        },
+    ) : OkioPlatformMedia, ByteArrayFlow by delegate {
+        override fun transformByteArrayFlow(transformer: (ByteArrayFlow) -> ByteArrayFlow): OkioPlatformMedia =
+            TestOkioPlatformMedia(
+                chunks = emptyList(),
+                temporaryPath = temporaryPath,
+                delegate = transformer(delegate),
+            )
+
+        override suspend fun getTemporaryFile(): Result<OkioPlatformMedia.TemporaryFile> =
+            Result.success(
+                object : OkioPlatformMedia.TemporaryFile {
+                    override val path = temporaryPath.toAbsolutePath().toString().toPath()
+
+                    override suspend fun delete() = Unit
+                },
+            )
+
+        override suspend fun toByteArray(
+            coroutineScope: kotlinx.coroutines.CoroutineScope?,
+            expectedSize: Long?,
+            maxSize: Long?,
+        ): ByteArray? = delegate.toByteArray()
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -218,6 +218,26 @@
   (->> (internal/observe-flow client (bridge/users-typing-flow client))
        (m/relieve {})))
 
+(defn set-typing
+  "Sets the typing status for `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/timeout` | How long the typing notification should remain active |"
+  ([client room-id typing?]
+   (set-typing client room-id typing? {}))
+  ([client room-id typing? opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/typing typing?)
+   (let [opts (mx/validate! ::mx/SetTypingOpts opts)]
+     (internal/suspend-task bridge/set-typing
+                            client
+                            room-id
+                            typing?
+                            (get opts ::mx/timeout)))))
+
 (defn get-account-data
   "Returns a Missionary flow of room account-data content.
 

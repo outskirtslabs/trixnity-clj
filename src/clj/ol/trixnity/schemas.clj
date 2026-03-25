@@ -102,6 +102,7 @@
    ::timeout                                       ::duration
    ::decryption-timeout                            ::duration
    ::wait                                          :boolean
+   ::typing                                        :boolean
    ::force                                         :boolean
    ::limit                                         pos-int?
    ::fetch-timeout                                 ::duration
@@ -216,6 +217,9 @@
    ::OneShotOpts
 
    ::JoinOpts
+   ::OneShotOpts
+
+   ::SetTypingOpts
    ::OneShotOpts
 
    ::LoadMembersOpts

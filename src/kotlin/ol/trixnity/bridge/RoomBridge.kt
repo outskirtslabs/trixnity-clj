@@ -336,6 +336,28 @@ object RoomBridge {
         }
 
     @JvmStatic
+    fun setTyping(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        typing: Boolean,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.api.room.setTyping(
+            RoomId(roomId),
+            client.userId,
+            typing,
+            timeout?.toMillis(),
+        ).getOrThrow()
+        null
+    }
+
+    @JvmStatic
     fun roomById(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,

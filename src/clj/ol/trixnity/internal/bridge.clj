@@ -74,6 +74,9 @@
 (defn users-typing-flow [^MatrixClient client]
   (RoomBridge/usersTypingFlow client))
 
+(defn set-typing [^MatrixClient client room-id typing ^Duration timeout on-success on-failure]
+  (RoomBridge/setTyping client room-id typing timeout on-success on-failure))
+
 (defn create-room [^MatrixClient client request on-success on-failure]
   (RoomBridge/createRoom client request on-success on-failure))
 

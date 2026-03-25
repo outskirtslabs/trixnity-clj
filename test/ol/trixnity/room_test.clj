@@ -157,9 +157,44 @@
       (is (thrown-with-msg?
            clojure.lang.ExceptionInfo
            #"Schema validation failed"
-           (realize-task
-            (sut/join-room :client-handle "ops")))))
+               (realize-task
+                (sut/join-room :client-handle "ops")))))
     (is (= [[:client-handle "#ops:example.org" timeout]]
+           @calls))))
+
+(deftest set-typing-task-surface-returns-a-missionary-task-test
+  (let [set-typing-var        (resolve-var 'ol.trixnity.room 'set-typing)
+        bridge-set-typing-var (resolve-var 'ol.trixnity.internal.bridge
+                                           'set-typing)
+        timeout               (Duration/ofSeconds 5)
+        calls                 (atom [])]
+    (is (some? set-typing-var)
+        "ol.trixnity.room/set-typing is missing")
+    (is (some? bridge-set-typing-var)
+        "ol.trixnity.internal.bridge/set-typing is missing")
+    (when (every? some? [set-typing-var bridge-set-typing-var])
+      (with-redefs-fn
+        {bridge-set-typing-var
+         (fn [client room-id typing? bridge-timeout on-success _]
+           (swap! calls conj [client room-id typing? bridge-timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))}
+        (fn []
+          (is (nil?
+               (realize-task
+                ((var-get set-typing-var)
+                 :client-handle
+                 "!room:example.org"
+                 true))))
+          (is (nil?
+               (realize-task
+                ((var-get set-typing-var)
+                 :client-handle
+                 "!room:example.org"
+                 false
+                 {::schemas/timeout timeout})))))))
+    (is (= [[:client-handle "!room:example.org" true nil]
+            [:client-handle "!room:example.org" false timeout]]
            @calls))))
 
 (deftest room-task-surface-additions-return-missionary-tasks-test
@@ -276,6 +311,9 @@
   (let [forget-room-var          (resolve-var 'ol.trixnity.room 'forget-room)
         bridge-forget-room-var   (resolve-var 'ol.trixnity.internal.bridge
                                               'forget-room)
+        set-typing-var           (resolve-var 'ol.trixnity.room 'set-typing)
+        bridge-set-typing-var    (resolve-var 'ol.trixnity.internal.bridge
+                                              'set-typing)
         fill-timeline-gaps-var   (resolve-var 'ol.trixnity.room
                                               'fill-timeline-gaps)
         bridge-fill-timeline-var (resolve-var 'ol.trixnity.internal.bridge
@@ -285,18 +323,29 @@
         "ol.trixnity.room/forget-room is missing")
     (is (some? bridge-forget-room-var)
         "ol.trixnity.internal.bridge/forget-room is missing")
+    (is (some? set-typing-var)
+        "ol.trixnity.room/set-typing is missing")
+    (is (some? bridge-set-typing-var)
+        "ol.trixnity.internal.bridge/set-typing is missing")
     (is (some? fill-timeline-gaps-var)
         "ol.trixnity.room/fill-timeline-gaps is missing")
     (is (some? bridge-fill-timeline-var)
         "ol.trixnity.internal.bridge/fill-timeline-gaps is missing")
     (when (every? some? [forget-room-var
                          bridge-forget-room-var
+                         set-typing-var
+                         bridge-set-typing-var
                          fill-timeline-gaps-var
                          bridge-fill-timeline-var])
       (with-redefs-fn
         {bridge-forget-room-var
          (fn [& _]
            (swap! calls conj :forget)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-set-typing-var
+         (fn [& _]
+           (swap! calls conj :typing)
            (throw (ex-info "bridge should not be called" {})))
 
          bridge-fill-timeline-var
@@ -309,6 +358,22 @@
                  :client-handle
                  "!room:example.org"
                  {::schemas/force :yes})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get set-typing-var)
+                 :client-handle
+                 "!room:example.org"
+                 :yes
+                 {::schemas/timeout (Duration/ofSeconds 5)})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get set-typing-var)
+                 :client-handle
+                 "!room:example.org"
+                 true
+                 {::schemas/timeout :soon})
                 false
                 (catch clojure.lang.ExceptionInfo _ true)))
           (is (try

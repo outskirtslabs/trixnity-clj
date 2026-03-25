@@ -93,10 +93,6 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
     {:client client}))
 ----
 
-`ol.trixnity.media/upload` now returns `{::mx/result ::mx/progress}` for the
-same reason: callers can observe upload progress while awaiting the final
-uploaded media map from one operation.
-
 If you want a different repository implementation, construct a `MatrixClient` yourself and pass it to `client/open` as `::mx/client`.
 
 == Documentation

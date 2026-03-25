@@ -12,43 +12,9 @@ The public wrappers here cover:
 - observing the full notification set in keyed or flat shapes
 - looking up individual notifications and unread counts
 - consuming live notification updates
-- a deprecated bridge for notification extraction from sync responses
 
 Use xref:api/ol-trixnity-room.adoc[`ol.trixnity.room`] for room timeline access and
 xref:api/ol-trixnity-client.adoc[`ol.trixnity.client`] for client lifecycle.
-
-[#get-notifications]
-== get-notifications
-
-_deprecated_
-
-
-
-[source,clojure]
-----
-(get-notifications client)
-(get-notifications client response-or-opts)
-(get-notifications client response opts)
-----
-
-Returns deprecated notification extraction flows.
-
-Prefer <<get-all,`get-all`>>, <<get-by-id,`get-by-id`>>, and <<get-all-updates,`get-all-updates`>> for the current
-notification model.
-
-Supported opts:
-
-[options="header"]
-|===
-| key | description
-| `::mx/decryption-timeout` | Decryption timeout for derived timeline events
-| `::mx/sync-response-buffer-size` | Number of sync responses buffered while extracting notifications
-|===
-
-[.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L26-L58[source,window=_blank]
-
-'''
 
 [#get-all]
 == get-all
@@ -64,7 +30,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of the current notifications as a list of inner flows.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L60-L63[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L23-L26[source,window=_blank]
 
 '''
 
@@ -82,7 +48,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of flattened notification snapshots.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L65-L68[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L28-L31[source,window=_blank]
 
 '''
 
@@ -100,7 +66,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow of the notification with `id`, or nil when unavailable.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L70-L74[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L33-L37[source,window=_blank]
 
 '''
 
@@ -122,7 +88,7 @@ With one argument, returns the total count across all rooms.
 With `room-id`, returns the count for that room.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L76-L85[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L39-L48[source,window=_blank]
 
 '''
 
@@ -140,7 +106,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a Missionary flow that is true when `room-id` is considered unread.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L87-L91[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L50-L54[source,window=_blank]
 
 '''
 
@@ -160,7 +126,7 @@ Marks `room-id` as read through `event-id` and returns a Missionary task.
 This advances both the room's read markers and clears explicit unread state.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L93-L103[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L56-L66[source,window=_blank]
 
 '''
 
@@ -178,7 +144,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Marks `room-id` as unread and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L105-L111[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L68-L74[source,window=_blank]
 
 '''
 
@@ -196,7 +162,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Marks the notification with `id` as dismissed and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L113-L117[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L76-L80[source,window=_blank]
 
 '''
 
@@ -214,7 +180,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Dismisses all notifications and returns a Missionary task.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L119-L122[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L82-L85[source,window=_blank]
 
 '''
 
@@ -235,4 +201,4 @@ Upstream notes that this stream should not be buffered because consumed
 updates are removed from the backing store as new values are requested.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L124-L130[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/notification.clj#L87-L93[source,window=_blank]

@@ -143,6 +143,10 @@
           '';
         };
 
+      checks = {
+        package = pkgs: self.packages.${pkgs.system}.default;
+      };
+
       devShell =
         pkgs:
         pkgs.devshell.mkShell {

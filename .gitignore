@@ -11,6 +11,7 @@ target/
 extra/
 .direnv
 *.log
+.worktrees/
 prompts/PROMPTS.md
 prompts/*
 result

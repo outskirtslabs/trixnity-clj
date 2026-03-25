@@ -182,10 +182,6 @@ internal fun optionalKeywordInt(payload: Map<*, *>, key: Keyword): Int? =
 internal fun optionalKeywordBoolean(payload: Map<*, *>, key: Keyword): Boolean? =
     payload[key] as? Boolean
 
-internal fun requireKeywordMap(payload: Map<*, *>, key: Keyword): Map<*, *> =
-    requireKeywordValue(payload, key) as? Map<*, *>
-        ?: throw IllegalArgumentException("request payload is missing required map under $key")
-
 internal fun requireKeywordStringMap(payload: Map<*, *>, key: Keyword): Map<String, String> =
     requireKeywordMap(payload, key).mapKeys { (k, _) -> k.toString() }.mapValues { (_, v) -> v.toString() }
 

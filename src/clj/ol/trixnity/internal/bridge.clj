@@ -353,6 +353,12 @@
 (defn notification-unread [^MatrixClient client room-id]
   (NotificationBridge/unread client room-id))
 
+(defn notification-mark-read [^MatrixClient client room-id event-id on-success on-failure]
+  (NotificationBridge/markRead client room-id event-id on-success on-failure))
+
+(defn notification-mark-unread [^MatrixClient client room-id on-success on-failure]
+  (NotificationBridge/markUnread client room-id on-success on-failure))
+
 (defn notification-all-updates [^MatrixClient client]
   (NotificationBridge/allUpdates client))
 

@@ -90,6 +90,26 @@
   (mx/validate! ::mx/room-id room-id)
   (internal/observe-flow client (bridge/notification-unread client room-id)))
 
+(defn mark-read
+  "Marks `room-id` as read through `event-id` and returns a Missionary task.
+
+  This advances both the room's read markers and clears explicit unread state."
+  [client room-id event-id]
+  (mx/validate! ::mx/room-id room-id)
+  (mx/validate! ::mx/event-id event-id)
+  (internal/suspend-task bridge/notification-mark-read
+                         client
+                         room-id
+                         event-id))
+
+(defn mark-unread
+  "Marks `room-id` as unread and returns a Missionary task."
+  [client room-id]
+  (mx/validate! ::mx/room-id room-id)
+  (internal/suspend-task bridge/notification-mark-unread
+                         client
+                         room-id))
+
 (defn dismiss
   "Marks the notification with `id` as dismissed and returns a Missionary task."
   [client id]

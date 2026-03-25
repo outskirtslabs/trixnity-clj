@@ -90,6 +90,103 @@
                (catch clojure.lang.ExceptionInfo _ true))))
       (is (false? @called?)))))
 
+(deftest notification-mark-read-and-unread-tasks-surfaces-return-missionary-tasks-test
+  (let [mark-read-var          (resolve-var 'ol.trixnity.notification
+                                            'mark-read)
+        bridge-mark-read-var   (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-mark-read)
+        mark-unread-var        (resolve-var 'ol.trixnity.notification
+                                            'mark-unread)
+        bridge-mark-unread-var (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-mark-unread)
+        calls                  (atom [])]
+    (is (some? mark-read-var)
+        "ol.trixnity.notification/mark-read is missing")
+    (is (some? bridge-mark-read-var)
+        "ol.trixnity.internal.bridge/notification-mark-read is missing")
+    (is (some? mark-unread-var)
+        "ol.trixnity.notification/mark-unread is missing")
+    (is (some? bridge-mark-unread-var)
+        "ol.trixnity.internal.bridge/notification-mark-unread is missing")
+    (when (every? some? [mark-read-var
+                         bridge-mark-read-var
+                         mark-unread-var
+                         bridge-mark-unread-var])
+      (with-redefs-fn
+        {bridge-mark-read-var
+         (fn [client room-id event-id on-success _]
+           (swap! calls conj [:mark-read client room-id event-id])
+           (on-success nil)
+           (reify Closeable
+             (close [_] nil)))
+
+         bridge-mark-unread-var
+         (fn [client room-id on-success _]
+           (swap! calls conj [:mark-unread client room-id])
+           (on-success nil)
+           (reify Closeable
+             (close [_] nil)))}
+        #(do
+           (is (nil?
+                (realize-task
+                 ((var-get mark-read-var)
+                  :client-handle
+                  "!room:example.org"
+                  "$event:example.org"))))
+           (is (nil?
+                (realize-task
+                 ((var-get mark-unread-var)
+                  :client-handle
+                  "!room:example.org"))))))
+      (is (= [[:mark-read :client-handle "!room:example.org" "$event:example.org"]
+              [:mark-unread :client-handle "!room:example.org"]]
+             @calls)))))
+
+(deftest notification-mark-read-and-unread-validate-ids-before-bridge-test
+  (let [mark-read-var          (resolve-var 'ol.trixnity.notification 'mark-read)
+        bridge-mark-read-var   (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-mark-read)
+        mark-unread-var        (resolve-var 'ol.trixnity.notification 'mark-unread)
+        bridge-mark-unread-var (resolve-var 'ol.trixnity.internal.bridge
+                                            'notification-mark-unread)
+        called?                (atom [])]
+    (is (some? mark-read-var)
+        "ol.trixnity.notification/mark-read is missing")
+    (is (some? bridge-mark-read-var)
+        "ol.trixnity.internal.bridge/notification-mark-read is missing")
+    (is (some? mark-unread-var)
+        "ol.trixnity.notification/mark-unread is missing")
+    (is (some? bridge-mark-unread-var)
+        "ol.trixnity.internal.bridge/notification-mark-unread is missing")
+    (when (every? some? [mark-read-var
+                         bridge-mark-read-var
+                         mark-unread-var
+                         bridge-mark-unread-var])
+      (with-redefs-fn
+        {bridge-mark-read-var
+         (fn [& _]
+           (swap! called? conj :mark-read)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-mark-unread-var
+         (fn [& _]
+           (swap! called? conj :mark-unread)
+           (throw (ex-info "bridge should not be called" {})))}
+        #(do
+           (is (try
+                 ((var-get mark-read-var) :client-handle 42 "$event:example.org")
+                 false
+                 (catch clojure.lang.ExceptionInfo _ true)))
+           (is (try
+                 ((var-get mark-read-var) :client-handle "!room:example.org" 42)
+                 false
+                 (catch clojure.lang.ExceptionInfo _ true)))
+           (is (try
+                 ((var-get mark-unread-var) :client-handle 42)
+                 false
+                 (catch clojure.lang.ExceptionInfo _ true)))))
+      (is (= [] @called?)))))
+
 (deftest notification-surfaces-stay-thin-test
   (let [calls        (atom {})
         timeout      (Duration/ofSeconds 8)

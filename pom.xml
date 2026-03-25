@@ -16,7 +16,7 @@
     <junit.jupiter.version>6.1.0-M1</junit.jupiter.version>
     <maven.compiler.release>25</maven.compiler.release>
     <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
-    <sqlite4clj.rev>8b9234061a033c06438b3a0542d987046abf06db</sqlite4clj.rev>
+    <sqlite4clj.rev>abb1c31224f02b6b7025ce5f40157c41046db8b0</sqlite4clj.rev>
     <coffi.rev>ae3e38a449c88b998db98b0d4bffa9908dea1c79</coffi.rev>
     <sqlite4clj.gitlib>${env.HOME}/.gitlibs/libs/andersmurphy/sqlite4clj/${sqlite4clj.rev}</sqlite4clj.gitlib>
     <coffi.vendor.jar>${project.basedir}/vendor/coffi/coffi-${coffi.rev}.jar</coffi.vendor.jar>

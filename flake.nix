@@ -60,7 +60,7 @@
         pkgs:
         let
           clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-          sqlite4cljRev = "8b9234061a033c06438b3a0542d987046abf06db";
+          sqlite4cljRev = "abb1c31224f02b6b7025ce5f40157c41046db8b0";
           clojureLocker = devenv.clojure.mkLockfile {
             inherit pkgs;
             jdk = pkgs.${jdk};

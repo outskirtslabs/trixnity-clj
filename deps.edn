@@ -10,7 +10,7 @@
   org.slf4j/slf4j-nop                                              {:mvn/version "2.0.17"}
   missionary/missionary                                            {:mvn/version "b.47"}
   andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
-                                                                    :git/sha    "8b9234061a033c06438b3a0542d987046abf06db"
+                                                                    :git/sha    "abb1c31224f02b6b7025ce5f40157c41046db8b0"
                                                                     :exclusions [org.suskalo/coffi]}
   org.suskalo/coffi                                                {:git/sha "cf4891a8d33cb9119eb96ad1ad66db483dd0beb2"
                                                                     :git/url "https://github.com/ramblurr/coffi"}

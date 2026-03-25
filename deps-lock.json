@@ -1,9 +1,9 @@
 {
   "git": {
-    "andersmurphy/sqlite4clj/8b9234061a033c06438b3a0542d987046abf06db": {
+    "andersmurphy/sqlite4clj/abb1c31224f02b6b7025ce5f40157c41046db8b0": {
       "common_dir": "https/github.com/andersmurphy/sqlite4clj",
-      "rev": "8b9234061a033c06438b3a0542d987046abf06db",
-      "sha256": "1rhiqjyhkyfdyx6gjzrhvzx8vmwbm0sbizqqnas78mk8mb4v35m5",
+      "rev": "abb1c31224f02b6b7025ce5f40157c41046db8b0",
+      "sha256": "05a4nbvlv7gshidv0m3x16crvjbs8y733m9bahp23vhnz9h6mzr1",
       "url": "https://github.com/andersmurphy/sqlite4clj"
     },
     "org.suskalo/coffi/cf4891a8d33cb9119eb96ad1ad66db483dd0beb2": {

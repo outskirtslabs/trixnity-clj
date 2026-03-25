@@ -29,7 +29,7 @@ object ClientBridge {
 
     private suspend fun createClient(request: KeywordMap): MatrixClient {
         val homeserverUrl = requireKeywordString(request, BridgeSchema.OpenClientRequest.homeserverUrl)
-        val username = requireKeywordString(request, BridgeSchema.OpenClientRequest.username)
+        val userId = requireKeywordString(request, BridgeSchema.OpenClientRequest.userId)
         val password = requireKeywordString(request, BridgeSchema.OpenClientRequest.password)
         val databasePath = requireKeywordString(request, BridgeSchema.OpenClientRequest.databasePath)
         val mediaPath = requireKeywordString(request, BridgeSchema.OpenClientRequest.mediaPath)
@@ -50,7 +50,7 @@ object ClientBridge {
                 cryptoDriverModule = CryptoDriverModule.vodozemac(),
                 authProviderData = MatrixClientAuthProviderData.classicLoginWithPassword(
                     baseUrl = URLBuilder().takeFrom(homeserverUrl).build(),
-                    identifier = IdentifierType.User(username),
+                    identifier = IdentifierType.User(userId),
                     password = password,
                     refreshToken = true,
                 ).getOrThrow(),

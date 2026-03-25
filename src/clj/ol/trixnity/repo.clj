@@ -63,7 +63,7 @@
   (m/? (client/open
         (merge
          {::mx/homeserver-url \"https://matrix.example.org\"
-          ::mx/username \"bot\"
+          ::mx/user-id \"@bot:example.org\"
           ::mx/password \"secret\"}
          (repo/sqlite4clj-config
           {::mx/database-path \"./var/trixnity.sqlite\"

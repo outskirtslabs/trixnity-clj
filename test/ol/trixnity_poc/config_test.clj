@@ -8,7 +8,7 @@
   (testing "loads shared-secret registration settings"
     (let [config (sut/load-config
                   {"MATRIX_HOMESERVER_URL"             "https://matrix.example.org"
-                   "MATRIX_BOT_USERNAME"               "bot"
+                   "MATRIX_BOT_USER_ID"                "@bot:example.org"
                    "MATRIX_BOT_PASSWORD"               "pw"
                    "MATRIX_REGISTRATION_SHARED_SECRET" "secret-123"
                    "MATRIX_BOT_ADMIN"                  "true"
@@ -20,7 +20,7 @@
                    "MATRIX_TRY_REGISTER"               "false"})]
       (is (= "https://matrix.example.org"
              (sut/url->string (:homeserver-url config))))
-      (is (= "bot" (:username config)))
+      (is (= "@bot:example.org" (:user-id config)))
       (is (= "pw" (:password config)))
       (is (= "secret-123" (:registration-shared-secret config)))
       (is (true? (:bot-admin config)))
@@ -35,7 +35,7 @@
     (let [config (sut/load-config {})]
       (is (= "http://localhost:8008"
              (sut/url->string (:homeserver-url config))))
-      (is (= "trixnitycljbot" (:username config)))
+      (is (= "@trixnitycljbot:localhost" (:user-id config)))
       (is (= "password!123" (:password config)))
       (is (nil? (:registration-shared-secret config)))
       (is (false? (:bot-admin config)))

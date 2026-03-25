@@ -26,7 +26,7 @@
 (deftest open-returns-a-task-and-skips-the-bridge-for-existing-clients-test
   (let [calls  (atom [])
         config {::schemas/homeserver-url "https://matrix.example.org"
-                ::schemas/username       "bot"
+                ::schemas/user-id        "@bot:example.org"
                 ::schemas/password       "secret"
                 ::schemas/database-path  "./tmp/state/trixnity.sqlite"
                 ::schemas/media-path     "./tmp/media"}]

@@ -22,7 +22,7 @@
     (with-redefs [config/load-config
                   (fn []
                     {:homeserver-url "https://matrix.example.org"
-                     :username       "bot"
+                     :user-id        "@bot:example.org"
                      :password       "secret"
                      :room-name      "Bot Room"
                      :room-id-file   "./tmp/facade-room-id.txt"
@@ -136,7 +136,7 @@
   (with-redefs [config/load-config
                 (fn []
                   {:homeserver-url "https://matrix.example.org"
-                   :username       "bot"
+                   :user-id        "@bot:example.org"
                    :password       "secret"
                    :room-name      "Bot Room"
                    :room-id-file   "./tmp/facade-room-id.txt"

@@ -173,7 +173,7 @@
             {load-env-var
              (fn []
                {::mx/homeserver-url "https://matrix.example.org"
-                ::mx/username       "bot"
+                ::mx/user-id        "@bot:example.org"
                 ::mx/password       "secret"})
 
              ensure-data-dir!-var
@@ -203,7 +203,7 @@
                          @calls))
                (is (some #{[:open
                             {::mx/homeserver-url                                    "https://matrix.example.org"
-                             ::mx/username                                          "bot"
+                             ::mx/user-id                                           "@bot:example.org"
                              ::mx/password                                          "secret"
                              :repo-config
                              {:database-path "./dev-data/basic-bot/trixnity.sqlite"

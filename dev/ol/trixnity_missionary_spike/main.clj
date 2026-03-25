@@ -43,7 +43,7 @@
 
 (defn- load-config []
   {:homeserver-url (required-env "MATRIX_HOMESERVER_URL")
-   :username       (required-env "MATRIX_BOT_USERNAME")
+   :user-id        (required-env "MATRIX_BOT_USER_ID")
    :password       (required-env "MATRIX_BOT_PASSWORD")
    :room-id        (required-env "MATRIX_ROOM_ID")
    :database-path  (str spike-root "/trixnity.sqlite")
@@ -108,7 +108,7 @@
         _             (ensure-local-paths! cfg)
         client-config (merge
                        {::mx/homeserver-url (:homeserver-url cfg)
-                        ::mx/username       (:username cfg)
+                        ::mx/user-id        (:user-id cfg)
                         ::mx/password       (:password cfg)}
                        (repo/sqlite4clj-config
                         {:database-path (:database-path cfg)

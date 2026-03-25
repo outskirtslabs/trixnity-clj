@@ -24,7 +24,7 @@
     (with-redefs [sut/read-env
                   (fn [name]
                     ({"MATRIX_HOMESERVER_URL" "https://matrix.example.org"
-                      "MATRIX_BOT_USERNAME"   "bot"
+                      "MATRIX_BOT_USER_ID"    "@bot:example.org"
                       "MATRIX_BOT_PASSWORD"   "secret"
                       "MATRIX_ROOM_ID"        room-id}
                      name))
@@ -97,7 +97,7 @@
           (is (some
                #{[:open
                   {::schemas/homeserver-url "https://matrix.example.org"
-                   ::schemas/username       "bot"
+                   ::schemas/user-id        "@bot:example.org"
                    ::schemas/password       "secret"
                    ::schemas/database-path  "./dev-data/missionary-spike/trixnity.sqlite"
                    ::schemas/media-path     "./dev-data/missionary-spike/media"}]}

@@ -55,7 +55,6 @@
   "Returns the project Malli schema map for `opts`."
   [_]
   {::homeserver-url                     :string
-   ::username                           :string
    ::password                           :string
    ::database-path                      :string
    ::media-path                         :string
@@ -475,7 +474,7 @@
    ::OpenClientRequest
    [:map
     [::homeserver-url ::homeserver-url]
-    [::username ::username]
+    [::user-id ::user-id]
     [::password ::password]
     [::database-path ::database-path]
     [::media-path ::media-path]]})

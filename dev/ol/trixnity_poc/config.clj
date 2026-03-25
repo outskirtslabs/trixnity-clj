@@ -30,8 +30,8 @@
    (let [timestamp                  (System/currentTimeMillis)
          homeserver                 (or (get env "MATRIX_HOMESERVER_URL")
                                         "http://localhost:8008")
-         username                   (or (get env "MATRIX_BOT_USERNAME")
-                                        "trixnitycljbot")
+         user-id                    (or (get env "MATRIX_BOT_USER_ID")
+                                        "@trixnitycljbot:localhost")
          password                   (or (get env "MATRIX_BOT_PASSWORD")
                                         "password!123")
          registration-shared-secret (-> (get env "MATRIX_REGISTRATION_SHARED_SECRET")
@@ -54,7 +54,7 @@
                                           (some-> (get env "MATRIX_TRY_REGISTER")
                                                   str/lower-case))]
      {:homeserver-url             (parse-url homeserver)
-      :username                   username
+      :user-id                    user-id
       :password                   password
       :registration-shared-secret registration-shared-secret
       :bot-admin                  bot-admin

@@ -57,7 +57,7 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
   (let [client (m/? (client/open
                      (merge
                       {::mx/homeserver-url "https://matrix.example.org"
-                       ::mx/username       "bot"
+                       ::mx/user-id        "@bot:example.org"
                        ::mx/password       "secret"}
                       (repo/sqlite4clj-config
                        {:database-path "./var/trixnity.sqlite"

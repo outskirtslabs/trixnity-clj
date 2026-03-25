@@ -99,10 +99,10 @@
                    ::mx/reply-to-event-id "$root"
                    ::mx/is-falling-back   false}})]
     (is
-     (= {::mx/kind                           :image
-         ::mx/source-path                    "/tmp/media/poster.png"
-         ::mx/body                           "poster.png"
-         ::mx/file-name                      "poster.png"
+     (= {::mx/kind                                    :image
+         ::mx/source-path                             "/tmp/media/poster.png"
+         ::mx/body                                    "poster.png"
+         ::mx/file-name                               "poster.png"
          ::mx/reply-to
          {::mx/event-id                      "$reply"
           ::mx/relates-to

@@ -9,7 +9,6 @@ internal object BridgeSchema {
 
     val id: Keyword = Keyword.intern(schemaNamespace, "id")
     val homeserverUrl: Keyword = Keyword.intern(schemaNamespace, "homeserver-url")
-    val username: Keyword = Keyword.intern(schemaNamespace, "username")
     val password: Keyword = Keyword.intern(schemaNamespace, "password")
     val databasePath: Keyword = Keyword.intern(schemaNamespace, "database-path")
     val mediaPath: Keyword = Keyword.intern(schemaNamespace, "media-path")
@@ -261,7 +260,7 @@ internal object BridgeSchema {
 
     object OpenClientRequest {
         val homeserverUrl: Keyword = BridgeSchema.homeserverUrl
-        val username: Keyword = BridgeSchema.username
+        val userId: Keyword = BridgeSchema.userId
         val password: Keyword = BridgeSchema.password
         val databasePath: Keyword = BridgeSchema.databasePath
         val mediaPath: Keyword = BridgeSchema.mediaPath

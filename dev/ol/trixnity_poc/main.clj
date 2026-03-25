@@ -60,7 +60,7 @@
 (defn- start-client! [cfg]
   (let [client-config (merge
                        {::mx/homeserver-url (config/url->string (:homeserver-url cfg))
-                        ::mx/username       (:username cfg)
+                        ::mx/user-id        (:user-id cfg)
                         ::mx/password       (:password cfg)}
                        (repo/sqlite4clj-config
                         {:database-path (:database-path cfg)

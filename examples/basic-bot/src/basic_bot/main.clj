@@ -42,7 +42,7 @@
   []
   (let [required-env
         {"MATRIX_HOMESERVER_URL" ::mx/homeserver-url
-         "MATRIX_BOT_USERNAME"   ::mx/username
+         "MATRIX_BOT_USER_ID"    ::mx/user-id
          "MATRIX_BOT_PASSWORD"   ::mx/password}
         missing
         (into []

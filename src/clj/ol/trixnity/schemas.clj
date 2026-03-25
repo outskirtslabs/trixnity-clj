@@ -89,6 +89,8 @@
    ::device-id                                     :string
    ::body                                          :string
    ::source-path                                   [:fn non-blank-string?]
+   ::cache-uri                                     [:fn non-blank-string?]
+   ::mxc-uri                                       [:fn non-blank-string?]
    ::file-name                                     [:fn non-blank-string?]
    ::mime-type                                     [:fn non-blank-string?]
    ::size-bytes                                    nat-int?
@@ -97,6 +99,7 @@
    ::key                                           :string
    ::display-name                                  :string
    ::avatar-url                                    :string
+   ::url                                           [:fn non-blank-string?]
    ::time-zone                                     :string
    ::duration                                      [:fn #(instance? Duration %)]
    ::timeout                                       ::duration
@@ -104,6 +107,7 @@
    ::wait                                          :boolean
    ::typing                                        :boolean
    ::force                                         :boolean
+   ::keep-in-cache                                 :boolean
    ::limit                                         pos-int?
    ::fetch-timeout                                 ::duration
    ::fetch-size                                    pos-int?
@@ -237,6 +241,17 @@
    ::SendOpts
    ::OneShotOpts
 
+   ::PrepareUploadOpts
+   [:map
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]]
+
+   ::UploadMediaOpts
+   [:map
+    [::file-name {:optional true} ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::keep-in-cache {:optional true} ::keep-in-cache]]
+
    ::Relation
    [:map
     [::relation-type ::relation-type]
@@ -312,6 +327,47 @@
     ::AudioMessageSpec
     ::ImageMessageSpec
     ::FileMessageSpec]
+
+   ::RoomNameStateEvent
+   [:map {:closed true}
+    [::type [:= "m.room.name"]]
+    [::state-key {:optional true} ::state-key]
+    [::name ::name]]
+
+   ::RoomTopicStateEvent
+   [:map {:closed true}
+    [::type [:= "m.room.topic"]]
+    [::state-key {:optional true} ::state-key]
+    [::topic ::topic]]
+
+   ::RoomAvatarStateEvent
+   [:map {:closed true}
+    [::type [:= "m.room.avatar"]]
+    [::state-key {:optional true} ::state-key]
+    [::url ::url]]
+
+   ::StateEventSpec
+   [:or
+    ::RoomNameStateEvent
+    ::RoomTopicStateEvent
+    ::RoomAvatarStateEvent]
+
+   ::PreparedUpload
+   [:map {:closed true}
+    [::cache-uri ::cache-uri]
+    [::source-path ::source-path]
+    [::file-name ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes ::size-bytes]]
+
+   ::UploadedMedia
+   [:map {:closed true}
+    [::cache-uri ::cache-uri]
+    [::mxc-uri ::mxc-uri]
+    [::source-path ::source-path]
+    [::file-name ::file-name]
+    [::mime-type {:optional true} ::mime-type]
+    [::size-bytes ::size-bytes]]
 
    ::Event
    [:map

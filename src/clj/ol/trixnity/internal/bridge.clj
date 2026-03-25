@@ -6,6 +6,7 @@
    [java.time Duration]
    [ol.trixnity.bridge ClientBridge
     KeyBridge
+    MediaBridge
     NotificationBridge
     RoomBridge
     TimelineBridge
@@ -95,6 +96,9 @@
 (defn send-reaction [^MatrixClient client room-id event-id key ^Duration timeout on-success on-failure]
   (RoomBridge/sendReaction client room-id event-id key timeout on-success on-failure))
 
+(defn send-state-event [^MatrixClient client room-id state-event ^Duration timeout on-success on-failure]
+  (RoomBridge/sendStateEvent client room-id state-event timeout on-success on-failure))
+
 (defn cancel-send-message [^MatrixClient client room-id transaction-id on-success on-failure]
   (RoomBridge/cancelSendMessage client room-id transaction-id on-success on-failure))
 
@@ -146,6 +150,12 @@
 
 (defn response-timeline-events [^MatrixClient client ^Sync$Response response decryption-timeout-ms]
   (TimelineBridge/timelineEvents client response decryption-timeout-ms))
+
+(defn prepare-upload-media [^MatrixClient client source-path mime-type on-success on-failure]
+  (MediaBridge/prepareUploadMedia client source-path mime-type on-success on-failure))
+
+(defn upload-media [^MatrixClient client cache-uri keep-in-cache on-success on-failure]
+  (MediaBridge/uploadMedia client cache-uri keep-in-cache on-success on-failure))
 
 (defn timeline-event
   [^MatrixClient client room-id event-id decryption-timeout-ms fetch-timeout-ms fetch-size allow-replace-content]

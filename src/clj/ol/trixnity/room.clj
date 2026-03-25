@@ -8,7 +8,8 @@
 
   The public wrappers here cover three upstream groupings:
 
-  - room mutations such as room creation, invites, messages, and reactions
+  - room mutations such as room creation, invites, messages, reactions, and
+    supported room state events
   - room observation and state operations such as `getById`, `getAll`,
     `getAccountData`, `getState`, and `getOutbox`
   - room-scoped timeline lookup and traversal helpers exposed through the
@@ -169,6 +170,34 @@
                             room-id
                             (event/event-id ev)
                             key
+                            (get opts ::mx/timeout)))))
+
+(defn send-state-event
+  "Sends a supported room state event map to `room-id`.
+
+  Supported state-event payloads:
+
+  - `{::mx/type \"m.room.name\", ::mx/name ...}`
+  - `{::mx/type \"m.room.topic\", ::mx/topic ...}`
+  - `{::mx/type \"m.room.avatar\", ::mx/url ...}`
+
+  `::mx/state-key` is optional on the payload and defaults to the empty string.
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/timeout` | Maximum time to wait for the send operation |"
+  ([client room-id state-event]
+   (send-state-event client room-id state-event {}))
+  ([client room-id state-event opts]
+   (mx/validate! ::mx/room-id room-id)
+   (let [state-event (mx/validate! ::mx/StateEventSpec state-event)
+         opts        (mx/validate! ::mx/SendOpts opts)]
+     (internal/suspend-task bridge/send-state-event
+                            client
+                            room-id
+                            state-event
                             (get opts ::mx/timeout)))))
 
 (defn cancel-send-message

@@ -287,6 +287,32 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun sendStateEvent(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        stateEvent: KeywordMap,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        val parsedStateEvent = requireStateEventSpec(
+            mapOf(BridgeSchema.SendStateEventRequest.stateEvent to stateEvent),
+            BridgeSchema.SendStateEventRequest.stateEvent,
+        )
+
+        client.api.room.sendStateEvent(
+            RoomId(roomId),
+            parsedStateEvent.toEventContent(),
+            parsedStateEvent.stateKey,
+        ).getOrThrow().full
+    }
+
+    @JvmStatic
     fun cancelSendMessage(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,

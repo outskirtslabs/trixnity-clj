@@ -27,11 +27,15 @@ internal object BridgeSchema {
     val key: Keyword = Keyword.intern(schemaNamespace, "key")
     val wait: Keyword = Keyword.intern(schemaNamespace, "wait")
     val force: Keyword = Keyword.intern(schemaNamespace, "force")
+    val keepInCache: Keyword = Keyword.intern(schemaNamespace, "keep-in-cache")
     val limit: Keyword = Keyword.intern(schemaNamespace, "limit")
     val deviceName: Keyword = Keyword.intern(schemaNamespace, "device-name")
     val displayName: Keyword = Keyword.intern(schemaNamespace, "display-name")
     val senderDisplayName: Keyword = Keyword.intern(schemaNamespace, "sender-display-name")
     val avatarUrl: Keyword = Keyword.intern(schemaNamespace, "avatar-url")
+    val cacheUri: Keyword = Keyword.intern(schemaNamespace, "cache-uri")
+    val mxcUri: Keyword = Keyword.intern(schemaNamespace, "mxc-uri")
+    val url: Keyword = Keyword.intern(schemaNamespace, "url")
     val timeZone: Keyword = Keyword.intern(schemaNamespace, "time-zone")
     val versions: Keyword = Keyword.intern(schemaNamespace, "versions")
     val mediaConfig: Keyword = Keyword.intern(schemaNamespace, "media-config")
@@ -40,6 +44,7 @@ internal object BridgeSchema {
     val content: Keyword = Keyword.intern(schemaNamespace, "content")
     val message: Keyword = Keyword.intern(schemaNamespace, "message")
     val timeout: Keyword = Keyword.intern(schemaNamespace, "timeout")
+    val type: Keyword = Keyword.intern(schemaNamespace, "type")
     val decryptionTimeout: Keyword = Keyword.intern(schemaNamespace, "decryption-timeout")
     val fetchTimeout: Keyword = Keyword.intern(schemaNamespace, "fetch-timeout")
     val fetchSize: Keyword = Keyword.intern(schemaNamespace, "fetch-size")
@@ -99,7 +104,7 @@ internal object BridgeSchema {
     }
 
     object Event {
-        val type: Keyword = Keyword.intern(schemaNamespace, "type")
+        val type: Keyword = BridgeSchema.type
         val roomId: Keyword = Keyword.intern(schemaNamespace, "room-id")
         val eventId: Keyword = Keyword.intern(schemaNamespace, "event-id")
         val sender: Keyword = Keyword.intern(schemaNamespace, "sender")
@@ -329,6 +334,13 @@ internal object BridgeSchema {
         val roomId: Keyword = BridgeSchema.roomId
         val eventId: Keyword = BridgeSchema.eventId
         val key: Keyword = BridgeSchema.key
+        val timeout: Keyword = BridgeSchema.timeout
+    }
+
+    object SendStateEventRequest {
+        val client: Keyword = BridgeSchema.client
+        val roomId: Keyword = BridgeSchema.roomId
+        val stateEvent: Keyword = Keyword.intern(schemaNamespace, "state-event")
         val timeout: Keyword = BridgeSchema.timeout
     }
 

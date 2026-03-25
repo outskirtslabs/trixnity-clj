@@ -34,6 +34,9 @@
         timeout (Duration/ofSeconds 5)
         ev      {::schemas/room-id  "!room:example.org"
                  ::schemas/event-id "$event"}
+        state-event
+        {::schemas/type "m.room.name"
+         ::schemas/name "Ops Bot"}
         room-opts
         {::schemas/room-name "Ops Bot"
          ::schemas/topic     "Control room"
@@ -64,6 +67,13 @@
                   (fn [client room-id event-id key bridge-timeout on-success _]
                     (swap! calls assoc :send-reaction [client room-id event-id key bridge-timeout])
                     (on-success "$reaction")
+                    (->StubCloseable (atom 0)))
+
+                  bridge/send-state-event
+                  (fn [client room-id sent-state-event bridge-timeout on-success _]
+                    (swap! calls assoc :send-state-event
+                           [client room-id sent-state-event bridge-timeout])
+                    (on-success "$state-event")
                     (->StubCloseable (atom 0)))]
       (is (= "!room:example.org"
              (realize-task
@@ -79,13 +89,21 @@
       (is (= "$reaction"
              (realize-task
               (sut/send-reaction :client-handle "!room:example.org" ev "🔥"))))
+      (is (= "$state-event"
+             (realize-task
+              (sut/send-state-event :client-handle
+                                    "!room:example.org"
+                                    state-event
+                                    {::schemas/timeout timeout}))))
       (is (= [:client-handle room-opts] (:create-room @calls)))
       (is (= [:client-handle "!room:example.org" "@alice:example.org" timeout]
              (:invite-user @calls)))
       (is (= [:client-handle "!room:example.org" message timeout]
              (:send-message @calls)))
       (is (= [:client-handle "!room:example.org" "$event" "🔥" nil]
-             (:send-reaction @calls))))))
+             (:send-reaction @calls)))
+      (is (= [:client-handle "!room:example.org" state-event timeout]
+             (:send-state-event @calls))))))
 
 (deftest send-message-accepts-and-forwards-rich-message-specs-test
   (let [calls   (atom [])
@@ -314,6 +332,9 @@
         set-typing-var           (resolve-var 'ol.trixnity.room 'set-typing)
         bridge-set-typing-var    (resolve-var 'ol.trixnity.internal.bridge
                                               'set-typing)
+        send-state-event-var     (resolve-var 'ol.trixnity.room 'send-state-event)
+        bridge-send-state-var    (resolve-var 'ol.trixnity.internal.bridge
+                                              'send-state-event)
         fill-timeline-gaps-var   (resolve-var 'ol.trixnity.room
                                               'fill-timeline-gaps)
         bridge-fill-timeline-var (resolve-var 'ol.trixnity.internal.bridge
@@ -327,6 +348,10 @@
         "ol.trixnity.room/set-typing is missing")
     (is (some? bridge-set-typing-var)
         "ol.trixnity.internal.bridge/set-typing is missing")
+    (is (some? send-state-event-var)
+        "ol.trixnity.room/send-state-event is missing")
+    (is (some? bridge-send-state-var)
+        "ol.trixnity.internal.bridge/send-state-event is missing")
     (is (some? fill-timeline-gaps-var)
         "ol.trixnity.room/fill-timeline-gaps is missing")
     (is (some? bridge-fill-timeline-var)
@@ -335,6 +360,8 @@
                          bridge-forget-room-var
                          set-typing-var
                          bridge-set-typing-var
+                         send-state-event-var
+                         bridge-send-state-var
                          fill-timeline-gaps-var
                          bridge-fill-timeline-var])
       (with-redefs-fn
@@ -346,6 +373,11 @@
          bridge-set-typing-var
          (fn [& _]
            (swap! calls conj :typing)
+           (throw (ex-info "bridge should not be called" {})))
+
+         bridge-send-state-var
+         (fn [& _]
+           (swap! calls conj :send-state)
            (throw (ex-info "bridge should not be called" {})))
 
          bridge-fill-timeline-var
@@ -374,6 +406,21 @@
                  "!room:example.org"
                  true
                  {::schemas/timeout :soon})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get send-state-event-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/type "m.room.avatar"})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get send-state-event-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/type "m.room.unknown"
+                  ::schemas/body "wat"})
                 false
                 (catch clojure.lang.ExceptionInfo _ true)))
           (is (try

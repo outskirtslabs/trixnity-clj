@@ -4,10 +4,15 @@ import clojure.lang.IFn
 import clojure.lang.Keyword
 import de.connect2x.trixnity.client.MatrixClient
 import de.connect2x.trixnity.client.MediaStoreModule
+import de.connect2x.trixnity.client.media.MediaService
 import de.connect2x.trixnity.client.RepositoriesModule
 import de.connect2x.trixnity.client.media.okio.okio
 import de.connect2x.trixnity.core.model.EventId
+import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
+import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
+import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
+import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
 import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.byteArrayFlowFromInputStream
 import io.ktor.http.ContentType
@@ -101,6 +106,33 @@ internal data class FileMessageSpec(
     override val replyTo: ReplyTarget? = null,
 ) : AttachmentMessageSpec
 
+internal sealed interface StateEventSpec {
+    val stateKey: String
+
+    fun toEventContent(): StateEventContent
+}
+
+internal data class RoomNameStateEventSpec(
+    val name: String,
+    override val stateKey: String = "",
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = NameEventContent(name)
+}
+
+internal data class RoomTopicStateEventSpec(
+    val topic: String,
+    override val stateKey: String = "",
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = TopicEventContent(topic)
+}
+
+internal data class RoomAvatarStateEventSpec(
+    val url: String,
+    override val stateKey: String = "",
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = AvatarEventContent(url = url)
+}
+
 internal fun requireKeywordString(payload: Map<*, *>, key: Keyword): String =
     payload[key]?.toString()?.takeIf { it.isNotBlank() }
         ?: throw IllegalArgumentException("request payload is missing required key $key")
@@ -124,6 +156,9 @@ internal fun optionalKeywordLong(payload: Map<*, *>, key: Keyword): Long? =
 internal fun optionalKeywordInt(payload: Map<*, *>, key: Keyword): Int? =
     (payload[key] as? Number)?.toInt()
 
+internal fun optionalKeywordBoolean(payload: Map<*, *>, key: Keyword): Boolean? =
+    payload[key] as? Boolean
+
 internal fun parseContentType(value: String, key: Keyword): ContentType =
     try {
         ContentType.parse(value)
@@ -135,8 +170,12 @@ internal fun optionalKeywordContentType(payload: Map<*, *>, key: Keyword): Conte
     optionalKeywordString(payload, key)?.let { parseContentType(it, key) }
 
 internal fun requireReadablePath(payload: Map<*, *>, key: Keyword): Path {
+    return requireReadablePath(requireKeywordString(payload, key), key)
+}
+
+internal fun requireReadablePath(pathValue: String, key: Keyword): Path {
     val path = try {
-        Paths.get(requireKeywordString(payload, key)).toAbsolutePath().normalize()
+        Paths.get(pathValue).toAbsolutePath().normalize()
     } catch (error: Throwable) {
         throw IllegalArgumentException("message source path for $key is invalid", error)
     }
@@ -230,6 +269,47 @@ internal fun requireMessageSpec(payload: KeywordMap, key: Keyword): MessageSpec 
         else -> error("unsupported message kind: $kind")
     }
 }
+
+internal fun requireStateEventSpec(payload: KeywordMap, key: Keyword): StateEventSpec {
+    val raw = requireKeywordValue(payload, key) as? KeywordMap
+        ?: throw IllegalArgumentException("request payload is missing state-event map under $key")
+
+    val type = requireKeywordString(raw, BridgeSchema.type)
+    val stateKey = optionalKeywordString(raw, BridgeSchema.stateKey) ?: ""
+
+    return when (type) {
+        "m.room.name" -> RoomNameStateEventSpec(
+            name = requireKeywordString(raw, BridgeSchema.name),
+            stateKey = stateKey,
+        )
+
+        "m.room.topic" -> RoomTopicStateEventSpec(
+            topic = requireKeywordString(raw, BridgeSchema.topic),
+            stateKey = stateKey,
+        )
+
+        "m.room.avatar" -> RoomAvatarStateEventSpec(
+            url = requireKeywordString(raw, BridgeSchema.url),
+            stateKey = stateKey,
+        )
+
+        else -> throw IllegalArgumentException("unsupported state-event type: $type")
+    }
+}
+
+internal suspend fun prepareUploadMedia(
+    mediaService: MediaService,
+    sourcePath: Path,
+    mimeType: ContentType?,
+): String =
+    mediaService.prepareUploadMedia(byteArrayFlowFromPath(sourcePath), mimeType)
+
+internal suspend fun uploadPreparedMedia(
+    mediaService: MediaService,
+    cacheUri: String,
+    keepInCache: Boolean,
+): String =
+    mediaService.uploadMedia(cacheUri, keepMediaInCache = keepInCache).getOrThrow()
 
 internal fun relationFrom(spec: RelationSpec?): RelatesTo? =
     when (spec?.type) {

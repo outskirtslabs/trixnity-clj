@@ -104,3 +104,37 @@
     (is (m/validate schema "!room:example.org"))
     (is (m/validate schema "#ops:example.org"))
     (is (not (m/validate schema "ops")))))
+
+(deftest state-event-spec-schema-dispatches-by-type-test
+  (let [schema (m/schema ::sut/StateEventSpec {:registry (sut/registry {})})]
+    (is (m/validate schema {::sut/type "m.room.name"
+                            ::sut/name "Ops Bot"}))
+    (is (m/validate schema {::sut/type      "m.room.topic"
+                            ::sut/state-key ""
+                            ::sut/topic     "Incident chatter"}))
+    (is (m/validate schema {::sut/type "m.room.avatar"
+                            ::sut/url  "mxc://example.org/abc"}))
+    (is (not (m/validate schema {::sut/type "m.room.avatar"})))
+    (is (not (m/validate schema {::sut/type "m.room.unknown"
+                                 ::sut/body "wat"})))))
+
+(deftest media-upload-schemas-capture-prepared-and-uploaded-media-test
+  (let [registry (sut/registry {})]
+    (is (m/validate (m/schema ::sut/PreparedUpload {:registry registry})
+                    {::sut/cache-uri   "upload://plain/1"
+                     ::sut/source-path "/tmp/avatar.png"
+                     ::sut/file-name   "avatar.png"
+                     ::sut/size-bytes  42}))
+    (is (m/validate (m/schema ::sut/UploadedMedia {:registry registry})
+                    {::sut/cache-uri   "upload://plain/1"
+                     ::sut/mxc-uri     "mxc://example.org/abc"
+                     ::sut/source-path "/tmp/avatar.png"
+                     ::sut/file-name   "avatar.png"
+                     ::sut/size-bytes  42}))
+    (is (not (m/validate (m/schema ::sut/PreparedUpload {:registry registry})
+                         {::sut/cache-uri ""})))
+    (is (not (m/validate (m/schema ::sut/UploadedMedia {:registry registry})
+                         {::sut/cache-uri   "upload://plain/1"
+                          ::sut/source-path "/tmp/avatar.png"
+                          ::sut/file-name   "avatar.png"
+                          ::sut/size-bytes  42})))))

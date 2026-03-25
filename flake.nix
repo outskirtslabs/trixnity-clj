@@ -15,14 +15,14 @@
       url = "https://flakehub.com/f/ramblurr/nix-devenv/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    clj-nix = {
-      url = "github:jlesquembre/clj-nix";
+    clojure-nix-locker = {
+      url = "github:bevuta/clojure-nix-locker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs =
-    inputs@{ flakelight, ... }:
+    inputs@{ self, flakelight, ... }:
     flakelight ./. {
       inherit inputs;
       pname = "trixnity-clj";
@@ -30,16 +30,38 @@
       withOverlays = [
         inputs.devshell.overlays.default
         inputs.devenv.overlays.default
-        inputs.clj-nix.overlays.default
       ];
+
+      packages = {
+        locker =
+          pkgs:
+          let
+            clojure = pkgs.clojure.override { jdk = pkgs.jdk25; };
+          in
+          (inputs.clojure-nix-locker.lib.customLocker {
+            inherit pkgs;
+            src = ./.;
+            lockfile = "./deps-lock.json";
+            command = ''
+              ${clojure}/bin/clojure -P -M:dev:kaocha
+              ${clojure}/bin/clojure -P -T:build jar
+            '';
+          }).locker;
+      };
 
       package =
         pkgs:
         let
-          deps-cache = pkgs.mk-deps-cache {
-            lockfile = ./deps-lock.json;
+          clojure = pkgs.clojure.override { jdk = pkgs.jdk25; };
+          clojureLocker = inputs.clojure-nix-locker.lib.customLocker {
+            inherit pkgs;
+            src = ./.;
+            lockfile = "./deps-lock.json";
+            command = ''
+              ${clojure}/bin/clojure -P -M:dev:kaocha
+              ${clojure}/bin/clojure -P -T:build jar
+            '';
           };
-          bridge-classes = "${bridge-package}/share/trixnity-clj-bridge/target/classes";
           bridge-package = pkgs.maven.buildMavenPackage {
             pname = "trixnity-clj-bridge";
             version = "0.0.1";
@@ -54,7 +76,7 @@
             preBuild = ''
               export HOME="$TMPDIR/home"
               mkdir -p "$HOME"
-              ln -s ${deps-cache}/.gitlibs "$HOME/.gitlibs"
+              ln -s ${clojureLocker.homeDirectory}/.gitlibs "$HOME/.gitlibs"
               export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
             '';
             installPhase = ''
@@ -66,21 +88,30 @@
               runHook postInstall
             '';
           };
+          bridge-classes = "${bridge-package}/share/trixnity-clj-bridge/target/classes";
         in
-        pkgs.mkCljLib {
-          projectSrc = ./.;
-          name = "com.outskirtslabs/trixnity-clj";
+        pkgs.stdenv.mkDerivation {
+          pname = "trixnity-clj";
           version = "0.0.1";
+          src = ./.;
           nativeBuildInputs = [
+            clojure
             pkgs.coreutils
+            pkgs.findutils
+            pkgs.jdk25
           ];
+          TRIXNITY_CLJ_GIT_SHA =
+            if self ? rev then
+              self.rev
+            else if self ? dirtyRev then
+              self.dirtyRev
+            else
+              "dirty";
           JAVA_HOME = pkgs.jdk25.home;
-          buildCommand = ''
-            cljnix_home="$HOME"
-            export HOME="$TMPDIR/home"
-            mkdir -p "$HOME"
-            ln -s "$cljnix_home/.m2" "$HOME/.m2"
-            ln -s "$cljnix_home/.gitlibs" "$HOME/.gitlibs"
+          buildPhase = ''
+            runHook preBuild
+
+            source ${clojureLocker.shellEnv}
             export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
             export JAVA_CMD="${pkgs.jdk25}/bin/java"
             mkdir -p kotlin/build
@@ -93,6 +124,16 @@
 
             clojure -M:dev:kaocha
             clojure -T:build jar
+
+            runHook postBuild
+          '';
+          installPhase = ''
+            runHook preInstall
+
+            mkdir -p $out
+            cp "$(find target -type f -name '*.jar' -print | head -n 1)" $out/
+
+            runHook postInstall
           '';
         };
 
@@ -110,9 +151,9 @@
             }
           ];
           packages = [
-            pkgs.deps-lock
             pkgs.jdk25
             pkgs.maven
+            self.packages.${pkgs.system}.locker
           ];
         };
     };

@@ -157,8 +157,8 @@
       (is (thrown-with-msg?
            clojure.lang.ExceptionInfo
            #"Schema validation failed"
-               (realize-task
-                (sut/join-room :client-handle "ops")))))
+           (realize-task
+            (sut/join-room :client-handle "ops")))))
     (is (= [[:client-handle "#ops:example.org" timeout]]
            @calls))))
 

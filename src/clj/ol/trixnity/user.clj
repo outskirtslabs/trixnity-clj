@@ -159,3 +159,20 @@
                  event-content-class)
    (mx/validate! ::mx/key key)
    (internal/observe-flow client (bridge/user-account-data client event-content-class key))))
+
+(defn get-direct-chats
+  "Returns a Missionary flow of the current `m.direct` mapping.
+
+  The emitted value is a map of Matrix user ids to sets of direct-room ids."
+  [client]
+  (internal/observe-flow client (bridge/user-direct-chats client)))
+
+(defn set-direct-chats
+  "Writes the `m.direct` mapping and returns a Missionary task.
+
+  `mappings` must be a map of Matrix user ids to sets of room ids."
+  [client mappings]
+  (let [mappings (mx/validate! ::mx/direct-chat-mappings mappings)]
+    (internal/suspend-task bridge/set-direct-chats
+                           client
+                           mappings)))

@@ -52,6 +52,7 @@
    ::media-path                         :string
    ::client                             [:fn #(instance? MatrixClient %)]
    ::room-name                          :string
+   ::topic                              :string
    ::room-id                            :string
    ::membership                         [:and
                                          :keyword
@@ -59,6 +60,9 @@
                                                   (str/lower-case
                                                    (name %)))]]
    ::user-id                            :string
+   ::invite                             [:vector ::user-id]
+   ::preset                             [:enum :private-chat :public-chat :trusted-private-chat]
+   ::visibility                         [:enum :public :private]
    ::users                              [:set ::user-id]
    ::event-id                           :string
    ::version                            :string
@@ -127,6 +131,8 @@
    ::reasons                            [:set [:or :keyword :string]]
    ::algorithm                          :string
    ::raw                                :any
+   ::direct-chat-room-ids               [:set ::room-id]
+   ::direct-chat-mappings               [:map-of ::user-id ::direct-chat-room-ids]
    ::relation-type                      :string
    ::relation-event-id                  :string
    ::reply-to-event-id                  :string
@@ -143,7 +149,12 @@
 
    ::CreateRoomOpts
    [:map
-    [::room-name ::room-name]]
+    [::room-name {:optional true} ::room-name]
+    [::topic {:optional true} ::topic]
+    [::invite {:optional true} ::invite]
+    [::preset {:optional true} ::preset]
+    [::is-direct {:optional true} ::is-direct]
+    [::visibility {:optional true} ::visibility]]
 
    ::TimelineSubscribeOpts
    [:map

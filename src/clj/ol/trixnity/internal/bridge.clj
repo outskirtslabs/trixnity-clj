@@ -74,8 +74,8 @@
 (defn users-typing-flow [^MatrixClient client]
   (RoomBridge/usersTypingFlow client))
 
-(defn create-room [^MatrixClient client room-name on-success on-failure]
-  (RoomBridge/createRoom client room-name on-success on-failure))
+(defn create-room [^MatrixClient client request on-success on-failure]
+  (RoomBridge/createRoom client request on-success on-failure))
 
 (defn invite-user [^MatrixClient client room-id user-id ^Duration timeout on-success on-failure]
   (RoomBridge/inviteUser client room-id user-id timeout on-success on-failure))
@@ -303,6 +303,12 @@
 
 (defn user-account-data [^MatrixClient client event-content-class key]
   (UserBridge/accountData client event-content-class key))
+
+(defn user-direct-chats [^MatrixClient client]
+  (UserBridge/directChats client))
+
+(defn set-direct-chats [^MatrixClient client mappings on-success on-failure]
+  (UserBridge/setDirectChats client mappings on-success on-failure))
 
 (defn notifications [^MatrixClient client decryption-timeout-ms sync-response-buffer-size]
   (NotificationBridge/notifications client decryption-timeout-ms sync-response-buffer-size))

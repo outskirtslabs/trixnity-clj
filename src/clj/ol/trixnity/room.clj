@@ -63,14 +63,19 @@
 
   Supported opts:
 
-  | key              | description                             |
-  |------------------|-----------------------------------------|
-  | `::mx/room-name` | Explicit room name used during creation |"
+  | key               | description                                                                                  |
+  |-------------------|----------------------------------------------------------------------------------------------|
+  | `::mx/room-name`  | Optional room display name.                                                                  |
+  | `::mx/topic`      | Optional room topic.                                                                         |
+  | `::mx/invite`     | Optional vector of Matrix user ids to invite during creation.                                |
+  | `::mx/preset`     | Optional preset keyword, one of `:private-chat`, `:public-chat`, or `:trusted-private-chat`. |
+  | `::mx/is-direct`  | Optional direct-message flag for invite membership events.                                   |
+  | `::mx/visibility` | Optional room-directory visibility, either `:private` or `:public`.                          |"
   [client opts]
   (let [opts (mx/validate! ::mx/CreateRoomOpts opts)]
     (internal/suspend-task bridge/create-room
                            client
-                           (get opts ::mx/room-name))))
+                           opts)))
 
 (defn invite-user
   "Invites `user-id` to `room-id` and returns a Missionary task.

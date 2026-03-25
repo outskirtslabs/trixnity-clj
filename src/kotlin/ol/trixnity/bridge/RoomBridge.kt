@@ -4,6 +4,8 @@ import clojure.lang.Keyword
 import de.connect2x.trixnity.client.flatten
 import de.connect2x.trixnity.client.flattenValues
 import de.connect2x.trixnity.client.room
+import de.connect2x.trixnity.clientserverapi.model.room.CreateRoom
+import de.connect2x.trixnity.clientserverapi.model.room.DirectoryVisibility
 import de.connect2x.trixnity.client.room.message.react
 import de.connect2x.trixnity.client.room.message.reply
 import de.connect2x.trixnity.client.room.message.text
@@ -22,6 +24,48 @@ import java.io.Closeable
 import java.time.Duration
 
 object RoomBridge {
+    private data class CreateRoomSpec(
+        val roomName: String? = null,
+        val topic: String? = null,
+        val invite: Set<UserId>? = null,
+        val preset: CreateRoom.Request.Preset? = null,
+        val isDirect: Boolean? = null,
+        val visibility: DirectoryVisibility? = null,
+    )
+
+    private fun parseCreateRoomSpec(request: KeywordMap): CreateRoomSpec {
+        val invite = (request[BridgeSchema.invite] as? Iterable<*>)?.map {
+            UserId(it?.toString() ?: error("invite list contains null entry"))
+        }?.toSet()?.takeIf { it.isNotEmpty() }
+
+        val preset = optionalKeywordString(request, BridgeSchema.preset)?.removePrefix(":")?.let {
+            when (it) {
+                "private-chat" -> CreateRoom.Request.Preset.PRIVATE
+                "public-chat" -> CreateRoom.Request.Preset.PUBLIC
+                "trusted-private-chat" -> CreateRoom.Request.Preset.TRUSTED_PRIVATE
+                else -> error("unsupported create-room preset: $it")
+            }
+        }
+
+        val visibility =
+            optionalKeywordString(request, BridgeSchema.visibility)?.removePrefix(":")?.let {
+                when (it) {
+                    "private" -> DirectoryVisibility.PRIVATE
+                    "public" -> DirectoryVisibility.PUBLIC
+                    else -> error("unsupported create-room visibility: $it")
+                }
+            }
+
+        return CreateRoomSpec(
+            roomName = optionalKeywordString(request, BridgeSchema.roomName),
+            topic = optionalKeywordString(request, BridgeSchema.topic),
+            invite = invite,
+            preset = preset,
+            isDirect = request[BridgeSchema.isDirect] as? Boolean,
+            visibility = visibility,
+        )
+    }
+
     private fun normalizeRoom(room: Room?): Map<Keyword, Any?>? {
         if (room == null) return null
         return buildMap {
@@ -44,7 +88,7 @@ object RoomBridge {
     @JvmStatic
     fun createRoom(
         client: de.connect2x.trixnity.client.MatrixClient,
-        roomName: String,
+        request: KeywordMap,
         onSuccess: Any,
         onFailure: Any,
     ): Closeable = submitBridgeTask(
@@ -52,8 +96,14 @@ object RoomBridge {
         onSuccess = onSuccess,
         onFailure = onFailure,
     ) {
+        val parsedRequest = parseCreateRoomSpec(request)
         client.api.room.createRoom(
-            name = roomName,
+            visibility = parsedRequest.visibility ?: DirectoryVisibility.PRIVATE,
+            name = parsedRequest.roomName,
+            topic = parsedRequest.topic,
+            invite = parsedRequest.invite,
+            preset = parsedRequest.preset,
+            isDirect = parsedRequest.isDirect,
             initialState = listOf(
                 InitialStateEvent(
                     content = EncryptionEventContent(),

@@ -15,8 +15,12 @@ internal object BridgeSchema {
     val mediaPath: Keyword = Keyword.intern(schemaNamespace, "media-path")
     val client: Keyword = Keyword.intern(schemaNamespace, "client")
     val roomName: Keyword = Keyword.intern(schemaNamespace, "room-name")
+    val topic: Keyword = Keyword.intern(schemaNamespace, "topic")
     val roomId: Keyword = Keyword.intern(schemaNamespace, "room-id")
     val userId: Keyword = Keyword.intern(schemaNamespace, "user-id")
+    val invite: Keyword = Keyword.intern(schemaNamespace, "invite")
+    val preset: Keyword = Keyword.intern(schemaNamespace, "preset")
+    val visibility: Keyword = Keyword.intern(schemaNamespace, "visibility")
     val users: Keyword = Keyword.intern(schemaNamespace, "users")
     val eventId: Keyword = Keyword.intern(schemaNamespace, "event-id")
     val stateKey: Keyword = Keyword.intern(schemaNamespace, "state-key")
@@ -284,6 +288,11 @@ internal object BridgeSchema {
     object CreateRoomRequest {
         val client: Keyword = BridgeSchema.client
         val roomName: Keyword = BridgeSchema.roomName
+        val topic: Keyword = BridgeSchema.topic
+        val invite: Keyword = BridgeSchema.invite
+        val preset: Keyword = BridgeSchema.preset
+        val isDirect: Keyword = BridgeSchema.isDirect
+        val visibility: Keyword = BridgeSchema.visibility
     }
 
     object InviteUserRequest {

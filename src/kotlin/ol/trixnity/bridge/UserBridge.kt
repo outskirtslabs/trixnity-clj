@@ -7,11 +7,26 @@ import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.GlobalAccountDataEventContent
 import de.connect2x.trixnity.core.model.events.RoomEventContent
+import de.connect2x.trixnity.core.model.events.m.DirectEventContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.Closeable
 
 object UserBridge {
+    private fun directChatsToStrings(content: DirectEventContent?): Map<String, Set<String>>? =
+        content?.mappings?.entries?.associate { (userId, roomIds) ->
+            userId.full to roomIds.orEmpty().map { it.full }.toSet()
+        }
+
+    private fun parseDirectChats(mappings: Map<*, *>): Map<UserId, Set<RoomId>> =
+        mappings.entries.associate { (userId, roomIds) ->
+            val parsedUserId = UserId(userId?.toString() ?: error("direct-chat mappings contain null user id"))
+            val parsedRoomIds = (roomIds as? Iterable<*>)?.map {
+                RoomId(it?.toString() ?: error("direct-chat mappings contain null room id"))
+            }?.toSet() ?: error("direct-chat mappings for $parsedUserId must be a collection of room ids")
+            parsedUserId to parsedRoomIds
+        }
+
     @JvmStatic
     fun loadMembers(
         client: de.connect2x.trixnity.client.MatrixClient,
@@ -162,4 +177,28 @@ object UserBridge {
             javaClassToKClass<GlobalAccountDataEventContent>(eventContentClass),
             key,
         ).map(::normalizeContent)
+
+    @JvmStatic
+    fun directChats(
+        client: de.connect2x.trixnity.client.MatrixClient,
+    ): Flow<Map<String, Set<String>>?> =
+        client.user.getAccountData(DirectEventContent::class).map(::directChatsToStrings)
+
+    @JvmStatic
+    fun setDirectChats(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        mappings: Map<*, *>,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+    ) {
+        client.api.user.setAccountData(
+            DirectEventContent(parseDirectChats(mappings)),
+            client.userId,
+        ).getOrThrow()
+        null
+    }
 }

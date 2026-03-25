@@ -177,3 +177,49 @@
             false
             (catch clojure.lang.ExceptionInfo _ true)))
       (is (false? @called?)))))
+
+(deftest direct-chat-surfaces-stay-thin-test
+  (let [calls (atom {})]
+    (with-redefs [bridge/user-direct-chats
+                  (fn [client]
+                    (swap! calls assoc :get-direct-chats [client])
+                    ::direct-chats-flow)
+                  bridge/set-direct-chats
+                  (fn [client mappings on-success _]
+                    (swap! calls assoc :set-direct-chats [client mappings])
+                    (on-success nil)
+                    (reify Closeable
+                      (close [_] nil)))
+                  internal/observe-flow
+                  (fn [_ kotlin-flow]
+                    (m/observe
+                     (fn [emit]
+                       (future
+                         (emit nil)
+                         (emit (case kotlin-flow
+                                 ::direct-chats-flow
+                                 {"@alice:example.org" #{"!room:example.org"}})))
+                       (constantly nil))))]
+      (is (= [nil {"@alice:example.org" #{"!room:example.org"}}]
+             (collect-values (sut/get-direct-chats :client) 2)))
+      (is (nil?
+           (realize-task
+            (sut/set-direct-chats
+             :client
+             {"@alice:example.org" #{"!room:example.org"}}))))
+      (is (= [:client]
+             (:get-direct-chats @calls)))
+      (is (= [:client {"@alice:example.org" #{"!room:example.org"}}]
+             (:set-direct-chats @calls))))))
+
+(deftest set-direct-chats-validates-mappings-before-bridge-test
+  (let [called? (atom false)]
+    (with-redefs [bridge/set-direct-chats
+                  (fn [& _]
+                    (reset! called? true)
+                    (throw (ex-info "bridge should not be called" {})))]
+      (is (try
+            (sut/set-direct-chats :client {"alice" ["!room:example.org"]})
+            false
+            (catch clojure.lang.ExceptionInfo _ true)))
+      (is (false? @called?)))))

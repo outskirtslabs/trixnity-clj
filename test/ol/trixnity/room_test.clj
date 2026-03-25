@@ -34,11 +34,17 @@
         timeout (Duration/ofSeconds 5)
         ev      {::schemas/room-id  "!room:example.org"
                  ::schemas/event-id "$event"}
+        room-opts
+        {::schemas/room-name "Ops Bot"
+         ::schemas/topic     "Control room"
+         ::schemas/invite    ["@alice:example.org"]
+         ::schemas/preset    :private-chat
+         ::schemas/is-direct true}
         message (-> (msg/text "pong")
                     (msg/reply-to {::schemas/event-id "$parent"}))]
     (with-redefs [bridge/create-room
-                  (fn [client room-name on-success _]
-                    (swap! calls assoc :create-room [client room-name])
+                  (fn [client request on-success _]
+                    (swap! calls assoc :create-room [client request])
                     (on-success "!room:example.org")
                     (->StubCloseable (atom 0)))
 
@@ -61,7 +67,7 @@
                     (->StubCloseable (atom 0)))]
       (is (= "!room:example.org"
              (realize-task
-              (sut/create-room :client-handle {::schemas/room-name "Ops Bot"}))))
+              (sut/create-room :client-handle room-opts))))
       (is (= :invited
              (realize-task
               (sut/invite-user :client-handle "!room:example.org" "@alice:example.org"
@@ -73,7 +79,7 @@
       (is (= "$reaction"
              (realize-task
               (sut/send-reaction :client-handle "!room:example.org" ev "🔥"))))
-      (is (= [:client-handle "Ops Bot"] (:create-room @calls)))
+      (is (= [:client-handle room-opts] (:create-room @calls)))
       (is (= [:client-handle "!room:example.org" "@alice:example.org" timeout]
              (:invite-user @calls)))
       (is (= [:client-handle "!room:example.org" message timeout]

@@ -5,6 +5,7 @@
 *** xref:api/ol-trixnity-internal.adoc[internal]
 **** xref:api/ol-trixnity-internal-bridge.adoc[bridge]
 *** xref:api/ol-trixnity-key.adoc[key]
+*** xref:api/ol-trixnity-media.adoc[media]
 *** xref:api/ol-trixnity-notification.adoc[notification]
 *** xref:api/ol-trixnity-repo.adoc[repo]
 **** xref:api/ol-trixnity-repo-common.adoc[common]

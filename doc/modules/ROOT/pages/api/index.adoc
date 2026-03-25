@@ -1,6 +1,6 @@
 = API Reference
 
-This release publishes 13 namespaces.
+This release publishes 14 namespaces.
 
 [cols="1,3",options="header",stripes=hover]
 |===
@@ -20,6 +20,9 @@ This release publishes 13 namespaces.
 
 | xref:api/ol-trixnity-key.adoc[`ol.trixnity.key`]
 | Encryption-key state, backup state, and trust-level queries.
+
+| xref:api/ol-trixnity-media.adoc[`ol.trixnity.media`]
+| Generic media upload helpers built on top of Trixnity's staged upload flow.
 
 | xref:api/ol-trixnity-notification.adoc[`ol.trixnity.notification`]
 | Notification snapshots and notification update flows.

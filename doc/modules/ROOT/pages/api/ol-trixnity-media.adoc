@@ -1,0 +1,72 @@
+= ol.trixnity.media
+
+
+Generic media upload helpers built on top of Trixnity's staged upload flow.
+
+Uploads happen in two steps:
+
+- <<prepare-upload,`prepare-upload`>> stages local bytes in Trixnity's media store and returns
+  a prepared upload map containing an `upload://...` cache URI
+- <<upload,`upload`>> uploads either a prepared upload map or a local path-like source
+  and returns the final `mxc://...` URI plus the prepared metadata
+
+The public shapes here stay normalized as namespaced keyword maps so callers
+do not need to work with Kotlin media APIs directly.
+
+[#prepare-upload]
+== prepare-upload
+
+
+
+
+[source,clojure]
+----
+(prepare-upload client source)
+(prepare-upload client source opts)
+----
+
+Stages a local media source in Trixnity's media store and returns a
+Missionary task of a prepared upload map.
+
+`source` may be a string path, `java.io.File`, or `java.nio.file.Path`.
+
+Supported opts:
+
+| key | description
+|-----|-------------
+| `::mx/file-name` | Optional logical file name stored in the returned metadata |
+| `::mx/mime-type` | Optional MIME type forwarded to upstream media upload preparation |
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L46-L71[source,window=_blank]
+
+'''
+
+[#upload]
+== upload
+
+
+
+
+[source,clojure]
+----
+(upload client source)
+(upload client source opts)
+----
+
+Uploads a prepared upload map or local media source and returns a Missionary
+task of an uploaded media map.
+
+When `source` is path-like, this first stages the file through
+<<prepare-upload,`prepare-upload`>> and then uploads the resulting cache URI.
+
+Supported opts:
+
+| key | description
+|-----|-------------
+| `::mx/file-name` | Optional logical file name when `source` is path-like |
+| `::mx/mime-type` | Optional MIME type when `source` is path-like |
+| `::mx/keep-in-cache` | Keep the staged media in the local cache after upload, defaults to `true` |
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L73-L103[source,window=_blank]

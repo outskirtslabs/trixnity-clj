@@ -6,6 +6,7 @@ ____
 
 image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc,link=https://docs.outskirtslabs.com/ol.trixnity/next/]
 image:https://img.shields.io/badge/status-experimental-red.svg[status: experimental,link=https://docs.outskirtslabs.com/open-source-vital-signs#experimental]
+image:https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Foutskirtslabs%2Ftrixnity-clj[alt=built with garnix,link=https://garnix.io/repo/outskirtslabs/trixnity-clj]
 
 https://trixnity.connect2x.de/[Trixnity] is a Kotlin Multiplatform library for building Matrix applications. It covers the full Matrix client-server API surface, including room management, sync, and end-to-end encryption. Despite flying under the radar, Trixnity already powers a large chunk of Germany's TI-Messenger healthcare infrastructure, reaching tens of millions of potential users.
 

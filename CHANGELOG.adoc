@@ -16,6 +16,7 @@ This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
 === Changed
 
 * Upgrade Trixnity to 5.5.2, Ktor to 3.5.0, and kotlinx-coroutines to 1.11.0.
+* Replace the vendored coffi jar with a git dependency that works with Nix prep.
 
 [[v001-2026-03-12]]
 == `v0.0.1` (2026-03-12)

@@ -18,7 +18,7 @@ This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
 * Upgrade Trixnity to 5.5.2, Ktor to 3.5.0, and kotlinx-coroutines to 1.11.0.
 
 [[v001-2026-03-12]]
-== `v0.0.1` (2026-XX-YY)
+== `v0.0.1` (2026-03-12)
 
 Initial public release of `trixnity-clj`.
 

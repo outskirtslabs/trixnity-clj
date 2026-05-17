@@ -51,7 +51,7 @@ Example:
 ----
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L47-L74[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L51-L78[source,window=_blank]
 
 '''
 
@@ -73,7 +73,7 @@ xref:api/ol-trixnity-client.adoc#open[`ol.trixnity.client/open`]. This is the lo
 built-in repository assembly.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L76-L83[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L80-L87[source,window=_blank]
 
 '''
 
@@ -95,4 +95,4 @@ Most callers should use <<sqlite4clj-config,`sqlite4clj-config`>> instead of con
 map directly.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L789-L827[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/repo.clj#L898-L937[source,window=_blank]

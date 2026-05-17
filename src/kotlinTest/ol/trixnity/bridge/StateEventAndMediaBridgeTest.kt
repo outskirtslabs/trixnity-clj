@@ -354,6 +354,9 @@ class StateEventAndMediaBridgeTest {
             expectedSize: Long?,
             maxSize: Long?,
         ): ByteArray? = delegate.toByteArray()
+
+        override suspend fun getTemporaryFile(): Result<PlatformMedia.TemporaryFile> =
+            Result.failure(UnsupportedOperationException("temporary files are not available for TestPlatformMedia"))
     }
 
     private class TestOkioPlatformMedia(

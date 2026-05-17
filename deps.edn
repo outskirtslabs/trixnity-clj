@@ -2,11 +2,17 @@
  ["src/clj" "target/classes"]
 
  :deps
- {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.2.0"}
-  de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.2.0"}
-  de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.2.0"}
-  io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.4.1"}
-  io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.4.1"}
+ {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.5.2"}
+  de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.5.2"}
+  de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.5.2"}
+  io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.5.0"}
+  io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.5.0"}
+  io.ktor/ktor-client-auth-jvm                                     {:mvn/version "3.5.0"}
+  io.ktor/ktor-client-content-negotiation-jvm                      {:mvn/version "3.5.0"}
+  io.ktor/ktor-client-resources-jvm                                {:mvn/version "3.5.0"}
+  io.ktor/ktor-resources-jvm                                       {:mvn/version "3.5.0"}
+  io.ktor/ktor-serialization-kotlinx-jvm                           {:mvn/version "3.5.0"}
+  io.ktor/ktor-serialization-kotlinx-json-jvm                      {:mvn/version "3.5.0"}
   org.slf4j/slf4j-nop                                              {:mvn/version "2.0.18"}
   missionary/missionary                                            {:mvn/version "b.47"}
   andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"

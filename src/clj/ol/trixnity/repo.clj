@@ -13,7 +13,7 @@
    [ol.trixnity.schemas :as mx])
   (:import
    [de.connect2x.trixnity.client.store KeyChainLink StoredNotification
-    StoredNotificationUpdate]
+    StoredNotificationUpdate StoredStickyEvent]
    [de.connect2x.trixnity.client.store.repository AccountRepository
     AuthenticationRepository CrossSigningKeysRepository DeviceKeysRepository
     GlobalAccountDataRepository InboundMegolmMessageIndexRepository
@@ -24,18 +24,22 @@
     OlmSessionRepository OutboundMegolmSessionRepository OutdatedKeysRepository
     RoomAccountDataRepositoryKey RoomKeyRequestRepository RoomOutboxMessageRepositoryKey
     RoomRepository RoomStateRepositoryKey SecretKeyRequestRepository SecretsRepository
-    ServerDataRepository TimelineEventKey TimelineEventRelationKey UserPresenceRepository]
+    ServerDataRepository StickyEventRepositoryFirstKey StickyEventRepositorySecondKey
+    TimelineEventKey TimelineEventRelationKey
+    UserPresenceRepository]
    [de.connect2x.trixnity.core.model EventId RoomId UserId]
    [de.connect2x.trixnity.core.model.keys Key$Ed25519Key KeyValue$Curve25519KeyValue]
    [de.connect2x.trixnity.core.serialization.events EventContentSerializerMappings]
    [de.connect2x.trixnity.crypto.olm StoredInboundMegolmSession]
+   [kotlin Pair]
    [kotlinx.serialization KSerializer]
    [kotlinx.serialization.json Json]
    [ol.trixnity.bridge KeyChainLinkRepositoryOps NotificationRepositoryOps
     NotificationUpdateRepositoryOps RoomAccountDataRepositoryOps
     RoomOutboxMessageRepositoryOps RoomStateRepositoryOps RoomUserReceiptsRepositoryOps
     RoomUserRepositoryOps Sqlite4cljModelBridge Sqlite4cljRepositoryHandle
-    Sqlite4cljSerializers TimelineEventRelationRepositoryOps TimelineEventRepositoryOps]))
+    Sqlite4cljSerializers StickyEventRepositoryOps TimelineEventRelationRepositoryOps
+    TimelineEventRepositoryOps]))
 
 (set! *warn-on-reflection* true)
 
@@ -130,6 +134,40 @@
 (defn- event-id-str
   [^EventId event-id]
   (.getFull event-id))
+
+(defn- sticky-key-null-flag
+  [sticky-key]
+  (if (nil? sticky-key) 1 0))
+
+(defn- sticky-key-db-value
+  [sticky-key]
+  (or sticky-key ""))
+
+(defn- sticky-key-from-db
+  [sticky-key-is-null sticky-key]
+  (when (zero? (long sticky-key-is-null))
+    sticky-key))
+
+(defn- sticky-first-room-id
+  [^StickyEventRepositoryFirstKey key]
+  (Sqlite4cljModelBridge/stickyEventFirstRoomId key))
+
+(defn- sticky-first-type
+  [^StickyEventRepositoryFirstKey key]
+  (Sqlite4cljModelBridge/stickyEventFirstType key))
+
+(defn- sticky-second-sender
+  [^StickyEventRepositorySecondKey key]
+  (Sqlite4cljModelBridge/stickyEventSecondSender key))
+
+(defn- sticky-second-key
+  [^StickyEventRepositorySecondKey key]
+  (Sqlite4cljModelBridge/stickyEventSecondStickyKey key))
+
+(defn- sticky-key-pair
+  [room-id type sender sticky-key-is-null sticky-key]
+  (Pair. (Sqlite4cljModelBridge/stickyEventFirstKey room-id type)
+         (Sqlite4cljModelBridge/stickyEventSecondKey sender (sticky-key-from-db sticky-key-is-null sticky-key))))
 
 (defn- create-account-repository
   [^Sqlite4cljRepositoryHandle handle]
@@ -535,6 +573,77 @@
         nil)
       (deleteAll [_ _] (delete-all! handle "timeline_event_relation")))))
 
+(defn- create-sticky-event-repository
+  [^Sqlite4cljRepositoryHandle handle]
+  (let [serializer (Sqlite4cljSerializers/stickyEvent)]
+    (reify StickyEventRepositoryOps
+      (^String serializeKey [_ first-key second-key]
+        (str (sticky-first-room-id first-key)
+             (sticky-first-type first-key)
+             (sticky-second-sender second-key)
+             (if (nil? (sticky-second-key second-key)) "null" (sticky-second-key second-key))))
+      (get [_ first-key _]
+        (into {}
+              (map (fn [[sender sticky-key-is-null sticky-key payload]]
+                     [(Sqlite4cljModelBridge/stickyEventSecondKey sender (sticky-key-from-db sticky-key-is-null sticky-key))
+                      (common/decode-json (common/json handle) serializer payload)]))
+              (common/maybe-rows
+               (common/q-read handle ["SELECT sender, sticky_key_is_null, sticky_key, payload FROM sticky_event WHERE room_id = ? AND type = ?"
+                                      (sticky-first-room-id first-key)
+                                      (sticky-first-type first-key)]))))
+      (get [_ first-key second-key _]
+        (let [sticky-key (sticky-second-key second-key)]
+          (when-let [payload (common/first-row
+                              (common/q-read handle ["SELECT payload FROM sticky_event WHERE room_id = ? AND type = ? AND sender = ? AND sticky_key_is_null = ? AND sticky_key = ?"
+                                                     (sticky-first-room-id first-key)
+                                                     (sticky-first-type first-key)
+                                                     (sticky-second-sender second-key)
+                                                     (sticky-key-null-flag sticky-key)
+                                                     (sticky-key-db-value sticky-key)]))]
+            (common/decode-json (common/json handle) serializer payload))))
+      (getByEndTimeBefore [_ before _]
+        (set (map (fn [[room-id type sender sticky-key-is-null sticky-key]]
+                    (sticky-key-pair room-id type sender sticky-key-is-null sticky-key))
+                  (common/maybe-rows
+                   (common/q-read handle ["SELECT room_id, type, sender, sticky_key_is_null, sticky_key FROM sticky_event WHERE end_time_epoch < ?"
+                                          (Sqlite4cljModelBridge/instantEpochMillis before)])))))
+      (getByEventId [_ room-id event-id _]
+        (when-let [[stored-room-id type sender sticky-key-is-null sticky-key]
+                   (common/first-row
+                    (common/q-read handle ["SELECT room_id, type, sender, sticky_key_is_null, sticky_key FROM sticky_event WHERE room_id = ? AND event_id = ?"
+                                           room-id
+                                           event-id]))]
+          (sticky-key-pair stored-room-id type sender sticky-key-is-null sticky-key)))
+      (save [_ first-key second-key value _]
+        (let [sticky-key (sticky-second-key second-key)]
+          (common/q-write handle
+                          [(str "INSERT INTO sticky_event (room_id, type, sender, sticky_key_is_null, sticky_key, event_id, end_time_epoch, payload) "
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) "
+                                "ON CONFLICT(room_id, type, sender, sticky_key_is_null, sticky_key) DO UPDATE SET "
+                                "event_id = excluded.event_id, end_time_epoch = excluded.end_time_epoch, payload = excluded.payload")
+                           (sticky-first-room-id first-key)
+                           (sticky-first-type first-key)
+                           (sticky-second-sender second-key)
+                           (sticky-key-null-flag sticky-key)
+                           (sticky-key-db-value sticky-key)
+                           (Sqlite4cljModelBridge/storedStickyEventEventId ^StoredStickyEvent value)
+                           (Sqlite4cljModelBridge/storedStickyEventEndTimeEpochMillis ^StoredStickyEvent value)
+                           (common/encode-json (common/json handle) serializer value)]))
+        nil)
+      (delete [_ first-key second-key _]
+        (let [sticky-key (sticky-second-key second-key)]
+          (common/q-write handle ["DELETE FROM sticky_event WHERE room_id = ? AND type = ? AND sender = ? AND sticky_key_is_null = ? AND sticky_key = ?"
+                                  (sticky-first-room-id first-key)
+                                  (sticky-first-type first-key)
+                                  (sticky-second-sender second-key)
+                                  (sticky-key-null-flag sticky-key)
+                                  (sticky-key-db-value sticky-key)]))
+        nil)
+      (deleteByRoomId [_ room-id _]
+        (common/q-write handle ["DELETE FROM sticky_event WHERE room_id = ?" room-id])
+        nil)
+      (deleteAll [_ _] (delete-all! handle "sticky_event")))))
+
 (defn- create-media-cache-mapping-repository
   [^Sqlite4cljRepositoryHandle handle]
   (let [serializer (Sqlite4cljSerializers/mediaCacheMapping)]
@@ -816,6 +925,7 @@
    :room-state                    (create-room-state-repository handle)
    :timeline-event                (create-timeline-event-repository handle)
    :timeline-event-relation       (create-timeline-event-relation-repository handle)
+   :sticky-event                  (create-sticky-event-repository handle)
    :room-outbox-message           (create-room-outbox-message-repository handle mappings)
    :media-cache-mapping           (create-media-cache-mapping-repository handle)
    :global-account-data           (create-global-account-data-repository handle)

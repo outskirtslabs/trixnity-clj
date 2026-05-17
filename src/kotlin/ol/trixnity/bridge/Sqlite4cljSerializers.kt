@@ -2,11 +2,13 @@ package ol.trixnity.bridge
 
 import de.connect2x.trixnity.client.store.*
 import de.connect2x.trixnity.client.store.repository.*
+import de.connect2x.trixnity.core.MSC4354
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.ClientEvent.GlobalAccountDataEvent
 import de.connect2x.trixnity.core.model.events.ClientEvent.RoomAccountDataEvent
 import de.connect2x.trixnity.core.model.events.ClientEvent.StateBaseEvent
 import de.connect2x.trixnity.core.model.events.MessageEventContent
+import de.connect2x.trixnity.core.model.events.StickyEventContent
 import de.connect2x.trixnity.core.model.keys.KeyValue.Curve25519KeyValue
 import de.connect2x.trixnity.core.serialization.events.EventContentSerializerMappings
 import de.connect2x.trixnity.crypto.SecretType
@@ -63,6 +65,8 @@ object Sqlite4cljSerializers {
     @JvmStatic fun notification(): KSerializer<StoredNotification> = StoredNotification.serializer()
     @JvmStatic fun notificationUpdate(): KSerializer<StoredNotificationUpdate> = StoredNotificationUpdate.serializer()
     @JvmStatic fun notificationState(): KSerializer<StoredNotificationState> = StoredNotificationState.serializer()
+    @OptIn(MSC4354::class)
+    @JvmStatic fun stickyEvent(): KSerializer<StoredStickyEvent<StickyEventContent>> = StoredStickyEvent.Serializer
 
     @JvmStatic
     fun roomOutboxContentType(mappings: EventContentSerializerMappings, value: RoomOutboxMessage<*>): String =

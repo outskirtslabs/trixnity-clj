@@ -6,6 +6,17 @@ This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
 
 == ++[++UNRELEASED++]++
 
+[[v002-2026-05-17]]
+== `v0.0.2` (2026-05-17)
+
+=== Added
+
+* Add sqlite4clj-backed sticky event repository support required by Trixnity 5.5.x.
+
+=== Changed
+
+* Upgrade Trixnity to 5.5.2, Ktor to 3.5.0, and kotlinx-coroutines to 1.11.0.
+
 [[v001-2026-03-12]]
 == `v0.0.1` (2026-XX-YY)
 

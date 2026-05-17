@@ -368,95 +368,95 @@
     "commons-logging/commons-logging/1.3.6/commons-logging-1.3.6.pom": {
       "sha256": "49fc185139bdd0c6c4adf440721e3279cb5342906bcd01a7a89399ceeaa78e85"
     },
-    "de/connect2x/lognity/lognity-api-jvm/1.3.0/lognity-api-jvm-1.3.0.jar": {
-      "sha256": "f2d9b1008858d3e309d330f97e6826ee07d312c8e74bdb7d3b0cca5f28f4e3d0"
+    "de/connect2x/lognity/lognity-api-jvm/1.4.2/lognity-api-jvm-1.4.2.jar": {
+      "sha256": "e2a7be3bcbe1c5b8afdcb43216519241ee3efc5f3e9f5df6dc47258cdc8fae27"
     },
-    "de/connect2x/lognity/lognity-api-jvm/1.3.0/lognity-api-jvm-1.3.0.pom": {
-      "sha256": "b8006d1b672a1cb534672e014fff76533fcc4155a2001833de6c7e0f7bda5208"
+    "de/connect2x/lognity/lognity-api-jvm/1.4.2/lognity-api-jvm-1.4.2.pom": {
+      "sha256": "d6a0bcb9613285a3c011d38f8c310445f994e5494e42e0c8cd74abf0e5a2cdb6"
     },
-    "de/connect2x/trixnity/trixnity-api-client-jvm/5.2.0/trixnity-api-client-jvm-5.2.0.jar": {
-      "sha256": "4d1208c046f86d276d0811336d21c5b5d3b476abe89f845af771f2f256fcbfa6"
+    "de/connect2x/trixnity/trixnity-api-client-jvm/5.5.2/trixnity-api-client-jvm-5.5.2.jar": {
+      "sha256": "92033612a6c21dd65fad846bd3271881045903a10e70017c00067a93621ea2c8"
     },
-    "de/connect2x/trixnity/trixnity-api-client-jvm/5.2.0/trixnity-api-client-jvm-5.2.0.pom": {
-      "sha256": "070fa9c1f9b0e90fdacdb69e6d5522683aeb2d28fefbc618df18f66c5b300ba8"
+    "de/connect2x/trixnity/trixnity-api-client-jvm/5.5.2/trixnity-api-client-jvm-5.5.2.pom": {
+      "sha256": "97e628bf6091675c87d2f0136f996b8f590f03da1cb54f60a7531c41dbc87739"
     },
-    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.2.0/trixnity-client-cryptodriver-vodozemac-jvm-5.2.0.jar": {
+    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.5.2/trixnity-client-cryptodriver-vodozemac-jvm-5.5.2.jar": {
       "sha256": "b19f34840f06c305b1ff43da025469d024207407507f4580dd0bd38ecbc4ae72"
     },
-    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.2.0/trixnity-client-cryptodriver-vodozemac-jvm-5.2.0.pom": {
-      "sha256": "ba483514dffcba5a189fc0300bb363c1e2f0f4be9e123f4c1006ec8dfe1e3bf8"
+    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.5.2/trixnity-client-cryptodriver-vodozemac-jvm-5.5.2.pom": {
+      "sha256": "8261605b68d64aefff73c00f46d093dd483574f93849e4355aaad3e17f718e19"
     },
-    "de/connect2x/trixnity/trixnity-client-jvm/5.2.0/trixnity-client-jvm-5.2.0.jar": {
-      "sha256": "25c7398f04b932dfacf9619a772915c677bbf5c506a666b9ad6f709c73a90a69"
+    "de/connect2x/trixnity/trixnity-client-jvm/5.5.2/trixnity-client-jvm-5.5.2.jar": {
+      "sha256": "93ea57e1a4b8c153a8b7a9abf1168652125f71b5695c0703b88e7d93280e4a37"
     },
-    "de/connect2x/trixnity/trixnity-client-jvm/5.2.0/trixnity-client-jvm-5.2.0.pom": {
-      "sha256": "bfd27fbf61785d9cc8a784339fa3bf9dc351c24034c70a5b331b220746c33ecf"
+    "de/connect2x/trixnity/trixnity-client-jvm/5.5.2/trixnity-client-jvm-5.5.2.pom": {
+      "sha256": "4d8560a3eb6a028227cc6b6d312065d3d7d66e0634e5b08b6865e0f0116abec5"
     },
-    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.2.0/trixnity-client-media-okio-jvm-5.2.0.jar": {
-      "sha256": "6a13c40a2c35381001085346290ec261e7704508905b84be0a3a9326195e30d2"
+    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.5.2/trixnity-client-media-okio-jvm-5.5.2.jar": {
+      "sha256": "f752c43d4645f966198bef2e87b08d26d11b573966e76d4f070229321e50edae"
     },
-    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.2.0/trixnity-client-media-okio-jvm-5.2.0.pom": {
-      "sha256": "5afbadb94c93d429356a5c59b4ee21633c03d3f005dfcebbf53c197e7e080332"
+    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.5.2/trixnity-client-media-okio-jvm-5.5.2.pom": {
+      "sha256": "c1becf327d50fca4b5c0e784bc98da37bd80bba134e0cf76d1532321f99f036f"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.2.0/trixnity-clientserverapi-client-jvm-5.2.0.jar": {
-      "sha256": "7c6971f61c31ba23d36ed64be8f3bc1dd326b57ae86cc0589a9029e5e1e321f8"
+    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.5.2/trixnity-clientserverapi-client-jvm-5.5.2.jar": {
+      "sha256": "cb51315319d2a64115b9c4adcead1d10585c8729b743eee853b57fc0f4e1e37b"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.2.0/trixnity-clientserverapi-client-jvm-5.2.0.pom": {
-      "sha256": "71fcea604cf1b6782aedc72017a0e640ed9353d0a8e16c68be1b0680ced1c774"
+    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.5.2/trixnity-clientserverapi-client-jvm-5.5.2.pom": {
+      "sha256": "4005e5093d348c7d079f15fe75fbbcc01b084c7e112678446e3175fe1ba665b5"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.2.0/trixnity-clientserverapi-model-jvm-5.2.0.jar": {
-      "sha256": "5d838868f3f5523224d7c46cf4ce50097bf6f82fde0ff313e11876d3711ecb07"
+    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.5.2/trixnity-clientserverapi-model-jvm-5.5.2.jar": {
+      "sha256": "58912325cfed9ad575c0eec9b545e54586f2bc125edb0ecb695bcb30d3a2acf5"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.2.0/trixnity-clientserverapi-model-jvm-5.2.0.pom": {
-      "sha256": "8655d27a93ef64c07aff617439a69fd450c1951eb73764372ee9bc133d7ac301"
+    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.5.2/trixnity-clientserverapi-model-jvm-5.5.2.pom": {
+      "sha256": "f704289cef2d348f0940ac17b0a2e19f7ac8f7058c1ea7b88283fa2386699e90"
     },
-    "de/connect2x/trixnity/trixnity-core-jvm/5.2.0/trixnity-core-jvm-5.2.0.jar": {
-      "sha256": "7409a0398c7e176f36a93d9c0a62149ccf6e5e5a07e090ce2e8e3ef2cef93e42"
+    "de/connect2x/trixnity/trixnity-core-jvm/5.5.2/trixnity-core-jvm-5.5.2.jar": {
+      "sha256": "6d687cb68daf8f19828cf4ad1f45cfbacf1646c7039beb6e86de879eea22c6cf"
     },
-    "de/connect2x/trixnity/trixnity-core-jvm/5.2.0/trixnity-core-jvm-5.2.0.pom": {
-      "sha256": "120fd240f9d3178492452c93ea9df621a03afff8f476e333060f6e8be0d59289"
+    "de/connect2x/trixnity/trixnity-core-jvm/5.5.2/trixnity-core-jvm-5.5.2.pom": {
+      "sha256": "5804ad79ed7df6a6196e27e088baa7ea624a9bd2811210df3ad06351851649c5"
     },
-    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.2.0/trixnity-crypto-core-jvm-5.2.0.jar": {
-      "sha256": "e1b9eaa3bf2bb6f4f03d7e16906ab36e172e91b80fcd484741b3db02f62decc5"
+    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.5.2/trixnity-crypto-core-jvm-5.5.2.jar": {
+      "sha256": "7ae782bda26584a13ad4e7f1fc2c6eecae99b096e3c366325e1f3f34c7619ab2"
     },
-    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.2.0/trixnity-crypto-core-jvm-5.2.0.pom": {
-      "sha256": "e2546a9e425a878e2c6b1b111bd540e6b727ffe4b7d86c77a61dc9a44480ecd8"
+    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.5.2/trixnity-crypto-core-jvm-5.5.2.pom": {
+      "sha256": "2110a3c4249b6746177e20724b04018f4dda14674563d357a884fdece15750d2"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.2.0/trixnity-crypto-driver-jvm-5.2.0.jar": {
+    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.5.2/trixnity-crypto-driver-jvm-5.5.2.jar": {
       "sha256": "b93201b2008d640ff184a894e54f865d5fd5a98ef976aedd8c068de5685fed47"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.2.0/trixnity-crypto-driver-jvm-5.2.0.pom": {
-      "sha256": "2cf102f74fb8d4e9a7415ad5352f0ada382de6c8ec0efbd91b5951d596ec2061"
+    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.5.2/trixnity-crypto-driver-jvm-5.5.2.pom": {
+      "sha256": "fbe2878ca7a32025ed768946376148afd88b52190b530e6e6345d99be4d3a79e"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.2.0/trixnity-crypto-driver-vodozemac-jvm-5.2.0.jar": {
+    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.5.2/trixnity-crypto-driver-vodozemac-jvm-5.5.2.jar": {
       "sha256": "f93f1f23bc8e807471080e9aa079ecf26f477d265e14019d0b5b54d4d09e4cb8"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.2.0/trixnity-crypto-driver-vodozemac-jvm-5.2.0.pom": {
-      "sha256": "ad6f824b6b645d5cb0a86768ddd6a45a3ffcced991a2b41a3a74c1593729f6ae"
+    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.5.2/trixnity-crypto-driver-vodozemac-jvm-5.5.2.pom": {
+      "sha256": "52f7aac24bd4d7e23096ff4d52681be3931450c0e812000b10a84e1fccc46986"
     },
-    "de/connect2x/trixnity/trixnity-crypto-jvm/5.2.0/trixnity-crypto-jvm-5.2.0.jar": {
-      "sha256": "677d547a054212c7cf2bff826d68f1f271dcd7dc803e9283fa6b5e061aded0ed"
+    "de/connect2x/trixnity/trixnity-crypto-jvm/5.5.2/trixnity-crypto-jvm-5.5.2.jar": {
+      "sha256": "2c020aba15d9f3b986efde25a6728f94acf4cb25ab8a2e3bd77831d94642b0f4"
     },
-    "de/connect2x/trixnity/trixnity-crypto-jvm/5.2.0/trixnity-crypto-jvm-5.2.0.pom": {
-      "sha256": "f2e0677c00edb7bd55b7a9a4d47f9683665e57a2875fd04283657e744806db41"
+    "de/connect2x/trixnity/trixnity-crypto-jvm/5.5.2/trixnity-crypto-jvm-5.5.2.pom": {
+      "sha256": "25c7c868dd13b074d867d325f912b571abd4e6b42a110aa475d2cc9774e5a416"
     },
-    "de/connect2x/trixnity/trixnity-utils-jvm/5.2.0/trixnity-utils-jvm-5.2.0.jar": {
-      "sha256": "1dd342ae22d12de23315d9b6c6bcae45bf70a11a7cd355fee5c0336a48f0d549"
+    "de/connect2x/trixnity/trixnity-utils-jvm/5.5.2/trixnity-utils-jvm-5.5.2.jar": {
+      "sha256": "6196689308dad5b5d70b3b04ed435ec7bb58ec8358333aa146907551d83bdfaf"
     },
-    "de/connect2x/trixnity/trixnity-utils-jvm/5.2.0/trixnity-utils-jvm-5.2.0.pom": {
-      "sha256": "007de84f005e1a4db7776824ee6c753afef502fe1b1c95b7bbc334ac544845ef"
+    "de/connect2x/trixnity/trixnity-utils-jvm/5.5.2/trixnity-utils-jvm-5.5.2.pom": {
+      "sha256": "9e0998e241451f1bd48e79fb36d5838bdef6f180ffa8a1202b6f8143a040ebe9"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.2.0/trixnity-vodozemac-binaries-jvm-5.2.0.jar": {
+    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.5.2/trixnity-vodozemac-binaries-jvm-5.5.2.jar": {
       "sha256": "ea40419daebe2af0b9f47466601f89235f0d09585d3ef20287bf16da4d5c2369"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.2.0/trixnity-vodozemac-binaries-jvm-5.2.0.pom": {
-      "sha256": "91e7b2ed69a13d9a943debdfb450be769ce042c91315173ff8d808d88f5f2b86"
+    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.5.2/trixnity-vodozemac-binaries-jvm-5.5.2.pom": {
+      "sha256": "fe731cda19cbdadfee5850704819f804c6af72c34ba4164c68a81110234d26e1"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.2.0/trixnity-vodozemac-jvm-5.2.0.jar": {
+    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.5.2/trixnity-vodozemac-jvm-5.5.2.jar": {
       "sha256": "08324bf5912f5909433d3c2bf4f19f4f96f57581fe1a6d2cd0a8544614981927"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.2.0/trixnity-vodozemac-jvm-5.2.0.pom": {
-      "sha256": "b592ecb4d90e4549bdb63bc5b0a503ea5dc851c52463a8cf5ebffc43d7f00a8d"
+    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.5.2/trixnity-vodozemac-jvm-5.5.2.pom": {
+      "sha256": "edfed9c89cf220a3bca52932e6ebb29d4421a199dbbc70cfe5ae1666151b5b7e"
     },
     "dev/weavejester/hashp/0.5.1/hashp-0.5.1.jar": {
       "sha256": "ecf7ed76d9f1bdfb2acfdae73a1f6775e8f17dd2a7d4381e80e053aefbdd9e09"
@@ -524,119 +524,119 @@
     "io/insert-koin/koin-core-jvm/4.1.1/koin-core-jvm-4.1.1.pom": {
       "sha256": "618ef6ef26cd651336a92b71100ae5565edd08d224a2ea0edb77f55c6868ada6"
     },
-    "io/ktor/ktor-client-auth-jvm/3.3.3/ktor-client-auth-jvm-3.3.3.jar": {
-      "sha256": "627d8bffd9f01ab897d6dc011d2cf4e46dc29f2f74072cda09178aee045fb7df"
+    "io/ktor/ktor-client-auth-jvm/3.5.0/ktor-client-auth-jvm-3.5.0.jar": {
+      "sha256": "75d0e37b25ed209b07206149cafe849e21ff1b04578218ed85d49edbc7411fa5"
     },
-    "io/ktor/ktor-client-auth-jvm/3.3.3/ktor-client-auth-jvm-3.3.3.pom": {
-      "sha256": "57350421286e250aa271b47f48006bc10f64ebb9c14fcdde88ba34d1f5a629c4"
+    "io/ktor/ktor-client-auth-jvm/3.5.0/ktor-client-auth-jvm-3.5.0.pom": {
+      "sha256": "eb82cdbba5c00c7c9c58d9ea4755b4aac272cdd48ed9b07a81eca77df1cca138"
     },
-    "io/ktor/ktor-client-content-negotiation-jvm/3.3.3/ktor-client-content-negotiation-jvm-3.3.3.jar": {
-      "sha256": "e9fecc899324b16811961dd46bedd2fd190691337ebc95cb6dc29c8385af7ad8"
+    "io/ktor/ktor-client-content-negotiation-jvm/3.5.0/ktor-client-content-negotiation-jvm-3.5.0.jar": {
+      "sha256": "aad6455b82ae9b04c3f3504fa7790c73ab9d11238c3ce8214561081542baebe1"
     },
-    "io/ktor/ktor-client-content-negotiation-jvm/3.3.3/ktor-client-content-negotiation-jvm-3.3.3.pom": {
-      "sha256": "5bec03b0b3976b2877c8476cacded86a87b06d53bc55dff0e76ff1217a731c4b"
+    "io/ktor/ktor-client-content-negotiation-jvm/3.5.0/ktor-client-content-negotiation-jvm-3.5.0.pom": {
+      "sha256": "0c9b63c2c026636da2d4fe6dcbabbd6c5f86567b3e08c2aaa8bf97f094aa4c60"
     },
-    "io/ktor/ktor-client-core-jvm/3.4.1/ktor-client-core-jvm-3.4.1.jar": {
-      "sha256": "ec96ff9c9d6be26b630c6d7cdf1a9cccfc7c1d2c0e56eb4616021bb35ee1d008"
+    "io/ktor/ktor-client-core-jvm/3.5.0/ktor-client-core-jvm-3.5.0.jar": {
+      "sha256": "54f1d1f20a1a15761d0b445a8ac1b26f85953ac35fe22776377c5b4166fb377e"
     },
-    "io/ktor/ktor-client-core-jvm/3.4.1/ktor-client-core-jvm-3.4.1.pom": {
-      "sha256": "e343b84f45343551bd57a543be8479843066827c80c9d38cbd87d7cffba5f4d8"
+    "io/ktor/ktor-client-core-jvm/3.5.0/ktor-client-core-jvm-3.5.0.pom": {
+      "sha256": "b8dfe8839a99976e4b38883e3047a95d66e98c22028a7199bd2b96b48b464269"
     },
-    "io/ktor/ktor-client-java-jvm/3.4.1/ktor-client-java-jvm-3.4.1.jar": {
-      "sha256": "4cec7db20b08dc1b75d56dd90fbb56144351dc5214d4b82da1fcf6ace7b1ac96"
+    "io/ktor/ktor-client-java-jvm/3.5.0/ktor-client-java-jvm-3.5.0.jar": {
+      "sha256": "382fd9a0444f917246dc0a4071d067e5a9bdd4e0705919ea922fd49f7de955a2"
     },
-    "io/ktor/ktor-client-java-jvm/3.4.1/ktor-client-java-jvm-3.4.1.pom": {
-      "sha256": "56ab45b13a2aa2bdff083f59704235495adcfb8c2490ffdc64af1c591d8896e1"
+    "io/ktor/ktor-client-java-jvm/3.5.0/ktor-client-java-jvm-3.5.0.pom": {
+      "sha256": "07b45eb40bf3b43a3b5dbb229035be03befe6d1d493d97831d666f15b19b437e"
     },
-    "io/ktor/ktor-client-mock-jvm/3.4.1/ktor-client-mock-jvm-3.4.1.jar": {
-      "sha256": "bca773ac50f2533ee066ee0cb5808a4e937431b433426ab5b0f4bccccb073d30"
+    "io/ktor/ktor-client-mock-jvm/3.5.0/ktor-client-mock-jvm-3.5.0.jar": {
+      "sha256": "ad247812c1f5aa829abd25c6790d122b6eb91293a384945b891b0dd74fa3b7cf"
     },
-    "io/ktor/ktor-client-mock-jvm/3.4.1/ktor-client-mock-jvm-3.4.1.pom": {
-      "sha256": "10a3f35efb8891df1a06631b728342bcbd6de02e9ec81431d9c894a5e558dd1c"
+    "io/ktor/ktor-client-mock-jvm/3.5.0/ktor-client-mock-jvm-3.5.0.pom": {
+      "sha256": "ec57450003c26702a8287c48a718e381cc3850a6f0c9df7483b6c8680b4256ab"
     },
-    "io/ktor/ktor-client-resources-jvm/3.3.3/ktor-client-resources-jvm-3.3.3.jar": {
-      "sha256": "72dff5ff0cfbab7378d2b3529fa663ac64569b341ec2196619d21ce7bd0120c1"
+    "io/ktor/ktor-client-resources-jvm/3.5.0/ktor-client-resources-jvm-3.5.0.jar": {
+      "sha256": "3590eb84c6f5cd52917ce051b79a948489395fea4b92ccee8405c1120cfada23"
     },
-    "io/ktor/ktor-client-resources-jvm/3.3.3/ktor-client-resources-jvm-3.3.3.pom": {
-      "sha256": "0d3363fa44992353dff4ccf2cdc7c83577731d297a54aaf7570f442ba249c2ac"
+    "io/ktor/ktor-client-resources-jvm/3.5.0/ktor-client-resources-jvm-3.5.0.pom": {
+      "sha256": "12c6432d7bf4162e27cca30e945eba1e30d97ccc5dfc42aeb31ebd24647bc925"
     },
-    "io/ktor/ktor-events-jvm/3.4.1/ktor-events-jvm-3.4.1.jar": {
-      "sha256": "23298cc59f787e5d4f0f61b297a5990197910b2d368a0cac20c05a26b97f2419"
+    "io/ktor/ktor-events-jvm/3.5.0/ktor-events-jvm-3.5.0.jar": {
+      "sha256": "8d49b9df4745ac7e213864dd4249b098b4ebd1566f8b0087b8bfb7acce024b54"
     },
-    "io/ktor/ktor-events-jvm/3.4.1/ktor-events-jvm-3.4.1.pom": {
-      "sha256": "9c156e2c57b981703466a943651cc7e848453899ad111b39aedcc10c72115783"
+    "io/ktor/ktor-events-jvm/3.5.0/ktor-events-jvm-3.5.0.pom": {
+      "sha256": "a47a6816c0e2c956aeaf2c8489ac40c4a1aea73d5f6e59a5bc2c975449241e42"
     },
-    "io/ktor/ktor-http-cio-jvm/3.4.1/ktor-http-cio-jvm-3.4.1.jar": {
-      "sha256": "fb0fc54a46d52c18c6c225b9f15ac8c57d25f717a31b405a95c369d2cc30b45e"
+    "io/ktor/ktor-http-cio-jvm/3.5.0/ktor-http-cio-jvm-3.5.0.jar": {
+      "sha256": "8fe1fb1e5cf9849ef85c09ea8f19ab5d7a26f74644101cad49904c6a4915475b"
     },
-    "io/ktor/ktor-http-cio-jvm/3.4.1/ktor-http-cio-jvm-3.4.1.pom": {
-      "sha256": "619e8ebd1425effc73bc90db63cfdea238f990252c5070cf5b4c320acc5eff05"
+    "io/ktor/ktor-http-cio-jvm/3.5.0/ktor-http-cio-jvm-3.5.0.pom": {
+      "sha256": "7c2c5a2ae5ec920214de1728af28c99e889c9b7edc3939d18efa0e46ba1db9aa"
     },
-    "io/ktor/ktor-http-jvm/3.4.1/ktor-http-jvm-3.4.1.jar": {
-      "sha256": "c460cba4b48dc528c6cd03b0c6e36516fbd83c7eb84c8d1951c9273a2d3eb223"
+    "io/ktor/ktor-http-jvm/3.5.0/ktor-http-jvm-3.5.0.jar": {
+      "sha256": "2babac355de364c473b27b060d1c810fc2f83ed6e44822eabc6c3f46adf155a3"
     },
-    "io/ktor/ktor-http-jvm/3.4.1/ktor-http-jvm-3.4.1.pom": {
-      "sha256": "e1ac32fde5764186fb16c02a93ae5884b8e7cfd7de3ea35a458b754ddc8ab2e9"
+    "io/ktor/ktor-http-jvm/3.5.0/ktor-http-jvm-3.5.0.pom": {
+      "sha256": "f6ff315d426efe8be7402894ca4c48df48fcc5e3344f12499d286b8beaba3267"
     },
-    "io/ktor/ktor-io-jvm/3.4.1/ktor-io-jvm-3.4.1.jar": {
-      "sha256": "cbccf401f15b35760c5165fbea1c85cad42c76f2098ef1c0ed89f4f58e09f829"
+    "io/ktor/ktor-io-jvm/3.5.0/ktor-io-jvm-3.5.0.jar": {
+      "sha256": "ca9f9443479204fe97a00bd53bc3dee5b0514c1a088e9df1e0e4d4ccfc605e51"
     },
-    "io/ktor/ktor-io-jvm/3.4.1/ktor-io-jvm-3.4.1.pom": {
-      "sha256": "0eede4f9a9c017456f9eb0f9cac4c5f623740a77c44aa5d0ca188a6fef55d8b5"
+    "io/ktor/ktor-io-jvm/3.5.0/ktor-io-jvm-3.5.0.pom": {
+      "sha256": "c50c8303f386e825fe7e677122ae2b9da01b261afa3e1f70a16c088877266cc5"
     },
-    "io/ktor/ktor-network-jvm/3.4.1/ktor-network-jvm-3.4.1.jar": {
-      "sha256": "963e6fcfe1d8eeef31e614bd59ed1d59a65812b7d1bb79d36f8cdb523b38bcd6"
+    "io/ktor/ktor-network-jvm/3.5.0/ktor-network-jvm-3.5.0.jar": {
+      "sha256": "201589088f0f219a26d12e01e7c4e5b3358fd289075c1b799d15c408471c1985"
     },
-    "io/ktor/ktor-network-jvm/3.4.1/ktor-network-jvm-3.4.1.pom": {
-      "sha256": "d9b1ab33c509a408dcf70604a579c780cbde190699c270767f1364d1ae82c9b1"
+    "io/ktor/ktor-network-jvm/3.5.0/ktor-network-jvm-3.5.0.pom": {
+      "sha256": "f4620396e3b6fa94f2f85e0a41ab0445057c9da453e102630129039be74bad9a"
     },
-    "io/ktor/ktor-resources-jvm/3.3.3/ktor-resources-jvm-3.3.3.jar": {
-      "sha256": "0d5a3414b1cd3e72e073413c38259e1e50c032dae1fe37a4a314c87d8f2972fd"
+    "io/ktor/ktor-resources-jvm/3.5.0/ktor-resources-jvm-3.5.0.jar": {
+      "sha256": "4eceea86e1ab4a5077e5f5cb5b11ad563106dcdcbfda770770d05ff39c77e357"
     },
-    "io/ktor/ktor-resources-jvm/3.3.3/ktor-resources-jvm-3.3.3.pom": {
-      "sha256": "b1036a9bfd05b7c7c2210eca7deb4f4c8853c771a60abfa0b09e339af83b5a42"
+    "io/ktor/ktor-resources-jvm/3.5.0/ktor-resources-jvm-3.5.0.pom": {
+      "sha256": "c21eee7ebbfd97aedc894470814d3cebb359a167dc0ba605d366efaa15c091b6"
     },
-    "io/ktor/ktor-serialization-jvm/3.4.1/ktor-serialization-jvm-3.4.1.jar": {
-      "sha256": "93d162051f614a7e922b4c11d2e7ba46c78c83f5809cea9fae1134d6d5d17286"
+    "io/ktor/ktor-serialization-jvm/3.5.0/ktor-serialization-jvm-3.5.0.jar": {
+      "sha256": "d08befc6783c4fe9f5c085799b32ea7027fde1e5d08a7aef795413a633c6863c"
     },
-    "io/ktor/ktor-serialization-jvm/3.4.1/ktor-serialization-jvm-3.4.1.pom": {
-      "sha256": "ccb1975f163229d0d09eca96b810443c57bb2ba493964eb7e160304f49372f49"
+    "io/ktor/ktor-serialization-jvm/3.5.0/ktor-serialization-jvm-3.5.0.pom": {
+      "sha256": "35e6c93b4956a45076779e17e0fe65cd6067bb06bf660fc2f8a6c7ceec16ade6"
     },
-    "io/ktor/ktor-serialization-kotlinx-json-jvm/3.3.3/ktor-serialization-kotlinx-json-jvm-3.3.3.jar": {
-      "sha256": "f29c0b2be7ec7dea560c19ebe5a0442fa2736d90c5078b249d6c7bca80245b94"
+    "io/ktor/ktor-serialization-kotlinx-json-jvm/3.5.0/ktor-serialization-kotlinx-json-jvm-3.5.0.jar": {
+      "sha256": "b0fd7eb061213fc8017a29212f847e60f28eef02801f3ac1a308ab3044571343"
     },
-    "io/ktor/ktor-serialization-kotlinx-json-jvm/3.3.3/ktor-serialization-kotlinx-json-jvm-3.3.3.pom": {
-      "sha256": "0cec7c66843252e4bffcd0d1b5d694b5e150a33074fa3818b25db08a594fe95b"
+    "io/ktor/ktor-serialization-kotlinx-json-jvm/3.5.0/ktor-serialization-kotlinx-json-jvm-3.5.0.pom": {
+      "sha256": "5890fe9d13567914a6112695d1fd4480785d268524b4d4805da8035c0b828e92"
     },
-    "io/ktor/ktor-serialization-kotlinx-jvm/3.3.3/ktor-serialization-kotlinx-jvm-3.3.3.jar": {
-      "sha256": "6d5366c19b87a681a8feefec7358e91fbc70559055137ec474a9b2a8bb84be17"
+    "io/ktor/ktor-serialization-kotlinx-jvm/3.5.0/ktor-serialization-kotlinx-jvm-3.5.0.jar": {
+      "sha256": "a3a00fbb8f0845f5bbd71d2a3506ba6fc6688666af3f76c98d658c3d17681d72"
     },
-    "io/ktor/ktor-serialization-kotlinx-jvm/3.3.3/ktor-serialization-kotlinx-jvm-3.3.3.pom": {
-      "sha256": "0e1191d009d0e86a6796051180ec85975a837528da6f2b2201c9de4479ff12d7"
+    "io/ktor/ktor-serialization-kotlinx-jvm/3.5.0/ktor-serialization-kotlinx-jvm-3.5.0.pom": {
+      "sha256": "4f479011577fdc67fdc4941f9cf5a66ce0d904a6ea1c693854df04cd503ca3c6"
     },
-    "io/ktor/ktor-sse-jvm/3.4.1/ktor-sse-jvm-3.4.1.jar": {
-      "sha256": "f2f3c39b38e6f112e450841661004f7f011f0bcf71c1169cc01957979944c17d"
+    "io/ktor/ktor-sse-jvm/3.5.0/ktor-sse-jvm-3.5.0.jar": {
+      "sha256": "941871658c5c9bed5d17129b0747210e986b08a57a478f84cdd9a2bcd8a00884"
     },
-    "io/ktor/ktor-sse-jvm/3.4.1/ktor-sse-jvm-3.4.1.pom": {
-      "sha256": "601660eb4fce722ecc84ea8e36a19f8f2858e0c722f465a655c6ce2319d224c3"
+    "io/ktor/ktor-sse-jvm/3.5.0/ktor-sse-jvm-3.5.0.pom": {
+      "sha256": "64b17b4c859c3102a009fd88324170ef3371d8ecfde4fa4020cb878f5966d8a8"
     },
-    "io/ktor/ktor-utils-jvm/3.4.1/ktor-utils-jvm-3.4.1.jar": {
-      "sha256": "1973900965f9401aeaaffa77550988b3dd2d1acbe751ec8b1453043a4c599914"
+    "io/ktor/ktor-utils-jvm/3.5.0/ktor-utils-jvm-3.5.0.jar": {
+      "sha256": "214200f074afe9d4b915d347397b5c1f768fbdd10ead7192e8adfd662dd4a72f"
     },
-    "io/ktor/ktor-utils-jvm/3.4.1/ktor-utils-jvm-3.4.1.pom": {
-      "sha256": "43d75315f1641d513779f883b541848b5639c9754de2c63b4e9f8652e145944f"
+    "io/ktor/ktor-utils-jvm/3.5.0/ktor-utils-jvm-3.5.0.pom": {
+      "sha256": "59ef3c362d83064f0b064c7948ace38b199f6717183e0aad08e9e827929b876b"
     },
-    "io/ktor/ktor-websocket-serialization-jvm/3.4.1/ktor-websocket-serialization-jvm-3.4.1.jar": {
-      "sha256": "c10c3bd39e69a1958434e332450ff5b70e9da3531a1818cdac958ee085a3fdac"
+    "io/ktor/ktor-websocket-serialization-jvm/3.5.0/ktor-websocket-serialization-jvm-3.5.0.jar": {
+      "sha256": "cf931eae447dcbe76028891dd185b645e11b6c7a10872bfcde4fe40a82d3b342"
     },
-    "io/ktor/ktor-websocket-serialization-jvm/3.4.1/ktor-websocket-serialization-jvm-3.4.1.pom": {
-      "sha256": "e4b71dd094ce9b289965d2aa03805a399c12f8c6eae11290e5983b330a4e0a5b"
+    "io/ktor/ktor-websocket-serialization-jvm/3.5.0/ktor-websocket-serialization-jvm-3.5.0.pom": {
+      "sha256": "21be12f8c3d27c6af973157dc36aee5c44c02878bc68af8b75b5d24b35ca92e2"
     },
-    "io/ktor/ktor-websockets-jvm/3.4.1/ktor-websockets-jvm-3.4.1.jar": {
-      "sha256": "2236bda6b82df0bd4722e2e86a9cb623185d944c399123531d033dc3d4672dc8"
+    "io/ktor/ktor-websockets-jvm/3.5.0/ktor-websockets-jvm-3.5.0.jar": {
+      "sha256": "ec07b4bde13a3c3ad6169d62c75a308fd11167eab4aa1aa9baa248470c397ce1"
     },
-    "io/ktor/ktor-websockets-jvm/3.4.1/ktor-websockets-jvm-3.4.1.pom": {
-      "sha256": "abf9d551c0ec4450648abe8273bb763cc5dc9a8615653102ea05aaf56a1e8bbc"
+    "io/ktor/ktor-websockets-jvm/3.5.0/ktor-websockets-jvm-3.5.0.pom": {
+      "sha256": "a08734a0175546bc2364a16e43a7b92e35f19a65bdabd413c8b5c1f5d3a14f25"
     },
     "io/methvin/directory-watcher/0.17.3/directory-watcher-0.17.3.jar": {
       "sha256": "0523dd38a393a63b75e4320ff523034a0ac3cea697f6151a7ac8a893c322531e"
@@ -1496,35 +1496,32 @@
     "org/jetbrains/annotations/26.0.2-1/annotations-26.0.2-1.pom": {
       "sha256": "9a7e1ede1b90173052c1e6ed724fb0f0ebcc88ff682d023f0c9b343e1377a7ff"
     },
-    "org/jetbrains/kotlin/kotlin-stdlib/2.3.0/kotlin-stdlib-2.3.0.pom": {
-      "sha256": "4d5256d3e4844e656b0ca405f6350d6f21795c24375b3452526c5467dd99b5a2"
+    "org/jetbrains/kotlin/kotlin-stdlib/2.3.21/kotlin-stdlib-2.3.21.jar": {
+      "sha256": "6f64eac736db9434dd6925b4a518b9d1d17177652320c37916cf9ba3ce7d7d7a"
     },
-    "org/jetbrains/kotlin/kotlin-stdlib/2.3.10/kotlin-stdlib-2.3.10.jar": {
-      "sha256": "f61662c6d3a2f8ef5bd34362a02d877772c39f393cd394feb259dfaf7f4d8437"
+    "org/jetbrains/kotlin/kotlin-stdlib/2.3.21/kotlin-stdlib-2.3.21.pom": {
+      "sha256": "3e0b48daa14dc73f8029d8d9e15ed32940377caf7b915510f88d33219b350186"
     },
-    "org/jetbrains/kotlin/kotlin-stdlib/2.3.10/kotlin-stdlib-2.3.10.pom": {
-      "sha256": "4a3f8ed8a44c7ed8b31ae5101334880587c10970653f4b3b944fdb23830b2420"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.11.0/kotlinx-coroutines-bom-1.11.0.pom": {
+      "sha256": "f65860bce58a2bfadf05fdc516d38333421f0e387fef87e24449c0394c80d254"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.10.2/kotlinx-coroutines-bom-1.10.2.pom": {
-      "sha256": "faf0c6538e53ddc0499a63664d8e763c216580b2e18e722ccbdf1b431a6afe26"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.11.0/kotlinx-coroutines-core-jvm-1.11.0.jar": {
+      "sha256": "d1d75aa01dffbb4d1c520e67e4c4e7f5f6174718e7cb4632412503f2f0e604fa"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.10.2/kotlinx-coroutines-core-jvm-1.10.2.jar": {
-      "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.11.0/kotlinx-coroutines-core-jvm-1.11.0.pom": {
+      "sha256": "dd54b97aa3fab91fc24f5df2916c22be9429a339d2f45b7ff092332f6c19dc39"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.10.2/kotlinx-coroutines-core-jvm-1.10.2.pom": {
-      "sha256": "658f576b96c832e7382406adb197d64d8e2e97de10e96dfa3700decfa2a60def"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/1.11.0/kotlinx-coroutines-jdk8-1.11.0.jar": {
+      "sha256": "1238f179da55360725ec49b887225317f31ae89bd29b652cbe139ff59f5d45cb"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/1.10.2/kotlinx-coroutines-jdk8-1.10.2.jar": {
-      "sha256": "f861f9fa3b3088e6f7c59bc92a91adacf687b5bdeb081cf3608c5454f7739625"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/1.11.0/kotlinx-coroutines-jdk8-1.11.0.pom": {
+      "sha256": "84e4a99e1ad87bb9fd277361af1c6e163160f14486e4c4b95c04515ad72a00a7"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/1.10.2/kotlinx-coroutines-jdk8-1.10.2.pom": {
-      "sha256": "911d0cdc5f19547d67d024cf3aaba1fdd1accd791a7868ebc37759b22779db03"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/1.11.0/kotlinx-coroutines-slf4j-1.11.0.jar": {
+      "sha256": "1043471e7d5f99680df3a056cf766276e0fe339e48030dea503fc1c94c33743e"
     },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/1.10.2/kotlinx-coroutines-slf4j-1.10.2.jar": {
-      "sha256": "d65dee3cafa6f7bfaefedb493fc68b5c63abe750734fb8af92fac7a0d3101457"
-    },
-    "org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/1.10.2/kotlinx-coroutines-slf4j-1.10.2.pom": {
-      "sha256": "c47763fac88dbb0943849d16e11b9c05d45e60384c7cd13105ee710fb4dd5fb3"
+    "org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/1.11.0/kotlinx-coroutines-slf4j-1.11.0.pom": {
+      "sha256": "20850a2ade75ca8f00c7981b94d659f28ab26a1e27b8666e4b8a3102ee7d238d"
     },
     "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.7.1/kotlinx-datetime-jvm-0.7.1.jar": {
       "sha256": "3b8b98657c9aff3be7f6b4b575e9f3fb9a3a1f452a801da0f438901734acdade"
@@ -1532,38 +1529,47 @@
     "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.7.1/kotlinx-datetime-jvm-0.7.1.pom": {
       "sha256": "8a750497e705cbfe4b8eabb620dd4c1b8c284ecead6aa8e630a59779f438975d"
     },
-    "org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.8.2/kotlinx-io-bytestring-jvm-0.8.2.jar": {
-      "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775"
-    },
     "org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.8.2/kotlinx-io-bytestring-jvm-0.8.2.pom": {
       "sha256": "151635faea3d7599680a4b83ad788b70002616d5c576749d87e44d8313378905"
     },
-    "org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.8.2/kotlinx-io-core-jvm-0.8.2.jar": {
-      "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13"
+    "org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.9.0/kotlinx-io-bytestring-jvm-0.9.0.jar": {
+      "sha256": "43a8c9d7c5460622c4ffe7e7c9443736af1a69183316b532de78a9aafa86b636"
+    },
+    "org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.9.0/kotlinx-io-bytestring-jvm-0.9.0.pom": {
+      "sha256": "8d00f6e5077f3bbe81a1df328beb5eefd008cc8f81fffe6cacd526f015dc9e84"
+    },
+    "org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.6.0/kotlinx-io-core-jvm-0.6.0.pom": {
+      "sha256": "dc336462c8f50449061cd45d5cb1c8f680be5441aa810e94411ff819099d4f6b"
     },
     "org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.8.2/kotlinx-io-core-jvm-0.8.2.pom": {
       "sha256": "e2019fbf4c77727cc11902dacca7e71c106d5bf00b141ae752a6198da915b1c8"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-bom/1.9.0/kotlinx-serialization-bom-1.9.0.pom": {
-      "sha256": "6d7ff365c0ef1cd376fb54b1a16c80a21ed58feb46c33f3450b6cf22e2b1353d"
+    "org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.9.0/kotlinx-io-core-jvm-0.9.0.jar": {
+      "sha256": "338872148faa4a44acc9bfa91343813d51784e8d47f005ad4406647297f85041"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0.jar": {
-      "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c"
+    "org/jetbrains/kotlinx/kotlinx-io-core-jvm/0.9.0/kotlinx-io-core-jvm-0.9.0.pom": {
+      "sha256": "7cb911e263d1cf42e6d7363ed5601a61ac58819768d5207df91b0f69e22a6ce8"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0.pom": {
-      "sha256": "87190d434e6272fed605af0fced15f6bc082d8a55040c5198e6d4b2d6a2fcac2"
+    "org/jetbrains/kotlinx/kotlinx-serialization-bom/1.11.0/kotlinx-serialization-bom-1.11.0.pom": {
+      "sha256": "3be221b6da86dcda51cac6c4b2404b89e95ab09cc8d06a05689be2ef36735dec"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-json-io-jvm/1.9.0/kotlinx-serialization-json-io-jvm-1.9.0.jar": {
-      "sha256": "98abb132b03e11b80318d45350ec9ebbb5453d26505e81331bf2eea7143b6fbe"
+    "org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.11.0/kotlinx-serialization-core-jvm-1.11.0.jar": {
+      "sha256": "f4a801c647d4351327cd9e1ac4113e2be9ea37a64ab0abae269c25a52e28f35d"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-json-io-jvm/1.9.0/kotlinx-serialization-json-io-jvm-1.9.0.pom": {
-      "sha256": "b3753504084defc6f473a258233d603eda133c47b8d2862cfe89431cd29cc5f3"
+    "org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.11.0/kotlinx-serialization-core-jvm-1.11.0.pom": {
+      "sha256": "83039385976fdc494241f4572558a136e7b21116d7279b26daf335478bfacb57"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0.jar": {
-      "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8"
+    "org/jetbrains/kotlinx/kotlinx-serialization-json-io-jvm/1.11.0/kotlinx-serialization-json-io-jvm-1.11.0.jar": {
+      "sha256": "bbf3005522426ac4ba2acd6dc38f47ea5a3274ee82b932b8841835c7eaddab74"
     },
-    "org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0.pom": {
-      "sha256": "6b3433c2aa9eb26628dbabf16c96334caab30f6e07710d10ee7f87906ce730dd"
+    "org/jetbrains/kotlinx/kotlinx-serialization-json-io-jvm/1.11.0/kotlinx-serialization-json-io-jvm-1.11.0.pom": {
+      "sha256": "61c154e15f6554abdd0dbea3c2f2cfbe9e3ba3feba1e12b456f216c5054dea00"
+    },
+    "org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.11.0/kotlinx-serialization-json-jvm-1.11.0.jar": {
+      "sha256": "563a25b4eb5c9128ae9c2479f3d1a5c44dcd176112b91cf03682e906eba5c935"
+    },
+    "org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.11.0/kotlinx-serialization-json-jvm-1.11.0.pom": {
+      "sha256": "dc6ffce390f328d9bca740a63b91092afd09f4473a1f2a80d77d64b3c5b505d3"
     },
     "org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom": {
       "sha256": "169dd904a4b0f6520cffe658cc62292bfe9f3c14a989fa92120724cde43a9968"
@@ -1625,9 +1631,6 @@
     "org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.pom": {
       "sha256": "fb046a9c229437928bb11c2d27c8b5d773eb8a25e60cbd253d985210dedc2684"
     },
-    "org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.pom": {
-      "sha256": "150c40287f7cecdc21b9380caac98e928c4f33c023db6b348df1c5ac977026bf"
-    },
     "org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar": {
       "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55"
     },
@@ -1639,9 +1642,6 @@
     },
     "org/slf4j/slf4j-api/2.1.0-alpha1/slf4j-api-2.1.0-alpha1.pom": {
       "sha256": "422aea5bebba8305b3c614fa668ed229e3c9610930ecf42f87338ee05e268a75"
-    },
-    "org/slf4j/slf4j-bom/2.0.17/slf4j-bom-2.0.17.pom": {
-      "sha256": "f78d27b642b4b886eb839fc102b5cd9fe7f30f37599ffe68185be4e1609031e9"
     },
     "org/slf4j/slf4j-bom/2.0.18/slf4j-bom-2.0.18.pom": {
       "sha256": "9219aab601575126c4e66e1331eb2b0c6c17a330ac4d5a07e3cd11d580a0c12d"
@@ -1672,9 +1672,6 @@
     },
     "org/slf4j/slf4j-parent/1.7.5/slf4j-parent-1.7.5.pom": {
       "sha256": "c43bc5a022dbfd9de82be232dffe46208cbc7de12c14385b5da824e331e535bb"
-    },
-    "org/slf4j/slf4j-parent/2.0.17/slf4j-parent-2.0.17.pom": {
-      "sha256": "95cd71e852dfdb29126e58b7b939d57ec2b2e6024391852e0b545dee082bbf3b"
     },
     "org/slf4j/slf4j-parent/2.0.18/slf4j-parent-2.0.18.pom": {
       "sha256": "0b3896bedad2c9ed9697edcbea1da0c54cd238a723583a81358a83bfb782e9fa"

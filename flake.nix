@@ -74,7 +74,7 @@
             src = ./.;
             mvnJdk = pkgs.${jdk};
             buildOffline = true;
-            mvnHash = "sha256-3meQ8u80hxiptiiZdrYhbpdwCiIqkloNoNmSKlUpFA8=";
+            mvnHash = "sha256-y68nwxG+tO5BYCpbmDnJ2J/ovfOaaRdhdDLSa/hsiWI=";
             manualMvnArtifacts = [
               "org.jetbrains:annotations:13.0:jar"
               "org.apache.maven.surefire:surefire-junit-platform:3.5.5:jar"

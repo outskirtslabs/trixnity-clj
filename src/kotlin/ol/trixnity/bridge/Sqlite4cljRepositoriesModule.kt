@@ -3,11 +3,13 @@ package ol.trixnity.bridge
 import clojure.lang.IPersistentMap
 import de.connect2x.trixnity.client.RepositoriesModule
 import de.connect2x.trixnity.client.store.repository.*
+import de.connect2x.trixnity.core.MSC4354
 import de.connect2x.trixnity.core.serialization.events.EventContentSerializerMappings
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import java.nio.file.Path
 
+@OptIn(MSC4354::class)
 fun RepositoriesModule.Companion.sqlite4clj(databasePath: Path): RepositoriesModule = RepositoriesModule {
     module {
         single {
@@ -45,6 +47,7 @@ fun RepositoriesModule.Companion.sqlite4clj(databasePath: Path): RepositoriesMod
         single<RoomStateRepository> { Sqlite4cljRoomStateRepository(Sqlite4cljClojure.repository(get(), "room-state")) }
         single<TimelineEventRepository> { Sqlite4cljTimelineEventRepository(Sqlite4cljClojure.repository(get(), "timeline-event")) }
         single<TimelineEventRelationRepository> { Sqlite4cljTimelineEventRelationRepository(Sqlite4cljClojure.repository(get(), "timeline-event-relation")) }
+        single<StickyEventRepository> { Sqlite4cljStickyEventRepository(Sqlite4cljClojure.repository(get(), "sticky-event")) }
         single<RoomOutboxMessageRepository> { Sqlite4cljRoomOutboxMessageRepository(Sqlite4cljClojure.repository(get(), "room-outbox-message")) }
         single<MediaCacheMappingRepository> { Sqlite4cljClojure.repository(get(), "media-cache-mapping") }
         single<GlobalAccountDataRepository> { Sqlite4cljClojure.repository(get(), "global-account-data") }

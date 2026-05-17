@@ -6,6 +6,7 @@ import de.connect2x.trixnity.client.store.RoomUser
 import de.connect2x.trixnity.client.store.RoomUserReceipts
 import de.connect2x.trixnity.client.store.StoredNotification
 import de.connect2x.trixnity.client.store.StoredNotificationUpdate
+import de.connect2x.trixnity.client.store.StoredStickyEvent
 import de.connect2x.trixnity.client.store.TimelineEvent
 import de.connect2x.trixnity.client.store.TimelineEventRelation
 import de.connect2x.trixnity.client.store.repository.FullRepository
@@ -22,16 +23,22 @@ import de.connect2x.trixnity.client.store.repository.RoomStateRepository
 import de.connect2x.trixnity.client.store.repository.RoomStateRepositoryKey
 import de.connect2x.trixnity.client.store.repository.RoomUserReceiptsRepository
 import de.connect2x.trixnity.client.store.repository.RoomUserRepository
+import de.connect2x.trixnity.client.store.repository.StickyEventRepository
+import de.connect2x.trixnity.client.store.repository.StickyEventRepositoryFirstKey
+import de.connect2x.trixnity.client.store.repository.StickyEventRepositorySecondKey
 import de.connect2x.trixnity.client.store.repository.TimelineEventKey
 import de.connect2x.trixnity.client.store.repository.TimelineEventRelationKey
 import de.connect2x.trixnity.client.store.repository.TimelineEventRelationRepository
 import de.connect2x.trixnity.client.store.repository.TimelineEventRepository
+import de.connect2x.trixnity.core.MSC4354
 import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.ClientEvent.RoomAccountDataEvent
 import de.connect2x.trixnity.core.model.events.ClientEvent.StateBaseEvent
+import de.connect2x.trixnity.core.model.events.StickyEventContent
 import de.connect2x.trixnity.core.model.keys.Key
+import kotlin.time.Instant
 
 interface DeleteByRoomIdStringOps {
     suspend fun deleteByRoomId(roomId: String)
@@ -64,6 +71,17 @@ interface RoomOutboxMessageRepositoryOps :
 interface NotificationRepositoryOps : FullRepository<String, StoredNotification>, DeleteByRoomIdStringOps
 
 interface NotificationUpdateRepositoryOps : FullRepository<String, StoredNotificationUpdate>, DeleteByRoomIdStringOps
+
+@OptIn(MSC4354::class)
+interface StickyEventRepositoryOps :
+    MapRepository<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey, StoredStickyEvent<StickyEventContent>>,
+    DeleteByRoomIdStringOps {
+    suspend fun getByEndTimeBefore(before: Instant): Set<Pair<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey>>
+    suspend fun getByEventId(
+        roomId: String,
+        eventId: String,
+    ): Pair<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey>?
+}
 
 interface KeyChainLinkRepositoryOps {
     suspend fun save(keyChainLink: KeyChainLink)
@@ -144,6 +162,27 @@ class Sqlite4cljNotificationUpdateRepository(
     private val ops: NotificationUpdateRepositoryOps,
 ) : NotificationUpdateRepository, FullRepository<String, StoredNotificationUpdate> by ops {
     override fun serializeKey(key: String): String = ops.serializeKey(key)
+    override suspend fun deleteByRoomId(roomId: RoomId) = ops.deleteByRoomId(roomId.full)
+}
+
+@OptIn(MSC4354::class)
+class Sqlite4cljStickyEventRepository(
+    private val ops: StickyEventRepositoryOps,
+) : StickyEventRepository,
+    MapRepository<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey, StoredStickyEvent<StickyEventContent>> by ops {
+    override fun serializeKey(
+        firstKey: StickyEventRepositoryFirstKey,
+        secondKey: StickyEventRepositorySecondKey,
+    ): String = ops.serializeKey(firstKey, secondKey)
+
+    override suspend fun getByEndTimeBefore(before: Instant): Set<Pair<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey>> =
+        ops.getByEndTimeBefore(before)
+
+    override suspend fun getByEventId(
+        roomId: RoomId,
+        eventId: EventId,
+    ): Pair<StickyEventRepositoryFirstKey, StickyEventRepositorySecondKey>? = ops.getByEventId(roomId.full, eventId.full)
+
     override suspend fun deleteByRoomId(roomId: RoomId) = ops.deleteByRoomId(roomId.full)
 }
 

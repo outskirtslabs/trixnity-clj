@@ -16,9 +16,10 @@
     <junit.jupiter.version>6.1.0-M1</junit.jupiter.version>
     <maven.compiler.release>25</maven.compiler.release>
     <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
-    <sqlite4clj.rev>abb1c31224f02b6b7025ce5f40157c41046db8b0</sqlite4clj.rev>
+    <sqlite4clj.rev>2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7</sqlite4clj.rev>
     <coffi.rev>ae3e38a449c88b998db98b0d4bffa9908dea1c79</coffi.rev>
-    <sqlite4clj.gitlib>${env.HOME}/.gitlibs/libs/andersmurphy/sqlite4clj/${sqlite4clj.rev}</sqlite4clj.gitlib>
+    <gitlibs.dir>${env.HOME}/.gitlibs</gitlibs.dir>
+    <sqlite4clj.gitlib>${gitlibs.dir}/libs/andersmurphy/sqlite4clj/${sqlite4clj.rev}</sqlite4clj.gitlib>
     <coffi.vendor.jar>${project.basedir}/vendor/coffi/coffi-${coffi.rev}.jar</coffi.vendor.jar>
   </properties>
   <repositories>
@@ -27,6 +28,19 @@
       <url>https://repo.clojars.org/</url>
     </repository>
   </repositories>
+  <profiles>
+    <profile>
+      <id>gitlibs-env</id>
+      <activation>
+        <property>
+          <name>env.GITLIBS</name>
+        </property>
+      </activation>
+      <properties>
+        <gitlibs.dir>${env.GITLIBS}</gitlibs.dir>
+      </properties>
+    </profile>
+  </profiles>
   <dependencies>
     <dependency>
       <groupId>de.connect2x.trixnity</groupId>
@@ -46,12 +60,12 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.12.4</version>
+      <version>1.12.5</version>
     </dependency>
     <dependency>
       <groupId>com.fulcrologic</groupId>
       <artifactId>guardrails</artifactId>
-      <version>1.2.16</version>
+      <version>1.3.1</version>
     </dependency>
     <dependency>
       <groupId>metosin</groupId>
@@ -73,7 +87,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
-      <version>2.0.17</version>
+      <version>2.0.18</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

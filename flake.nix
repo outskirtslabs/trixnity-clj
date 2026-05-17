@@ -50,6 +50,7 @@
           clojureLocker.commandLocker ''
             export HOME="$tmp/home"
             unset CLJ_CACHE CLJ_CONFIG XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME
+            export GITLIBS="$HOME/.gitlibs"
             ${clojure}/bin/clojure -Srepro -X:deps prep
             ${clojure}/bin/clojure -Srepro -P -M:dev:kaocha
             ${clojure}/bin/clojure -Srepro -P -T:build jar
@@ -60,7 +61,7 @@
         pkgs:
         let
           clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-          sqlite4cljRev = "abb1c31224f02b6b7025ce5f40157c41046db8b0";
+          sqlite4cljRev = "2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7";
           clojureLocker = devenv.clojure.mkLockfile {
             inherit pkgs;
             jdk = pkgs.${jdk};
@@ -73,7 +74,7 @@
             src = ./.;
             mvnJdk = pkgs.${jdk};
             buildOffline = true;
-            mvnHash = "sha256-wsULsWywuZyWlWaZ33WuAVpzJAtsmcbBHSuuR87AZ5Q=";
+            mvnHash = "sha256-3meQ8u80hxiptiiZdrYhbpdwCiIqkloNoNmSKlUpFA8=";
             manualMvnArtifacts = [
               "org.jetbrains:annotations:13.0:jar"
               "org.apache.maven.surefire:surefire-junit-platform:3.5.5:jar"

@@ -79,8 +79,9 @@
               "org.jetbrains:annotations:13.0:jar"
               "org.apache.maven.surefire:surefire-junit-platform:3.5.5:jar"
             ];
-            mvnParameters = "-Dsqlite4clj.gitlib=${clojureLocker.homeDirectory}/.gitlibs/libs/andersmurphy/sqlite4clj/${sqlite4cljRev}";
             preBuild = ''
+              source ${clojureLocker.shellEnv}
+              export GITLIBS="$HOME/.gitlibs"
               export HOME="$TMPDIR/home"
               mkdir -p "$HOME"
               export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
@@ -119,6 +120,7 @@
             runHook preBuild
 
             source ${clojureLocker.shellEnv}
+            export GITLIBS="$HOME/.gitlibs"
             export JAVA_TOOL_OPTIONS="-Duser.home=$HOME -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
             export JAVA_CMD="${pkgs.${jdk}}/bin/java"
             mkdir -p kotlin/build

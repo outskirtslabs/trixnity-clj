@@ -18,7 +18,8 @@
   andersmurphy/sqlite4clj                                          {:git/url    "https://github.com/andersmurphy/sqlite4clj"
                                                                     :git/sha    "2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7"
                                                                     :exclusions [org.suskalo/coffi]}
-  org.suskalo/coffi                                                {:local/root "vendor/coffi/coffi-ae3e38a449c88b998db98b0d4bffa9908dea1c79.jar"}
+  org.suskalo/coffi                                                {:git/url "https://github.com/ramblurr/coffi"
+                                                                    :git/sha "9b05e268b915b1992bfd4175cb7c8c7c45d8973a"}
   org.babashka/http-client                                         {:mvn/version "0.4.23"}
   com.fulcrologic/guardrails                                       {:mvn/version "1.3.1"}
   metosin/malli                                                    {:mvn/version "0.20.1"}}

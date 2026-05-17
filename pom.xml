@@ -17,10 +17,10 @@
     <maven.compiler.release>25</maven.compiler.release>
     <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
     <sqlite4clj.rev>2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7</sqlite4clj.rev>
-    <coffi.rev>ae3e38a449c88b998db98b0d4bffa9908dea1c79</coffi.rev>
+    <coffi.rev>9b05e268b915b1992bfd4175cb7c8c7c45d8973a</coffi.rev>
     <gitlibs.dir>${env.HOME}/.gitlibs</gitlibs.dir>
     <sqlite4clj.gitlib>${gitlibs.dir}/libs/andersmurphy/sqlite4clj/${sqlite4clj.rev}</sqlite4clj.gitlib>
-    <coffi.vendor.jar>${project.basedir}/vendor/coffi/coffi-${coffi.rev}.jar</coffi.vendor.jar>
+    <coffi.gitlib>${gitlibs.dir}/libs/org.suskalo/coffi/${coffi.rev}</coffi.gitlib>
   </properties>
   <repositories>
     <repository>
@@ -108,13 +108,6 @@
       <version>1.11.0</version>
     </dependency>
     <dependency>
-      <groupId>org.suskalo</groupId>
-      <artifactId>coffi</artifactId>
-      <version>${coffi.rev}</version>
-      <scope>system</scope>
-      <systemPath>${coffi.vendor.jar}</systemPath>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
       <version>2.0.18</version>
@@ -194,6 +187,15 @@
       </testResource>
       <testResource>
         <directory>${sqlite4clj.gitlib}/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${coffi.gitlib}/src/clj</directory>
+      </testResource>
+      <testResource>
+        <directory>${coffi.gitlib}/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${coffi.gitlib}/target/classes</directory>
       </testResource>
     </testResources>
     <plugins>

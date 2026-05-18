@@ -13,15 +13,30 @@
          :init
          (do
            (def paths ["src/clj" "dev" "test"])
+           (def generated-page-names
+             #{"index.adoc"
+               "changelog.adoc"
+               "contributing.adoc"
+               "security.adoc"
+               "coverage.adoc"
+               "api.adoc"})
            (defn sync-custom-docs! []
-             (let [source-dir (fs/path "doc" "pages")
-                   target-dir (fs/path "doc" "modules" "ROOT" "pages")]
-               (when (fs/exists? source-dir)
-                 (fs/create-dirs target-dir)
-                 (doseq [source-file (fs/list-dir source-dir "*.adoc")]
-                   (fs/copy source-file
-                            (fs/path target-dir (fs/file-name source-file))
-                            {:replace-existing true}))))
+             (let [source-dir   (fs/path "doc" "pages")
+                   target-dir   (fs/path "doc" "modules" "ROOT" "pages")
+                   source-files (if (fs/exists? source-dir)
+                                  (vec (fs/list-dir source-dir "*.adoc"))
+                                  [])
+                   source-names (set (map fs/file-name source-files))]
+               (fs/create-dirs target-dir)
+               (doseq [target-file (fs/list-dir target-dir "*.adoc")]
+                 (let [target-name (fs/file-name target-file)]
+                   (when (and (not (contains? generated-page-names target-name))
+                              (not (contains? source-names target-name)))
+                     (fs/delete-if-exists target-file))))
+               (doseq [source-file source-files]
+                 (fs/copy source-file
+                          (fs/path target-dir (fs/file-name source-file))
+                          {:replace-existing true})))
              (let [source-nav (fs/path "doc" "nav.adoc")
                    target-nav (fs/path "doc" "modules" "ROOT" "nav.adoc")]
                (when (fs/exists? source-nav)

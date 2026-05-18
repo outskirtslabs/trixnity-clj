@@ -1,4 +1,8 @@
-= Matrix Space Examples
+= Examples
+
+This page collects focused examples for APIs that need more room than the README.
+
+== Matrix Spaces
 
 [source,clojure]
 ----

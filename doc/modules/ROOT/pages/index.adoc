@@ -30,7 +30,7 @@ Project status: *https://docs.outskirtslabs.com/open-source-vital-signs#experime
 ;; deps.edn
 {:deps {com.outskirtslabs/trixnity-clj
         {:git/url "https://github.com/outskirtslabs/trixnity-clj.git"
-         :git/sha "2cf0d21bf0ed37933e5577d05d2cb3f6131b8a51"}}}
+         :git/sha "2620932d74436b2f0b34ec577547993a7b9040da"}}}
 ----
 
 == Repository Backend

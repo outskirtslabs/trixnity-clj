@@ -18,12 +18,12 @@
                              ::schemas/timestamp          1
                              ::schemas/verification-state {::schemas/kind :ready}}
         verification-method {::schemas/kind :cross-signing-enabled}]
-    (with-redefs [bridge/current-active-device-verification            (fn [client] (swap! calls assoc :current-device client) verification)
-                  bridge/active-device-verification-flow               (fn [client] (swap! calls assoc :device-flow client) ::device-flow)
-                  bridge/current-active-user-verifications             (fn [client] (swap! calls assoc :current-users client) [verification])
-                  bridge/active-user-verifications-flow                (fn [client] (swap! calls assoc :users-flow client) ::users-flow)
-                  bridge/self-verification-methods                     (fn [client] (swap! calls assoc :methods client) ::methods-flow)
-                  m/relieve                                            (fn [_ flow] flow)
+    (with-redefs [bridge/current-active-device-verification (fn [client] (swap! calls assoc :current-device client) verification)
+                  bridge/active-device-verification-flow    (fn [client] (swap! calls assoc :device-flow client) ::device-flow)
+                  bridge/current-active-user-verifications  (fn [client] (swap! calls assoc :current-users client) [verification])
+                  bridge/active-user-verifications-flow     (fn [client] (swap! calls assoc :users-flow client) ::users-flow)
+                  bridge/self-verification-methods          (fn [client] (swap! calls assoc :methods client) ::methods-flow)
+                  m/relieve                                 (fn [_ flow] flow)
                   internal/observe-flow
                   (fn [_ kotlin-flow]
                     (m/observe

@@ -20,12 +20,16 @@ import de.connect2x.trixnity.core.model.EventId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.EventType
 import de.connect2x.trixnity.core.model.events.StateEventContent
+import de.connect2x.trixnity.core.model.events.UnknownEventContent
+import de.connect2x.trixnity.core.model.events.block.EventContentBlocks
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
+import de.connect2x.trixnity.core.model.events.m.space.ChildEventContent
+import de.connect2x.trixnity.core.model.events.m.space.ParentEventContent
 import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.byteArrayFlowFromInputStream
 import io.ktor.http.ContentType
@@ -39,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.json.JsonObject
 import okio.Path.Companion.toPath
 import java.io.FilterInputStream
 import java.io.IOException
@@ -162,6 +167,27 @@ internal data class RoomPowerLevelsStateEventSpec(
     override fun toEventContent(): StateEventContent = content
 }
 
+internal data class SpaceChildStateEventSpec(
+    val content: ChildEventContent,
+    override val stateKey: String,
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = content
+}
+
+internal data class SpaceParentStateEventSpec(
+    val content: ParentEventContent,
+    override val stateKey: String,
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = content
+}
+
+internal fun emptyStateEventContent(eventType: String): StateEventContent =
+    UnknownEventContent(
+        raw = JsonObject(emptyMap()),
+        blocks = EventContentBlocks(),
+        eventType = eventType,
+    )
+
 internal fun requireKeywordString(payload: Map<*, *>, key: Keyword): String =
     payload[key]?.toString()?.takeIf { it.isNotBlank() }
         ?: throw IllegalArgumentException("request payload is missing required key $key")
@@ -195,6 +221,13 @@ internal fun optionalKeywordBoolean(payload: Map<*, *>, key: Keyword): Boolean? 
 internal fun requireKeywordStringMap(payload: Map<*, *>, key: Keyword): Map<String, String> =
     requireKeywordMap(payload, key).mapKeys { (k, _) -> k.toString() }.mapValues { (_, v) -> v.toString() }
 
+internal fun requireKeywordStringSet(payload: Map<*, *>, key: Keyword): Set<String> =
+    (payload[key] as? Iterable<*>)
+        ?.map { it?.toString()?.takeIf(String::isNotBlank) ?: error("$key contains blank or null entry") }
+        ?.toSet()
+        ?.takeIf { it.isNotEmpty() }
+        ?: throw IllegalArgumentException("request payload is missing non-empty string collection under $key")
+
 private fun optionalKeywordPowerLevelMap(payload: Map<*, *>, key: Keyword): Map<String, Long>? =
     (payload[key] as? Map<*, *>)?.entries?.associate { (entryKey, entryValue) ->
         val normalizedKey = entryKey?.toString()
@@ -226,6 +259,25 @@ internal fun requirePowerLevelsContent(payload: KeywordMap, key: Keyword): Power
             ?: PowerLevelsEventContent.USERS_DEFAULT,
         notifications = optionalKeywordPowerLevelMap(raw, power.notificationLevels),
         externalUrl = optionalKeywordString(raw, power.externalUrl),
+    )
+}
+
+internal fun requireSpaceChildContent(payload: KeywordMap, key: Keyword): ChildEventContent {
+    val raw = requireKeywordMap(payload, key)
+    return ChildEventContent(
+        order = optionalKeywordString(raw, BridgeSchema.order),
+        suggested = optionalKeywordBoolean(raw, BridgeSchema.suggested) ?: false,
+        via = requireKeywordStringSet(raw, BridgeSchema.via),
+        externalUrl = optionalKeywordString(raw, BridgeSchema.externalUrl),
+    )
+}
+
+internal fun requireSpaceParentContent(payload: KeywordMap, key: Keyword): ParentEventContent {
+    val raw = requireKeywordMap(payload, key)
+    return ParentEventContent(
+        canonical = optionalKeywordBoolean(raw, BridgeSchema.canonical) ?: false,
+        via = requireKeywordStringSet(raw, BridgeSchema.via),
+        externalUrl = optionalKeywordString(raw, BridgeSchema.externalUrl),
     )
 }
 
@@ -496,6 +548,32 @@ internal fun requireStateEventSpec(payload: KeywordMap, key: Keyword): StateEven
             }
             RoomPowerLevelsStateEventSpec(
                 content = requirePowerLevelsContent(
+                    mapOf(BridgeSchema.SendStateEventRequest.stateEvent to raw),
+                    BridgeSchema.SendStateEventRequest.stateEvent,
+                ),
+                stateKey = stateKey,
+            )
+        }
+
+        "m.space.child" -> {
+            if (stateKey.isBlank()) {
+                throw IllegalArgumentException("m.space.child state-key must be the child room id")
+            }
+            SpaceChildStateEventSpec(
+                content = requireSpaceChildContent(
+                    mapOf(BridgeSchema.SendStateEventRequest.stateEvent to raw),
+                    BridgeSchema.SendStateEventRequest.stateEvent,
+                ),
+                stateKey = stateKey,
+            )
+        }
+
+        "m.space.parent" -> {
+            if (stateKey.isBlank()) {
+                throw IllegalArgumentException("m.space.parent state-key must be the parent space id")
+            }
+            SpaceParentStateEventSpec(
+                content = requireSpaceParentContent(
                     mapOf(BridgeSchema.SendStateEventRequest.stateEvent to raw),
                     BridgeSchema.SendStateEventRequest.stateEvent,
                 ),

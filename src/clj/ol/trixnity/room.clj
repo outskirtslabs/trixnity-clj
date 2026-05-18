@@ -100,6 +100,72 @@
                             user-id
                             (get opts ::mx/timeout)))))
 
+(defn kick-user
+  "Kicks `user-id` from `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/reason` | Optional Matrix kick reason passed through to Trixnity |
+  | `::mx/timeout` | Maximum time to wait for the kick request |"
+  ([client room-id user-id]
+   (kick-user client room-id user-id {}))
+  ([client room-id user-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/user-id user-id)
+   (let [opts (mx/validate! ::mx/KickUserOpts opts)]
+     (internal/suspend-task bridge/kick-user
+                            client
+                            room-id
+                            user-id
+                            (get opts ::mx/reason)
+                            (get opts ::mx/timeout)))))
+
+(defn ban-user
+  "Bans `user-id` from `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/reason` | Optional Matrix ban reason passed through to Trixnity |
+  | `::mx/timeout` | Maximum time to wait for the ban request |"
+  ([client room-id user-id]
+   (ban-user client room-id user-id {}))
+  ([client room-id user-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/user-id user-id)
+   (let [opts (mx/validate! ::mx/BanUserOpts opts)]
+     (internal/suspend-task bridge/ban-user
+                            client
+                            room-id
+                            user-id
+                            (get opts ::mx/reason)
+                            (get opts ::mx/timeout)))))
+
+(defn unban-user
+  "Unbans `user-id` from `room-id` and returns a Missionary task.
+
+  Supported opts:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/reason` | Optional Matrix unban reason passed through to Trixnity |
+  | `::mx/timeout` | Maximum time to wait for the unban request |"
+  ([client room-id user-id]
+   (unban-user client room-id user-id {}))
+  ([client room-id user-id opts]
+   (mx/validate! ::mx/room-id room-id)
+   (mx/validate! ::mx/user-id user-id)
+   (let [opts (mx/validate! ::mx/UnbanUserOpts opts)]
+     (internal/suspend-task bridge/unban-user
+                            client
+                            room-id
+                            user-id
+                            (get opts ::mx/reason)
+                            (get opts ::mx/timeout)))))
+
 (defn join-room
   "Joins `room-id-or-alias` and returns a Missionary task.
 
@@ -216,8 +282,11 @@
   - `{::mx/type \"m.room.avatar\", ::mx/url ...}`
   - `{::mx/type \"m.room.power_levels\", ...}` using the same content keys as
     [[set-power-levels]]
+  - `{::mx/type \"m.space.child\", ::mx/state-key child-room-id, ::mx/via ...}`
+  - `{::mx/type \"m.space.parent\", ::mx/state-key parent-space-id, ::mx/via ...}`
 
-  `::mx/state-key` is optional on the payload and defaults to the empty string.
+  `::mx/state-key` is optional for room state events that use the empty string
+  state key. Space relation events require a room id state key.
 
   Supported opts:
 

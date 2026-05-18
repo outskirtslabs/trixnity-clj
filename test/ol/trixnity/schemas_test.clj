@@ -160,6 +160,65 @@
                                                         "admin"}})))
         (is (not (m/validate schema {::sut/ban-level -9007199254740992})))))))
 
+(deftest space-relation-schemas-validate-matrix-content-test
+  (let [registry      (sut/registry {})
+        child-schema  (m/schema ::sut/SpaceChildContent {:registry registry})
+        parent-schema (m/schema ::sut/SpaceParentContent {:registry registry})
+        state-schema  (m/schema ::sut/StateEventSpec {:registry registry})]
+    (is (m/validate child-schema {::sut/via          #{"example.org"}
+                                  ::sut/order        "A 1"
+                                  ::sut/suggested    true
+                                  ::sut/external-url "https://example.org/child"}))
+    (is (m/validate parent-schema {::sut/via       #{"example.org"}
+                                   ::sut/canonical true}))
+    (is (m/validate state-schema {::sut/type      "m.space.child"
+                                  ::sut/state-key "!child:example.org"
+                                  ::sut/via       #{"example.org"}}))
+    (is (m/validate state-schema {::sut/type      "m.space.parent"
+                                  ::sut/state-key "!parent:example.org"
+                                  ::sut/via       #{"example.org"}
+                                  ::sut/canonical false}))
+    (is (not (m/validate child-schema {::sut/order "A"})))
+    (is (not (m/validate child-schema {::sut/via   #{"example.org"}
+                                       ::sut/order (apply str (repeat 51 "a"))})))
+    (is (not (m/validate child-schema {::sut/via   #{"example.org"}
+                                       ::sut/order "bad\norder"})))
+    (is (not (m/validate parent-schema {::sut/canonical true})))
+    (is (not (m/validate state-schema {::sut/type      "m.space.child"
+                                       ::sut/state-key ""
+                                       ::sut/via       #{"example.org"}})))))
+
+(deftest space-hierarchy-schemas-cover-paginated-response-shapes-test
+  (let [registry        (sut/registry {})
+        opts-schema     (m/schema ::sut/SpaceHierarchyOpts {:registry registry})
+        response-schema (m/schema ::sut/SpaceHierarchyResponse {:registry registry})
+        response        {::sut/next-batch "batch-2"
+                         ::sut/rooms
+                         [{::sut/room-id              "!space:example.org"
+                           ::sut/room-type            "m.space"
+                           ::sut/name                 "Project"
+                           ::sut/topic                "Coordination"
+                           ::sut/canonical-alias      "#project:example.org"
+                           ::sut/allowed-room-ids     #{"!child:example.org"}
+                           ::sut/children-state       [{::sut/type      "m.space.child"
+                                                        ::sut/sender    "@alice:example.org"
+                                                        ::sut/state-key "!child:example.org"
+                                                        ::sut/content   {::sut/via #{"example.org"}}}]
+                           ::sut/guest-can-join       false
+                           ::sut/join-rule            "public"
+                           ::sut/joined-members-count 3
+                           ::sut/room-version         "11"
+                           ::sut/world-readable       true}]}]
+    (is (m/validate opts-schema {::sut/from           "batch-1"
+                                 ::sut/limit          10
+                                 ::sut/max-depth      2
+                                 ::sut/suggested-only true
+                                 ::sut/timeout        (Duration/ofSeconds 5)}))
+    (is (not (m/validate opts-schema {::sut/limit 0})))
+    (is (not (m/validate opts-schema {::sut/max-depth -1})))
+    (is (m/validate response-schema response))
+    (is (not (m/validate response-schema (assoc-in response [::sut/rooms 0 ::sut/room-id] 42))))))
+
 (deftest media-upload-schemas-capture-prepared-and-uploaded-media-test
   (let [registry (sut/registry {})]
     (is (m/validate (m/schema ::sut/PreparedUpload {:registry registry})

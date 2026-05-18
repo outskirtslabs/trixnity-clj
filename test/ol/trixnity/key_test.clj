@@ -16,16 +16,16 @@
   (let [calls          (atom {})
         trust-level    {::schemas/kind :cross-signed}
         backup-version {::schemas/version "1"}]
-    (with-redefs [bridge/current-bootstrap-running                                            (fn [client] (swap! calls assoc :current-bootstrap client) false)
-                  bridge/bootstrap-running-flow                                               (fn [client] (swap! calls assoc :bootstrap-flow client) ::bootstrap-flow)
-                  bridge/current-backup-version                                               (fn [client] (swap! calls assoc :current-backup client) backup-version)
-                  bridge/backup-version-flow                                                  (fn [client] (swap! calls assoc :backup-flow client) ::backup-flow)
-                  bridge/user-trust-level                                                     (fn [client user-id] (swap! calls assoc :user-trust [client user-id]) ::user-trust-flow)
-                  bridge/device-trust-level                                                   (fn [client user-id device-id] (swap! calls assoc :device-trust [client user-id device-id]) ::device-trust-flow)
-                  bridge/timeline-trust-level                                                 (fn [client room-id event-id] (swap! calls assoc :timeline-trust [client room-id event-id]) ::timeline-trust-flow)
-                  bridge/device-keys-flow                                                     (fn [client user-id] (swap! calls assoc :device-keys [client user-id]) ::device-keys-flow)
-                  bridge/cross-signing-keys-flow                                              (fn [client user-id] (swap! calls assoc :cross-signing [client user-id]) ::cross-signing-flow)
-                  m/relieve                                                                   (fn [_ flow] flow)
+    (with-redefs [bridge/current-bootstrap-running (fn [client] (swap! calls assoc :current-bootstrap client) false)
+                  bridge/bootstrap-running-flow    (fn [client] (swap! calls assoc :bootstrap-flow client) ::bootstrap-flow)
+                  bridge/current-backup-version    (fn [client] (swap! calls assoc :current-backup client) backup-version)
+                  bridge/backup-version-flow       (fn [client] (swap! calls assoc :backup-flow client) ::backup-flow)
+                  bridge/user-trust-level          (fn [client user-id] (swap! calls assoc :user-trust [client user-id]) ::user-trust-flow)
+                  bridge/device-trust-level        (fn [client user-id device-id] (swap! calls assoc :device-trust [client user-id device-id]) ::device-trust-flow)
+                  bridge/timeline-trust-level      (fn [client room-id event-id] (swap! calls assoc :timeline-trust [client room-id event-id]) ::timeline-trust-flow)
+                  bridge/device-keys-flow          (fn [client user-id] (swap! calls assoc :device-keys [client user-id]) ::device-keys-flow)
+                  bridge/cross-signing-keys-flow   (fn [client user-id] (swap! calls assoc :cross-signing [client user-id]) ::cross-signing-flow)
+                  m/relieve                        (fn [_ flow] flow)
                   internal/observe-flow
                   (fn [_ kotlin-flow]
                     (m/observe

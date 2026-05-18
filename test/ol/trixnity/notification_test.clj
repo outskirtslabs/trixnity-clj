@@ -189,12 +189,12 @@
   (let [calls        (atom {})
         notification {::schemas/id "n1"}
         update       {::schemas/id "u1"}]
-    (with-redefs [bridge/notification-all                                                                    (fn [client] (swap! calls assoc :all [client]) ::all-flow)
-                  bridge/notification-all-flat                                                               (fn [client] (swap! calls assoc :all-flat [client]) ::all-flat-flow)
-                  bridge/notification-by-id                                                                  (fn [client id] (swap! calls assoc :by-id [client id]) ::by-id-flow)
-                  bridge/notification-count                                                                  (fn [& args] (swap! calls assoc :count args) ::count-flow)
-                  bridge/notification-unread                                                                 (fn [client room-id] (swap! calls assoc :unread [client room-id]) ::unread-flow)
-                  bridge/notification-all-updates                                                            (fn [client] (swap! calls assoc :updates [client]) ::updates-flow)
+    (with-redefs [bridge/notification-all         (fn [client] (swap! calls assoc :all [client]) ::all-flow)
+                  bridge/notification-all-flat    (fn [client] (swap! calls assoc :all-flat [client]) ::all-flat-flow)
+                  bridge/notification-by-id       (fn [client id] (swap! calls assoc :by-id [client id]) ::by-id-flow)
+                  bridge/notification-count       (fn [& args] (swap! calls assoc :count args) ::count-flow)
+                  bridge/notification-unread      (fn [client room-id] (swap! calls assoc :unread [client room-id]) ::unread-flow)
+                  bridge/notification-all-updates (fn [client] (swap! calls assoc :updates [client]) ::updates-flow)
                   internal/observe-flow
                   (fn [_ kotlin-flow]
                     (m/observe

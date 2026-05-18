@@ -9,6 +9,7 @@
     MediaBridge
     NotificationBridge
     RoomBridge
+    SpaceBridge
     TimelineBridge
     UserBridge
     VerificationBridge]))
@@ -83,6 +84,48 @@
 
 (defn invite-user [^MatrixClient client room-id user-id ^Duration timeout on-success on-failure]
   (RoomBridge/inviteUser client room-id user-id timeout on-success on-failure))
+
+(defn kick-user [^MatrixClient client room-id user-id reason ^Duration timeout on-success on-failure]
+  (RoomBridge/kickUser client room-id user-id reason timeout on-success on-failure))
+
+(defn ban-user [^MatrixClient client room-id user-id reason ^Duration timeout on-success on-failure]
+  (RoomBridge/banUser client room-id user-id reason timeout on-success on-failure))
+
+(defn unban-user [^MatrixClient client room-id user-id reason ^Duration timeout on-success on-failure]
+  (RoomBridge/unbanUser client room-id user-id reason timeout on-success on-failure))
+
+(defn create-space [^MatrixClient client request ^Duration timeout on-success on-failure]
+  (SpaceBridge/createSpace client request timeout on-success on-failure))
+
+(defn space-hierarchy [^MatrixClient client space-id request ^Duration timeout on-success on-failure]
+  (SpaceBridge/hierarchy client space-id request timeout on-success on-failure))
+
+(defn spaces [^MatrixClient client]
+  (SpaceBridge/spaces client))
+
+(defn spaces-flat [^MatrixClient client]
+  (SpaceBridge/spacesFlat client))
+
+(defn space-child [^MatrixClient client space-id child-room-id]
+  (SpaceBridge/child client space-id child-room-id))
+
+(defn space-children [^MatrixClient client space-id]
+  (SpaceBridge/children client space-id))
+
+(defn space-parents [^MatrixClient client room-id]
+  (SpaceBridge/parents client room-id))
+
+(defn set-space-child [^MatrixClient client space-id child-room-id content ^Duration timeout on-success on-failure]
+  (SpaceBridge/setChild client space-id child-room-id content timeout on-success on-failure))
+
+(defn remove-space-child [^MatrixClient client space-id child-room-id ^Duration timeout on-success on-failure]
+  (SpaceBridge/removeChild client space-id child-room-id timeout on-success on-failure))
+
+(defn set-space-parent [^MatrixClient client room-id parent-space-id content ^Duration timeout on-success on-failure]
+  (SpaceBridge/setParent client room-id parent-space-id content timeout on-success on-failure))
+
+(defn remove-space-parent [^MatrixClient client room-id parent-space-id ^Duration timeout on-success on-failure]
+  (SpaceBridge/removeParent client room-id parent-space-id timeout on-success on-failure))
 
 (defn join-room [^MatrixClient client room-id-or-alias ^Duration timeout on-success on-failure]
   (RoomBridge/joinRoom client room-id-or-alias timeout on-success on-failure))

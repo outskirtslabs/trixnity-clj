@@ -91,6 +91,81 @@
       (is (= [:client-handle "!room:example.org" state-event timeout]
              (:send-state-event @calls))))))
 
+(deftest member-admin-task-surfaces-return-missionary-tasks-test
+  (let [kick-user-var         (resolve-var 'ol.trixnity.room 'kick-user)
+        ban-user-var          (resolve-var 'ol.trixnity.room 'ban-user)
+        unban-user-var        (resolve-var 'ol.trixnity.room 'unban-user)
+        bridge-kick-user-var  (resolve-var 'ol.trixnity.internal.bridge
+                                           'kick-user)
+        bridge-ban-user-var   (resolve-var 'ol.trixnity.internal.bridge
+                                           'ban-user)
+        bridge-unban-user-var (resolve-var 'ol.trixnity.internal.bridge
+                                           'unban-user)
+        timeout               (Duration/ofSeconds 5)
+        calls                 (atom [])]
+    (is (some? kick-user-var)
+        "ol.trixnity.room/kick-user is missing")
+    (is (some? ban-user-var)
+        "ol.trixnity.room/ban-user is missing")
+    (is (some? unban-user-var)
+        "ol.trixnity.room/unban-user is missing")
+    (is (some? bridge-kick-user-var)
+        "ol.trixnity.internal.bridge/kick-user is missing")
+    (is (some? bridge-ban-user-var)
+        "ol.trixnity.internal.bridge/ban-user is missing")
+    (is (some? bridge-unban-user-var)
+        "ol.trixnity.internal.bridge/unban-user is missing")
+    (when (every? some? [kick-user-var
+                         ban-user-var
+                         unban-user-var
+                         bridge-kick-user-var
+                         bridge-ban-user-var
+                         bridge-unban-user-var])
+      (with-redefs-fn
+        {bridge-kick-user-var
+         (fn [client room-id user-id reason bridge-timeout on-success _]
+           (swap! calls conj [:kick client room-id user-id reason bridge-timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-ban-user-var
+         (fn [client room-id user-id reason bridge-timeout on-success _]
+           (swap! calls conj [:ban client room-id user-id reason bridge-timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))
+
+         bridge-unban-user-var
+         (fn [client room-id user-id reason bridge-timeout on-success _]
+           (swap! calls conj [:unban client room-id user-id reason bridge-timeout])
+           (on-success nil)
+           (->StubCloseable (atom 0)))}
+        (fn []
+          (is (nil?
+               (realize-task
+                ((var-get kick-user-var)
+                 :client-handle
+                 "!room:example.org"
+                 "@alice:example.org"
+                 {::schemas/reason  "spam"
+                  ::schemas/timeout timeout}))))
+          (is (nil?
+               (realize-task
+                ((var-get ban-user-var)
+                 :client-handle
+                 "!room:example.org"
+                 "@mallory:example.org"))))
+          (is (nil?
+               (realize-task
+                ((var-get unban-user-var)
+                 :client-handle
+                 "!room:example.org"
+                 "@mallory:example.org"
+                 {::schemas/reason "appeal accepted"})))))))
+    (is (= [[:kick :client-handle "!room:example.org" "@alice:example.org" "spam" timeout]
+            [:ban :client-handle "!room:example.org" "@mallory:example.org" nil nil]
+            [:unban :client-handle "!room:example.org" "@mallory:example.org" "appeal accepted" nil]]
+           @calls))))
+
 (deftest power-levels-surfaces-get-and-set-room-state-test
   (let [get-power-levels-var        (resolve-var 'ol.trixnity.room
                                                  'get-power-levels)

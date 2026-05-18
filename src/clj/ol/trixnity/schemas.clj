@@ -54,6 +54,12 @@
        (str/starts-with? value sigil)
        (str/includes? value ":")))
 
+(defn- space-order?
+  [value]
+  (and (string? value)
+       (<= (count value) 50)
+       (boolean (re-matches #"[\x20-\x7E]+" value))))
+
 (def ^:private min-power-level
   (- 1 (bit-shift-left 1 53)))
 
@@ -92,6 +98,28 @@
    ::version                   :string
    ::state-key                 :string
    ::transaction-id            :string
+   ::room-type                 :string
+   ::server-name               [:fn non-blank-string?]
+   ::space-relation-state-key  [:fn non-blank-string?]
+   ::via                       [:and [:set ::server-name] [:fn seq]]
+   ::order                     [:fn space-order?]
+   ::suggested                 :boolean
+   ::canonical                 :boolean
+   ::from                      [:fn non-blank-string?]
+   ::next-batch                [:fn non-blank-string?]
+   ::max-depth                 nat-int?
+   ::suggested-only            :boolean
+   ::rooms                     :vector
+   ::allowed-room-ids          [:set ::room-id]
+   ::canonical-alias           ::room-alias-id
+   ::children-state            [:vector ::StateEvent]
+   ::encryption                :string
+   ::guest-can-join            :boolean
+   ::join-rule                 :string
+   ::joined-members-count      nat-int?
+   ::room-version              :string
+   ::world-readable            :boolean
+   ::power-levels              ::PowerLevelsContent
    ::device-name               :string
    ::device-id                 :string
    ::body                      :string
@@ -260,6 +288,20 @@
    ::InviteOpts
    ::OneShotOpts
 
+   ::MemberAdminOpts
+   [:map
+    [::reason {:optional true} ::reason]
+    [::timeout {:optional true} ::timeout]]
+
+   ::KickUserOpts
+   ::MemberAdminOpts
+
+   ::BanUserOpts
+   ::MemberAdminOpts
+
+   ::UnbanUserOpts
+   ::MemberAdminOpts
+
    ::JoinOpts
    ::OneShotOpts
 
@@ -293,6 +335,43 @@
 
    ::SetPowerLevelsOpts
    ::OneShotOpts
+
+   ::SpaceRelationOpts
+   ::OneShotOpts
+
+   ::SpaceHierarchyOpts
+   [:map
+    [::from {:optional true} ::from]
+    [::limit {:optional true} ::limit]
+    [::max-depth {:optional true} ::max-depth]
+    [::suggested-only {:optional true} ::suggested-only]
+    [::timeout {:optional true} ::timeout]]
+
+   ::CreateSpaceOpts
+   [:map
+    [::room-name {:optional true} ::room-name]
+    [::topic {:optional true} ::topic]
+    [::invite {:optional true} ::invite]
+    [::preset {:optional true} ::preset]
+    [::is-direct {:optional true} ::is-direct]
+    [::visibility {:optional true} ::visibility]
+    [::power-levels {:optional true} ::PowerLevelsContent]
+    [::timeout {:optional true} ::timeout]]
+
+   ::CreateSubspaceOpts
+   [:map
+    [::room-name {:optional true} ::room-name]
+    [::topic {:optional true} ::topic]
+    [::invite {:optional true} ::invite]
+    [::preset {:optional true} ::preset]
+    [::is-direct {:optional true} ::is-direct]
+    [::visibility {:optional true} ::visibility]
+    [::power-levels {:optional true} ::PowerLevelsContent]
+    [::via ::via]
+    [::order {:optional true} ::order]
+    [::suggested {:optional true} ::suggested]
+    [::external-url {:optional true} ::external-url]
+    [::timeout {:optional true} ::timeout]]
 
    ::PrepareUploadOpts
    [:map
@@ -425,12 +504,41 @@
      [::type [:= "m.room.power_levels"]]
      [::state-key {:optional true} [:= ""]]]]
 
+   ::SpaceChildContent
+   [:map
+    [::via ::via]
+    [::order {:optional true} ::order]
+    [::suggested {:optional true} ::suggested]
+    [::external-url {:optional true} ::external-url]]
+
+   ::SpaceParentContent
+   [:map
+    [::via ::via]
+    [::canonical {:optional true} ::canonical]
+    [::external-url {:optional true} ::external-url]]
+
+   ::SpaceChildStateEvent
+   [:and
+    ::SpaceChildContent
+    [:map
+     [::type [:= "m.space.child"]]
+     [::state-key ::space-relation-state-key]]]
+
+   ::SpaceParentStateEvent
+   [:and
+    ::SpaceParentContent
+    [:map
+     [::type [:= "m.space.parent"]]
+     [::state-key ::space-relation-state-key]]]
+
    ::StateEventSpec
    [:or
     ::RoomNameStateEvent
     ::RoomTopicStateEvent
     ::RoomAvatarStateEvent
-    ::RoomPowerLevelsStateEvent]
+    ::RoomPowerLevelsStateEvent
+    ::SpaceChildStateEvent
+    ::SpaceParentStateEvent]
 
    ::PreparedUpload
    [:map {:closed true}
@@ -528,6 +636,7 @@
     [::room-id ::room-id]
     [::membership ::membership]
     [::room-name {:optional true} ::room-name]
+    [::room-type {:optional true} ::room-type]
     [::is-direct {:optional true} ::is-direct]
     [::raw {:optional true} ::raw]]
 
@@ -663,6 +772,50 @@
 
    ::RoomsSnapshot
    [:vector ::Room]
+
+   ::Space
+   [:and
+    ::Room
+    [:map
+     [::room-type [:= "m.space"]]]]
+
+   ::SpaceChildEvent
+   [:and
+    ::StateEvent
+    [:map
+     [::type {:optional true} [:= "m.space.child"]]
+     [::state-key ::space-relation-state-key]]]
+
+   ::SpaceParentEvent
+   [:and
+    ::StateEvent
+    [:map
+     [::type {:optional true} [:= "m.space.parent"]]
+     [::state-key ::space-relation-state-key]]]
+
+   ::SpaceHierarchyRoom
+   [:map
+    [::room-id ::room-id]
+    [::room-type {:optional true} ::room-type]
+    [::name {:optional true} ::name]
+    [::topic {:optional true} ::topic]
+    [::avatar-url {:optional true} ::avatar-url]
+    [::canonical-alias {:optional true} ::canonical-alias]
+    [::allowed-room-ids {:optional true} ::allowed-room-ids]
+    [::children-state ::children-state]
+    [::encryption {:optional true} ::encryption]
+    [::guest-can-join ::guest-can-join]
+    [::join-rule ::join-rule]
+    [::joined-members-count ::joined-members-count]
+    [::room-version {:optional true} ::room-version]
+    [::world-readable ::world-readable]
+    [::raw {:optional true} ::raw]]
+
+   ::SpaceHierarchyResponse
+   [:map
+    [::next-batch {:optional true} ::next-batch]
+    [::rooms [:vector ::SpaceHierarchyRoom]]
+    [::raw {:optional true} ::raw]]
 
    ::OpenClientRequest
    [:map

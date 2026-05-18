@@ -59,8 +59,8 @@
            @calls))))
 
 (deftest upload-returns-a-handle-with-a-result-task-and-progress-flow-test
-  (let [calls                          (atom [])
-        start-upload                   (promise)
+  (let [calls        (atom [])
+        start-upload (promise)
         progress-snapshots
         [{::schemas/transferred 0
           ::schemas/total       1234}
@@ -143,8 +143,8 @@
            @calls))))
 
 (deftest upload-handle-shares-one-underlying-upload-between-progress-and-result-test
-  (let [upload-count                (atom 0)
-        start-upload                (promise)
+  (let [upload-count (atom 0)
+        start-upload (promise)
         progress-snapshots
         [{::schemas/transferred 3
           ::schemas/total       5}
@@ -203,18 +203,18 @@
     (is (empty? @calls))))
 
 (deftest download-media-surfaces-return-stream-first-media-handle-tasks-test
-  (let [get-media-var                                                           (resolve-var 'ol.trixnity.media 'get-media)
-        get-encrypted-media-var                                                 (resolve-var 'ol.trixnity.media
-                                                                                             'get-encrypted-media)
-        get-thumbnail-var                                                       (resolve-var 'ol.trixnity.media
-                                                                                             'get-thumbnail)
-        bridge-get-media-var                                                    (resolve-var 'ol.trixnity.internal.bridge
-                                                                                             'get-media)
-        bridge-get-encrypted-media-var                                          (resolve-var 'ol.trixnity.internal.bridge
-                                                                                             'get-encrypted-media)
-        bridge-get-thumbnail-var                                                (resolve-var 'ol.trixnity.internal.bridge
-                                                                                             'get-thumbnail)
-        calls                                                                   (atom [])
+  (let [get-media-var                  (resolve-var 'ol.trixnity.media 'get-media)
+        get-encrypted-media-var        (resolve-var 'ol.trixnity.media
+                                                    'get-encrypted-media)
+        get-thumbnail-var              (resolve-var 'ol.trixnity.media
+                                                    'get-thumbnail)
+        bridge-get-media-var           (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-media)
+        bridge-get-encrypted-media-var (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-encrypted-media)
+        bridge-get-thumbnail-var       (resolve-var 'ol.trixnity.internal.bridge
+                                                    'get-thumbnail)
+        calls                          (atom [])
         encrypted-file
         {::schemas/url                   "mxc://example.org/encrypted"
          ::schemas/jwk                   {::schemas/jwk-key        "secret"

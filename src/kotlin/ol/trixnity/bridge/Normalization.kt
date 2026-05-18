@@ -3,6 +3,7 @@ package ol.trixnity.bridge
 import clojure.lang.Keyword
 import de.connect2x.trixnity.client.notification.Notification
 import de.connect2x.trixnity.client.notification.NotificationUpdate
+import de.connect2x.trixnity.client.store.Room
 import de.connect2x.trixnity.client.user
 import de.connect2x.trixnity.client.store.RoomOutboxMessage
 import de.connect2x.trixnity.client.store.RoomUser
@@ -17,16 +18,24 @@ import de.connect2x.trixnity.client.verification.ActiveVerification
 import de.connect2x.trixnity.client.verification.VerificationService
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.clientserverapi.model.key.GetRoomKeysBackupVersionResponse
+import de.connect2x.trixnity.clientserverapi.model.room.GetHierarchy
 import de.connect2x.trixnity.core.model.RoomId
 import de.connect2x.trixnity.core.model.UserId
 import de.connect2x.trixnity.core.model.events.ClientEvent
 import de.connect2x.trixnity.core.model.events.MessageEventContent
 import de.connect2x.trixnity.core.model.events.RoomEventContent
+import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.UnknownEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
 import de.connect2x.trixnity.core.model.events.m.ReactionEventContent
+import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
+import de.connect2x.trixnity.core.model.events.m.room.CreateEventContent
+import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
 import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import de.connect2x.trixnity.core.model.events.m.room.RoomMessageEventContent
+import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
+import de.connect2x.trixnity.core.model.events.m.space.ChildEventContent
+import de.connect2x.trixnity.core.model.events.m.space.ParentEventContent
 import de.connect2x.trixnity.crypto.key.DeviceTrustLevel
 import de.connect2x.trixnity.crypto.key.UserTrustLevel
 import kotlinx.coroutines.flow.firstOrNull
@@ -72,10 +81,32 @@ internal fun relationTypeName(relatesTo: RelatesTo): String =
         is RelatesTo.Unknown -> relatesTo.relationType.name
     }
 
+internal fun roomTypeName(type: CreateEventContent.RoomType?): String? =
+    when (type) {
+        null,
+        CreateEventContent.RoomType.Room -> null
+
+        CreateEventContent.RoomType.Space -> "m.space"
+        is CreateEventContent.RoomType.Unknown -> type.name
+    }
+
 private fun eventTypeName(content: RoomEventContent?): String? =
     when (content) {
         is RoomMessageEventContent -> "m.room.message"
         is ReactionEventContent -> "m.reaction"
+        is UnknownEventContent -> content.eventType
+        null -> null
+        else -> content::class.simpleName?.let(::normalizedKind)
+    }
+
+private fun stateEventTypeName(content: StateEventContent?): String? =
+    when (content) {
+        is AvatarEventContent -> "m.room.avatar"
+        is ChildEventContent -> "m.space.child"
+        is NameEventContent -> "m.room.name"
+        is ParentEventContent -> "m.space.parent"
+        is PowerLevelsEventContent -> "m.room.power_levels"
+        is TopicEventContent -> "m.room.topic"
         is UnknownEventContent -> content.eventType
         null -> null
         else -> content::class.simpleName?.let(::normalizedKind)
@@ -92,6 +123,18 @@ private suspend fun senderDisplayName(
         )
         .firstOrNull()
         ?.name
+
+internal fun normalizeRoomSnapshot(room: Room?): Map<Keyword, Any?>? {
+    if (room == null) return null
+    return buildMap {
+        put(BridgeSchema.Room.roomId, room.roomId.full)
+        put(BridgeSchema.Room.membership, room.membership.name.lowercase())
+        room.name?.explicitName?.let { put(BridgeSchema.Room.roomName, it) }
+        roomTypeName(room.createEventContent?.type)?.let { put(BridgeSchema.Room.roomType, it) }
+        put(BridgeSchema.Room.isDirect, room.isDirect)
+        put(BridgeSchema.Room.raw, room)
+    }
+}
 
 private fun MutableMap<Keyword, Any?>.putFileBasedMetadata(
     content: RoomMessageEventContent.FileBased,
@@ -189,14 +232,14 @@ internal suspend fun normalizeTimelineEvent(
 internal fun normalizeStateEvent(event: ClientEvent.StateBaseEvent<*>?): Map<Keyword, Any?>? {
     if (event == null) return null
     return buildMap {
-        event.content::class.simpleName?.let(::normalizedKind)?.let {
+        stateEventTypeName(event.content)?.let {
             put(BridgeSchema.StateEvent.type, it)
         }
         event.roomId?.full?.let { put(BridgeSchema.StateEvent.roomId, it) }
         event.id?.full?.let { put(BridgeSchema.StateEvent.eventId, it) }
         put(BridgeSchema.StateEvent.sender, event.sender.full)
         put(BridgeSchema.StateEvent.stateKey, event.stateKey)
-        put(BridgeSchema.StateEvent.content, event.content)
+        put(BridgeSchema.StateEvent.content, normalizeStateEventContent(event.content))
         put(BridgeSchema.StateEvent.raw, event)
     }
 }
@@ -207,6 +250,31 @@ internal fun normalizeContent(value: Any?): Map<Keyword, Any?>? =
         BridgeSchema.content to value,
         BridgeSchema.raw to value,
     )
+
+internal fun normalizeSpaceChildContent(content: ChildEventContent): Map<Keyword, Any?> =
+    buildMap {
+        put(BridgeSchema.via, content.via)
+        content.order?.let { put(BridgeSchema.order, it) }
+        put(BridgeSchema.suggested, content.suggested)
+        content.externalUrl?.let { put(BridgeSchema.externalUrl, it) }
+        put(BridgeSchema.raw, content)
+    }
+
+internal fun normalizeSpaceParentContent(content: ParentEventContent): Map<Keyword, Any?> =
+    buildMap {
+        put(BridgeSchema.via, content.via)
+        put(BridgeSchema.canonical, content.canonical)
+        content.externalUrl?.let { put(BridgeSchema.externalUrl, it) }
+        put(BridgeSchema.raw, content)
+    }
+
+private fun normalizeStateEventContent(content: StateEventContent): Any =
+    when (content) {
+        is ChildEventContent -> normalizeSpaceChildContent(content)
+        is ParentEventContent -> normalizeSpaceParentContent(content)
+        is PowerLevelsEventContent -> normalizePowerLevelsContent(content)
+        else -> content
+    }
 
 internal fun normalizePowerLevelsContent(content: PowerLevelsEventContent): Map<Keyword, Any?> {
     val power = BridgeSchema.PowerLevelsContent
@@ -225,6 +293,36 @@ internal fun normalizePowerLevelsContent(content: PowerLevelsEventContent): Map<
         put(power.raw, content)
     }
 }
+
+internal fun normalizeHierarchyResponse(response: GetHierarchy.Response): Map<Keyword, Any?> =
+    buildMap {
+        response.nextBatch?.let { put(BridgeSchema.nextBatch, it) }
+        put(BridgeSchema.rooms, response.rooms.map(::normalizeHierarchyRoom))
+        put(BridgeSchema.raw, response)
+    }
+
+private fun normalizeHierarchyRoom(
+    room: GetHierarchy.Response.SpaceHierarchyRoomsChunk,
+): Map<Keyword, Any?> =
+    buildMap {
+        room.allowedRoomIds?.let { roomIds ->
+            put(BridgeSchema.allowedRoomIds, roomIds.map { it.full }.toSet())
+        }
+        room.avatarUrl?.let { put(BridgeSchema.avatarUrl, it) }
+        room.canonicalAlias?.let { put(BridgeSchema.canonicalAlias, it.full) }
+        put(BridgeSchema.childrenState, room.childrenState.mapNotNull(::normalizeStateEvent))
+        room.encryption?.let { put(BridgeSchema.encryption, it.name) }
+        put(BridgeSchema.guestCanJoin, room.guestCanJoin)
+        put(BridgeSchema.joinRule, room.joinRule.name)
+        room.name?.let { put(BridgeSchema.name, it) }
+        put(BridgeSchema.joinedMembersCount, room.joinedMembersCount)
+        put(BridgeSchema.roomId, room.roomId.full)
+        roomTypeName(room.roomType)?.let { put(BridgeSchema.roomType, it) }
+        room.roomVersion?.let { put(BridgeSchema.roomVersion, it) }
+        room.topic?.let { put(BridgeSchema.topic, it) }
+        put(BridgeSchema.worldReadable, room.worldReadable)
+        put(BridgeSchema.raw, room)
+    }
 
 internal fun normalizeFileTransferProgress(
     progress: FileTransferProgress?,

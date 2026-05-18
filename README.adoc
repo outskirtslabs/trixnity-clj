@@ -111,6 +111,56 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
 
 If you want a different repository implementation, construct a `MatrixClient` yourself and pass it to `client/open` as `::mx/client`.
 
+== Matrix Spaces
+
+Spaces are rooms with room type `m.space`. The `ol.trixnity.space` namespace only covers space-specific creation, hierarchy, and parent/child relation state. Use `ol.trixnity.room` and `ol.trixnity.user` directly for generic room membership and power-level operations against a space room id.
+
+[source,clojure]
+----
+(ns my.spaces
+  (:require
+   [missionary.core :as m]
+   [ol.trixnity.room :as room]
+   [ol.trixnity.schemas :as mx]
+   [ol.trixnity.space :as space])
+  (:import
+   [java.time Duration]))
+
+(defn configure-space [client]
+  (let [server-name "matrix.example.org"
+        space-id    (m/? (space/create-space
+                          client
+                          {::mx/room-name "Project"}))
+        docs-id     (m/? (space/create-subspace
+                          client
+                          space-id
+                          {::mx/room-name "Project Docs"
+                           ::mx/via       #{server-name}}))]
+    ;; Add an existing room to the space by writing m.space.child.
+    (m/? (space/set-child
+          client
+          space-id
+          "!room:example.org"
+          {::mx/via #{server-name}}
+          {::mx/timeout (Duration/ofSeconds 5)}))
+
+    ;; Parent links are explicit; write them only when your application wants them.
+    (m/? (space/set-parent
+          client
+          docs-id
+          space-id
+          {::mx/via       #{server-name}
+           ::mx/canonical true}))
+
+    ;; Read one server hierarchy page.
+    (m/? (space/hierarchy client space-id {::mx/limit 20}))
+
+    ;; Spaces are rooms, so generic membership actions stay in ol.trixnity.room.
+    (m/? (room/invite-user client space-id "@alice:example.org"))
+
+    space-id))
+----
+
 == Documentation
 
 * https://docs.outskirtslabs.com/ol.trixnity/next/[Docs]

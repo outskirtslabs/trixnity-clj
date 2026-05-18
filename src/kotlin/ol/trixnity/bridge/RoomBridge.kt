@@ -148,6 +148,7 @@ object RoomBridge {
             put(BridgeSchema.Room.roomId, room.roomId.full)
             put(BridgeSchema.Room.membership, room.membership.name.lowercase())
             room.name?.explicitName?.let { put(BridgeSchema.Room.roomName, it) }
+            roomTypeName(room.createEventContent?.type)?.let { put(BridgeSchema.Room.roomType, it) }
             put(BridgeSchema.Room.isDirect, room.isDirect)
             put(BridgeSchema.Room.raw, room)
         }
@@ -204,6 +205,63 @@ object RoomBridge {
         timeout = timeout,
     ) {
         client.api.room.inviteUser(RoomId(roomId), UserId(userId)).getOrThrow()
+        null
+    }
+
+    @JvmStatic
+    fun kickUser(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        userId: String,
+        reason: String?,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.kickUser(RoomId(roomId), UserId(userId), reason).getOrThrow()
+        null
+    }
+
+    @JvmStatic
+    fun banUser(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        userId: String,
+        reason: String?,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.banUser(RoomId(roomId), UserId(userId), reason).getOrThrow()
+        null
+    }
+
+    @JvmStatic
+    fun unbanUser(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        userId: String,
+        reason: String?,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        client.api.room.unbanUser(RoomId(roomId), UserId(userId), reason).getOrThrow()
         null
     }
 

@@ -24,6 +24,7 @@ internal object BridgeSchema {
     val eventId: Keyword = Keyword.intern(schemaNamespace, "event-id")
     val stateKey: Keyword = Keyword.intern(schemaNamespace, "state-key")
     val transactionId: Keyword = Keyword.intern(schemaNamespace, "transaction-id")
+    val roomType: Keyword = Keyword.intern(schemaNamespace, "room-type")
     val key: Keyword = Keyword.intern(schemaNamespace, "key")
     val wait: Keyword = Keyword.intern(schemaNamespace, "wait")
     val force: Keyword = Keyword.intern(schemaNamespace, "force")
@@ -117,6 +118,25 @@ internal object BridgeSchema {
     val method: Keyword = Keyword.intern(schemaNamespace, "method")
     val animated: Keyword = Keyword.intern(schemaNamespace, "animated")
     val raw: Keyword = Keyword.intern(schemaNamespace, "raw")
+    val powerLevels: Keyword = Keyword.intern(schemaNamespace, "power-levels")
+    val via: Keyword = Keyword.intern(schemaNamespace, "via")
+    val order: Keyword = Keyword.intern(schemaNamespace, "order")
+    val suggested: Keyword = Keyword.intern(schemaNamespace, "suggested")
+    val canonical: Keyword = Keyword.intern(schemaNamespace, "canonical")
+    val from: Keyword = Keyword.intern(schemaNamespace, "from")
+    val maxDepth: Keyword = Keyword.intern(schemaNamespace, "max-depth")
+    val suggestedOnly: Keyword = Keyword.intern(schemaNamespace, "suggested-only")
+    val nextBatch: Keyword = Keyword.intern(schemaNamespace, "next-batch")
+    val rooms: Keyword = Keyword.intern(schemaNamespace, "rooms")
+    val allowedRoomIds: Keyword = Keyword.intern(schemaNamespace, "allowed-room-ids")
+    val canonicalAlias: Keyword = Keyword.intern(schemaNamespace, "canonical-alias")
+    val childrenState: Keyword = Keyword.intern(schemaNamespace, "children-state")
+    val encryption: Keyword = Keyword.intern(schemaNamespace, "encryption")
+    val guestCanJoin: Keyword = Keyword.intern(schemaNamespace, "guest-can-join")
+    val joinRule: Keyword = Keyword.intern(schemaNamespace, "join-rule")
+    val joinedMembersCount: Keyword = Keyword.intern(schemaNamespace, "joined-members-count")
+    val roomVersion: Keyword = Keyword.intern(schemaNamespace, "room-version")
+    val worldReadable: Keyword = Keyword.intern(schemaNamespace, "world-readable")
 
     object MessageSpec {
         val kind: Keyword = Keyword.intern(schemaNamespace, "kind")
@@ -160,6 +180,7 @@ internal object BridgeSchema {
         val roomId: Keyword = BridgeSchema.roomId
         val membership: Keyword = BridgeSchema.membership
         val roomName: Keyword = BridgeSchema.roomName
+        val roomType: Keyword = BridgeSchema.roomType
         val isDirect: Keyword = BridgeSchema.isDirect
         val raw: Keyword = BridgeSchema.raw
     }
@@ -364,6 +385,7 @@ internal object BridgeSchema {
         val preset: Keyword = BridgeSchema.preset
         val isDirect: Keyword = BridgeSchema.isDirect
         val visibility: Keyword = BridgeSchema.visibility
+        val powerLevels: Keyword = BridgeSchema.powerLevels
     }
 
     object InviteUserRequest {

@@ -1,0 +1,64 @@
+= Matrix Space Examples
+
+[source,clojure]
+----
+(ns my.spaces
+  (:require
+   [missionary.core :as m]
+   [ol.trixnity.room :as room]
+   [ol.trixnity.schemas :as mx]
+   [ol.trixnity.space :as space])
+  (:import
+   [java.time Duration]))
+
+(defn create-project-space [client]
+  (m/? (space/create-space
+        client
+        {::mx/room-name "Project"})))
+
+(defn create-project-docs-subspace [client project-space-id]
+  (m/? (space/create-subspace
+        client
+        project-space-id
+        {::mx/room-name "Project Docs"
+         ::mx/via       #{"matrix.example.org"}})))
+
+(defn add-existing-room [client project-space-id room-id]
+  (m/? (space/set-child
+        client
+        project-space-id
+        room-id
+        {::mx/via       #{"matrix.example.org"}
+         ::mx/order     "a"
+         ::mx/suggested true}
+        {::mx/timeout (Duration/ofSeconds 5)})))
+
+(defn set-canonical-parent [client room-id project-space-id]
+  (m/? (space/set-parent
+        client
+        room-id
+        project-space-id
+        {::mx/via       #{"matrix.example.org"}
+         ::mx/canonical true})))
+
+(defn remove-room-from-space [client project-space-id room-id]
+  (m/? (space/remove-child client project-space-id room-id)))
+
+(defn remove-parent-link [client room-id project-space-id]
+  (m/? (space/remove-parent client room-id project-space-id)))
+
+(defn read-first-hierarchy-page [client project-space-id]
+  (m/? (space/hierarchy
+        client
+        project-space-id
+        {::mx/limit          20
+         ::mx/max-depth      2
+         ::mx/suggested-only false})))
+
+(defn invite-space-member [client project-space-id]
+  ;; Spaces are rooms, so member actions use ol.trixnity.room directly.
+  (m/? (room/invite-user
+        client
+        project-space-id
+        "@alice:example.org")))
+----

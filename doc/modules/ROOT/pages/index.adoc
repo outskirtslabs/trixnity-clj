@@ -111,6 +111,8 @@ Use https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/
 
 If you want a different repository implementation, construct a `MatrixClient` yourself and pass it to `client/open` as `::mx/client`.
 
+For Matrix space administration, see xref:spaces.adoc[Matrix space examples].
+
 == Documentation
 
 * https://docs.outskirtslabs.com/ol.trixnity/next/[Docs]

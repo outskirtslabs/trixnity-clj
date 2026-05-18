@@ -6,6 +6,11 @@ This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
 
 == ++[++UNRELEASED++]++
 
+=== Changed
+
+* Add public room power-level helpers for reading and writing `m.room.power_levels`.
+* Add public Matrix space helpers for space creation, local space listing, hierarchy inspection, and relation management.
+
 [[v002-2026-05-17]]
 == `v0.0.2` (2026-05-17)
 

@@ -12,5 +12,6 @@
 *** xref:api/ol-trixnity-room.adoc[room]
 **** xref:api/ol-trixnity-room-message.adoc[message]
 *** xref:api/ol-trixnity-schemas.adoc[schemas]
+*** xref:api/ol-trixnity-space.adoc[space]
 *** xref:api/ol-trixnity-user.adoc[user]
 *** xref:api/ol-trixnity-verification.adoc[verification]

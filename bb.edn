@@ -6,12 +6,27 @@
  :tasks {:requires
          ([clojure.string :as str]
           [clojure.pprint :refer [print-table]]
+          [babashka.fs :as fs]
           [babashka.tasks :refer [shell]]
           [ol.bb-tasks.gen-docs :as gen-docs])
 
          :init
          (do
-           (def paths ["src/clj" "dev" "test"]))
+           (def paths ["src/clj" "dev" "test"])
+           (defn sync-custom-docs! []
+             (let [source-dir (fs/path "doc" "pages")
+                   target-dir (fs/path "doc" "modules" "ROOT" "pages")]
+               (when (fs/exists? source-dir)
+                 (fs/create-dirs target-dir)
+                 (doseq [source-file (fs/list-dir source-dir "*.adoc")]
+                   (fs/copy source-file
+                            (fs/path target-dir (fs/file-name source-file))
+                            {:replace-existing true}))))
+             (let [source-nav (fs/path "doc" "nav.adoc")
+                   target-nav (fs/path "doc" "modules" "ROOT" "nav.adoc")]
+               (when (fs/exists? source-nav)
+                 (fs/create-dirs (fs/parent target-nav))
+                 (fs/copy source-nav target-nav {:replace-existing true})))))
 
          dev
          {:doc  "Start a local development server"
@@ -93,7 +108,9 @@
 
          gen-docs
          {:doc  "Generate all Antora documentation"
-          :task (gen-docs/generate! {:source-paths ["src/clj"]})}
+          :task (do
+                  (gen-docs/generate! {:source-paths ["src/clj"]})
+                  (sync-custom-docs!))}
 
          jar
          {:override-builtin true

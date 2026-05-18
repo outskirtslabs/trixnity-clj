@@ -1,6 +1,6 @@
 = API Reference
 
-This release publishes 14 namespaces.
+This release publishes 15 namespaces.
 
 [cols="1,3",options="header",stripes=hover]
 |===
@@ -41,6 +41,9 @@ This release publishes 14 namespaces.
 
 | xref:api/ol-trixnity-schemas.adoc[`ol.trixnity.schemas`]
 | Malli schema registry for ol.
+
+| xref:api/ol-trixnity-space.adoc[`ol.trixnity.space`]
+| Matrix space creation, hierarchy, and relation helpers.
 
 | xref:api/ol-trixnity-user.adoc[`ol.trixnity.user`]
 | Room user state, receipts, presence, and permission checks.

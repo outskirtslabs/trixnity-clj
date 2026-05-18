@@ -74,6 +74,17 @@ internal object BridgeSchema {
     val currentlyActive: Keyword = Keyword.intern(schemaNamespace, "currently-active")
     val statusMessage: Keyword = Keyword.intern(schemaNamespace, "status-message")
     val level: Keyword = Keyword.intern(schemaNamespace, "level")
+    val banLevel: Keyword = Keyword.intern(schemaNamespace, "ban-level")
+    val eventLevels: Keyword = Keyword.intern(schemaNamespace, "event-levels")
+    val eventsDefaultLevel: Keyword = Keyword.intern(schemaNamespace, "events-default-level")
+    val inviteLevel: Keyword = Keyword.intern(schemaNamespace, "invite-level")
+    val kickLevel: Keyword = Keyword.intern(schemaNamespace, "kick-level")
+    val redactLevel: Keyword = Keyword.intern(schemaNamespace, "redact-level")
+    val stateDefaultLevel: Keyword = Keyword.intern(schemaNamespace, "state-default-level")
+    val userLevels: Keyword = Keyword.intern(schemaNamespace, "user-levels")
+    val usersDefaultLevel: Keyword = Keyword.intern(schemaNamespace, "users-default-level")
+    val notificationLevels: Keyword = Keyword.intern(schemaNamespace, "notification-levels")
+    val externalUrl: Keyword = Keyword.intern(schemaNamespace, "external-url")
     val verified: Keyword = Keyword.intern(schemaNamespace, "verified")
     val reason: Keyword = Keyword.intern(schemaNamespace, "reason")
     val dismissed: Keyword = Keyword.intern(schemaNamespace, "dismissed")
@@ -226,6 +237,21 @@ internal object BridgeSchema {
     object PowerLevel {
         val kind: Keyword = BridgeSchema.MessageSpec.kind
         val level: Keyword = BridgeSchema.level
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object PowerLevelsContent {
+        val banLevel: Keyword = BridgeSchema.banLevel
+        val eventLevels: Keyword = BridgeSchema.eventLevels
+        val eventsDefaultLevel: Keyword = BridgeSchema.eventsDefaultLevel
+        val inviteLevel: Keyword = BridgeSchema.inviteLevel
+        val kickLevel: Keyword = BridgeSchema.kickLevel
+        val redactLevel: Keyword = BridgeSchema.redactLevel
+        val stateDefaultLevel: Keyword = BridgeSchema.stateDefaultLevel
+        val userLevels: Keyword = BridgeSchema.userLevels
+        val usersDefaultLevel: Keyword = BridgeSchema.usersDefaultLevel
+        val notificationLevels: Keyword = BridgeSchema.notificationLevels
+        val externalUrl: Keyword = BridgeSchema.externalUrl
         val raw: Keyword = BridgeSchema.raw
     }
 

@@ -17,11 +17,14 @@ import de.connect2x.trixnity.client.media.okio.okio
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.clientserverapi.model.media.ThumbnailResizingMethod
 import de.connect2x.trixnity.core.model.EventId
+import de.connect2x.trixnity.core.model.UserId
+import de.connect2x.trixnity.core.model.events.EventType
 import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
+import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
 import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.byteArrayFlowFromInputStream
@@ -152,6 +155,13 @@ internal data class RoomAvatarStateEventSpec(
     override fun toEventContent(): StateEventContent = AvatarEventContent(url = url)
 }
 
+internal data class RoomPowerLevelsStateEventSpec(
+    val content: PowerLevelsEventContent,
+    override val stateKey: String = "",
+) : StateEventSpec {
+    override fun toEventContent(): StateEventContent = content
+}
+
 internal fun requireKeywordString(payload: Map<*, *>, key: Keyword): String =
     payload[key]?.toString()?.takeIf { it.isNotBlank() }
         ?: throw IllegalArgumentException("request payload is missing required key $key")
@@ -184,6 +194,40 @@ internal fun optionalKeywordBoolean(payload: Map<*, *>, key: Keyword): Boolean? 
 
 internal fun requireKeywordStringMap(payload: Map<*, *>, key: Keyword): Map<String, String> =
     requireKeywordMap(payload, key).mapKeys { (k, _) -> k.toString() }.mapValues { (_, v) -> v.toString() }
+
+private fun optionalKeywordPowerLevelMap(payload: Map<*, *>, key: Keyword): Map<String, Long>? =
+    (payload[key] as? Map<*, *>)?.entries?.associate { (entryKey, entryValue) ->
+        val normalizedKey = entryKey?.toString()
+            ?: throw IllegalArgumentException("power-level map $key contains null key")
+        val level = (entryValue as? Number)?.toLong()
+            ?: throw IllegalArgumentException("power-level map $key contains non-numeric value for $normalizedKey")
+        normalizedKey to level
+    }
+
+internal fun requirePowerLevelsContent(payload: KeywordMap, key: Keyword): PowerLevelsEventContent {
+    val raw = requireKeywordMap(payload, key)
+    val power = BridgeSchema.PowerLevelsContent
+    return PowerLevelsEventContent(
+        ban = optionalKeywordLong(raw, power.banLevel) ?: PowerLevelsEventContent.BAN_DEFAULT,
+        events = optionalKeywordPowerLevelMap(raw, power.eventLevels)
+            ?.mapKeys { (eventType, _) -> EventType(null, eventType) }
+            ?: emptyMap(),
+        eventsDefault = optionalKeywordLong(raw, power.eventsDefaultLevel)
+            ?: PowerLevelsEventContent.EVENTS_DEFAULT,
+        invite = optionalKeywordLong(raw, power.inviteLevel) ?: PowerLevelsEventContent.INVITE_DEFAULT,
+        kick = optionalKeywordLong(raw, power.kickLevel) ?: PowerLevelsEventContent.KICK_DEFAULT,
+        redact = optionalKeywordLong(raw, power.redactLevel) ?: PowerLevelsEventContent.REDACT_DEFAULT,
+        stateDefault = optionalKeywordLong(raw, power.stateDefaultLevel)
+            ?: PowerLevelsEventContent.STATE_DEFAULT,
+        users = optionalKeywordPowerLevelMap(raw, power.userLevels)
+            ?.mapKeys { (userId, _) -> UserId(userId) }
+            ?: emptyMap(),
+        usersDefault = optionalKeywordLong(raw, power.usersDefaultLevel)
+            ?: PowerLevelsEventContent.USERS_DEFAULT,
+        notifications = optionalKeywordPowerLevelMap(raw, power.notificationLevels),
+        externalUrl = optionalKeywordString(raw, power.externalUrl),
+    )
+}
 
 internal fun parseContentType(value: String, key: Keyword): ContentType =
     try {
@@ -445,6 +489,19 @@ internal fun requireStateEventSpec(payload: KeywordMap, key: Keyword): StateEven
             url = requireKeywordString(raw, BridgeSchema.url),
             stateKey = stateKey,
         )
+
+        "m.room.power_levels" -> {
+            if (stateKey.isNotEmpty()) {
+                throw IllegalArgumentException("m.room.power_levels state-key must be empty")
+            }
+            RoomPowerLevelsStateEventSpec(
+                content = requirePowerLevelsContent(
+                    mapOf(BridgeSchema.SendStateEventRequest.stateEvent to raw),
+                    BridgeSchema.SendStateEventRequest.stateEvent,
+                ),
+                stateKey = stateKey,
+            )
+        }
 
         else -> throw IllegalArgumentException("unsupported state-event type: $type")
     }

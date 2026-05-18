@@ -54,6 +54,12 @@
        (str/starts-with? value sigil)
        (str/includes? value ":")))
 
+(def ^:private min-power-level
+  (- 1 (bit-shift-left 1 53)))
+
+(def ^:private max-power-level
+  (dec (bit-shift-left 1 53)))
+
 (defn- message-kind-schema
   [kind]
   [:enum kind (name kind) (str kind)])
@@ -61,135 +67,150 @@
 (defn schemas
   "Returns the project Malli schema map for `opts`."
   [_]
-  {::homeserver-url                                :string
-   ::password                                      :string
-   ::database-path                                 :string
-   ::media-path                                    :string
-   ::client                                        [:fn #(instance? MatrixClient %)]
-   ::room-name                                     :string
-   ::topic                                         :string
-   ::room-id                                       :string
-   ::room-alias-id                                 [:fn #(matrix-id? "#" %)]
-   ::room-id-or-alias                              [:fn #(or (matrix-id? "!" %)
-                                                             (matrix-id? "#" %))]
-   ::membership                                    [:and
-                                                    :keyword
-                                                    [:fn #(= (name %)
-                                                             (str/lower-case
-                                                              (name %)))]]
-   ::user-id                                       :string
-   ::invite                                        [:vector ::user-id]
-   ::preset                                        [:enum :private-chat :public-chat :trusted-private-chat]
-   ::visibility                                    [:enum :public :private]
-   ::users                                         [:set ::user-id]
-   ::event-id                                      :string
-   ::version                                       :string
-   ::state-key                                     :string
-   ::transaction-id                                :string
-   ::device-name                                   :string
-   ::device-id                                     :string
-   ::body                                          :string
-   ::source-path                                   [:fn non-blank-string?]
-   ::cache-uri                                     [:fn non-blank-string?]
-   ::mxc-uri                                       [:fn non-blank-string?]
-   ::file-name                                     [:fn non-blank-string?]
-   ::mime-type                                     [:fn non-blank-string?]
-   ::size-bytes                                    nat-int?
-   ::height                                        pos-int?
-   ::width                                         pos-int?
-   ::key                                           :string
-   ::display-name                                  :string
-   ::avatar-url                                    :string
-   ::url                                           [:fn non-blank-string?]
-   ::time-zone                                     :string
-   ::duration                                      [:fn #(instance? Duration %)]
-   ::timeout                                       ::duration
-   ::decryption-timeout                            ::duration
-   ::wait                                          :boolean
-   ::typing                                        :boolean
-   ::force                                         :boolean
-   ::keep-in-cache                                 :boolean
-   ::limit                                         pos-int?
-   ::fetch-timeout                                 ::duration
-   ::fetch-size                                    pos-int?
-   ::allow-replace-content                         :boolean
-   ::min-size                                      nat-int?
-   ::max-size                                      nat-int?
-   ::sync-response-buffer-size                     nat-int?
-   ::direction                                     [:enum :backwards :forwards]
-   ::response                                      [:fn #(instance? Sync$Response %)]
-   ::room-event-content-class                      [:fn #(class-assignable-to? RoomEventContent %)]
-   ::state-event-content-class                     [:fn #(class-assignable-to? StateEventContent %)]
+  {::homeserver-url            :string
+   ::password                  :string
+   ::database-path             :string
+   ::media-path                :string
+   ::client                    [:fn #(instance? MatrixClient %)]
+   ::room-name                 :string
+   ::topic                     :string
+   ::room-id                   :string
+   ::room-alias-id             [:fn #(matrix-id? "#" %)]
+   ::room-id-or-alias          [:fn #(or (matrix-id? "!" %)
+                                         (matrix-id? "#" %))]
+   ::membership                [:and
+                                :keyword
+                                [:fn #(= (name %)
+                                         (str/lower-case
+                                          (name %)))]]
+   ::user-id                   :string
+   ::invite                    [:vector ::user-id]
+   ::preset                    [:enum :private-chat :public-chat :trusted-private-chat]
+   ::visibility                [:enum :public :private]
+   ::users                     [:set ::user-id]
+   ::event-id                  :string
+   ::version                   :string
+   ::state-key                 :string
+   ::transaction-id            :string
+   ::device-name               :string
+   ::device-id                 :string
+   ::body                      :string
+   ::source-path               [:fn non-blank-string?]
+   ::cache-uri                 [:fn non-blank-string?]
+   ::mxc-uri                   [:fn non-blank-string?]
+   ::file-name                 [:fn non-blank-string?]
+   ::mime-type                 [:fn non-blank-string?]
+   ::size-bytes                nat-int?
+   ::height                    pos-int?
+   ::width                     pos-int?
+   ::key                       :string
+   ::display-name              :string
+   ::avatar-url                :string
+   ::url                       [:fn non-blank-string?]
+   ::time-zone                 :string
+   ::duration                  [:fn #(instance? Duration %)]
+   ::timeout                   ::duration
+   ::decryption-timeout        ::duration
+   ::wait                      :boolean
+   ::typing                    :boolean
+   ::force                     :boolean
+   ::keep-in-cache             :boolean
+   ::limit                     pos-int?
+   ::fetch-timeout             ::duration
+   ::fetch-size                pos-int?
+   ::allow-replace-content     :boolean
+   ::min-size                  nat-int?
+   ::max-size                  nat-int?
+   ::sync-response-buffer-size nat-int?
+   ::direction                 [:enum :backwards :forwards]
+   ::response                  [:fn #(instance? Sync$Response %)]
+   ::room-event-content-class  [:fn #(class-assignable-to? RoomEventContent %)]
+   ::state-event-content-class [:fn #(class-assignable-to? StateEventContent %)]
    ::global-account-data-event-content-class
    [:fn #(class-assignable-to? GlobalAccountDataEventContent %)]
    ::room-account-data-event-content-class
    [:fn #(class-assignable-to? RoomAccountDataEventContent %)]
-   ::room-event-content                            [:fn #(instance? RoomEventContent %)]
-   ::closeable                                     [:fn #(instance? Closeable %)]
-   ::kind                                          [:or :keyword :string]
-   ::id                                            :string
-   ::format                                        :string
-   ::formatted-body                                :string
-   ::type                                          :string
-   ::msgtype                                       :string
-   ::sender                                        :string
-   ::sender-display-name                           :string
-   ::is-direct                                     :boolean
-   ::content                                       :any
-   ::created-at                                    :string
-   ::sent-at                                       :string
-   ::send-error                                    :string
-   ::transferred                                   nat-int?
-   ::total                                         nat-int?
-   ::receipt-type                                  :string
-   ::name                                          :string
-   ::presence                                      [:or :keyword :string]
-   ::last-update                                   :string
-   ::last-active                                   :string
-   ::currently-active                              :boolean
-   ::status-message                                :string
-   ::level                                         int?
-   ::verified                                      :boolean
-   ::reason                                        :string
-   ::dismissed                                     :boolean
-   ::sort-key                                      :string
-   ::actions                                       [:set :string]
-   ::notification-kind                             [:or :keyword :string]
-   ::notification-update-kind                      [:or :keyword :string]
-   ::timestamp                                     int?
-   ::their-user-id                                 :string
-   ::their-device-id                               :string
-   ::request-event-id                              :string
-   ::methods                                       [:set [:or :keyword :string]]
-   ::reasons                                       [:set [:or :keyword :string]]
-   ::algorithm                                     :string
-   ::jwk                                           :map
-   ::jwk-key                                       :string
-   ::key-type                                      :string
-   ::key-operations                                [:set :string]
-   ::extractable                                   :boolean
-   ::initialization-vector                         :string
-   ::hashes                                        [:map-of :string :string]
-   ::encrypted-file                                ::EncryptedFile
-   ::thumbnail-url                                 :string
-   ::thumbnail-encrypted-file                      ::EncryptedFile
-   ::input-stream                                  [:fn #(instance? InputStream %)]
-   ::path                                          [:fn #(instance? Path %)]
-   ::method                                        [:enum :crop :scale]
-   ::animated                                      :boolean
-   ::media-upload-progress                         ::UploadProgress
-   ::raw                                           :any
-   ::direct-chat-room-ids                          [:set ::room-id]
-   ::direct-chat-mappings                          [:map-of ::user-id ::direct-chat-room-ids]
-   ::relation-type                                 :string
-   ::relation-event-id                             :string
-   ::reply-to-event-id                             :string
-   ::is-falling-back                               :boolean
-   ::server-versions                               [:fn #(instance? GetVersions$Response %)]
-   ::server-media-config                           [:fn #(instance? GetMediaConfig$Response %)]
-   ::server-capabilities                           [:fn #(instance? GetCapabilities$Response %)]
-   ::server-auth                                   [:fn #(instance? ServerMetadata %)]
-   ::backup-auth                                   [:fn #(instance? RoomKeyBackupAuthData %)]
+   ::room-event-content        [:fn #(instance? RoomEventContent %)]
+   ::closeable                 [:fn #(instance? Closeable %)]
+   ::kind                      [:or :keyword :string]
+   ::id                        :string
+   ::format                    :string
+   ::formatted-body            :string
+   ::type                      :string
+   ::msgtype                   :string
+   ::sender                    :string
+   ::sender-display-name       :string
+   ::is-direct                 :boolean
+   ::content                   :any
+   ::created-at                :string
+   ::sent-at                   :string
+   ::send-error                :string
+   ::transferred               nat-int?
+   ::total                     nat-int?
+   ::receipt-type              :string
+   ::name                      :string
+   ::presence                  [:or :keyword :string]
+   ::last-update               :string
+   ::last-active               :string
+   ::currently-active          :boolean
+   ::status-message            :string
+   ::level                     int?
+   ::power-level-value         [:int {:min min-power-level
+                                      :max max-power-level}]
+   ::event-type                [:fn non-blank-string?]
+   ::notification-key          [:fn non-blank-string?]
+   ::ban-level                 ::power-level-value
+   ::event-levels              [:map-of ::event-type ::power-level-value]
+   ::events-default-level      ::power-level-value
+   ::invite-level              ::power-level-value
+   ::kick-level                ::power-level-value
+   ::redact-level              ::power-level-value
+   ::state-default-level       ::power-level-value
+   ::user-levels               [:map-of ::user-id ::power-level-value]
+   ::users-default-level       ::power-level-value
+   ::notification-levels       [:map-of ::notification-key ::power-level-value]
+   ::external-url              [:fn non-blank-string?]
+   ::verified                  :boolean
+   ::reason                    :string
+   ::dismissed                 :boolean
+   ::sort-key                  :string
+   ::actions                   [:set :string]
+   ::notification-kind         [:or :keyword :string]
+   ::notification-update-kind  [:or :keyword :string]
+   ::timestamp                 int?
+   ::their-user-id             :string
+   ::their-device-id           :string
+   ::request-event-id          :string
+   ::methods                   [:set [:or :keyword :string]]
+   ::reasons                   [:set [:or :keyword :string]]
+   ::algorithm                 :string
+   ::jwk                       :map
+   ::jwk-key                   :string
+   ::key-type                  :string
+   ::key-operations            [:set :string]
+   ::extractable               :boolean
+   ::initialization-vector     :string
+   ::hashes                    [:map-of :string :string]
+   ::encrypted-file            ::EncryptedFile
+   ::thumbnail-url             :string
+   ::thumbnail-encrypted-file  ::EncryptedFile
+   ::input-stream              [:fn #(instance? InputStream %)]
+   ::path                      [:fn #(instance? Path %)]
+   ::method                    [:enum :crop :scale]
+   ::animated                  :boolean
+   ::media-upload-progress     ::UploadProgress
+   ::raw                       :any
+   ::direct-chat-room-ids      [:set ::room-id]
+   ::direct-chat-mappings      [:map-of ::user-id ::direct-chat-room-ids]
+   ::relation-type             :string
+   ::relation-event-id         :string
+   ::reply-to-event-id         :string
+   ::is-falling-back           :boolean
+   ::server-versions           [:fn #(instance? GetVersions$Response %)]
+   ::server-media-config       [:fn #(instance? GetMediaConfig$Response %)]
+   ::server-capabilities       [:fn #(instance? GetCapabilities$Response %)]
+   ::server-auth               [:fn #(instance? ServerMetadata %)]
+   ::backup-auth               [:fn #(instance? RoomKeyBackupAuthData %)]
 
    ::OneShotOpts
    [:map
@@ -268,6 +289,9 @@
     [::timeout {:optional true} ::timeout]]
 
    ::SendOpts
+   ::OneShotOpts
+
+   ::SetPowerLevelsOpts
    ::OneShotOpts
 
    ::PrepareUploadOpts
@@ -380,11 +404,33 @@
     [::state-key {:optional true} ::state-key]
     [::url ::url]]
 
+   ::PowerLevelsContent
+   [:map
+    [::ban-level {:optional true} ::ban-level]
+    [::event-levels {:optional true} ::event-levels]
+    [::events-default-level {:optional true} ::events-default-level]
+    [::invite-level {:optional true} ::invite-level]
+    [::kick-level {:optional true} ::kick-level]
+    [::redact-level {:optional true} ::redact-level]
+    [::state-default-level {:optional true} ::state-default-level]
+    [::user-levels {:optional true} ::user-levels]
+    [::users-default-level {:optional true} ::users-default-level]
+    [::notification-levels {:optional true} ::notification-levels]
+    [::external-url {:optional true} ::external-url]]
+
+   ::RoomPowerLevelsStateEvent
+   [:and
+    ::PowerLevelsContent
+    [:map
+     [::type [:= "m.room.power_levels"]]
+     [::state-key {:optional true} [:= ""]]]]
+
    ::StateEventSpec
    [:or
     ::RoomNameStateEvent
     ::RoomTopicStateEvent
-    ::RoomAvatarStateEvent]
+    ::RoomAvatarStateEvent
+    ::RoomPowerLevelsStateEvent]
 
    ::PreparedUpload
    [:map {:closed true}

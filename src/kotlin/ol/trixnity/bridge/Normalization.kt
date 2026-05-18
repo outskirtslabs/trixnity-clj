@@ -25,6 +25,7 @@ import de.connect2x.trixnity.core.model.events.RoomEventContent
 import de.connect2x.trixnity.core.model.events.UnknownEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
 import de.connect2x.trixnity.core.model.events.m.ReactionEventContent
+import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import de.connect2x.trixnity.core.model.events.m.room.RoomMessageEventContent
 import de.connect2x.trixnity.crypto.key.DeviceTrustLevel
 import de.connect2x.trixnity.crypto.key.UserTrustLevel
@@ -206,6 +207,24 @@ internal fun normalizeContent(value: Any?): Map<Keyword, Any?>? =
         BridgeSchema.content to value,
         BridgeSchema.raw to value,
     )
+
+internal fun normalizePowerLevelsContent(content: PowerLevelsEventContent): Map<Keyword, Any?> {
+    val power = BridgeSchema.PowerLevelsContent
+    return buildMap {
+        put(power.banLevel, content.ban)
+        put(power.eventLevels, content.events.entries.associate { it.key.name to it.value })
+        put(power.eventsDefaultLevel, content.eventsDefault)
+        put(power.inviteLevel, content.invite)
+        put(power.kickLevel, content.kick)
+        put(power.redactLevel, content.redact)
+        put(power.stateDefaultLevel, content.stateDefault)
+        put(power.userLevels, content.users.entries.associate { it.key.full to it.value })
+        put(power.usersDefaultLevel, content.usersDefault)
+        content.notifications?.let { put(power.notificationLevels, it) }
+        content.externalUrl?.let { put(power.externalUrl, it) }
+        put(power.raw, content)
+    }
+}
 
 internal fun normalizeFileTransferProgress(
     progress: FileTransferProgress?,

@@ -115,9 +115,50 @@
                             ::sut/topic     "Incident chatter"}))
     (is (m/validate schema {::sut/type "m.room.avatar"
                             ::sut/url  "mxc://example.org/abc"}))
+    (is (m/validate schema {::sut/type                 "m.room.power_levels"
+                            ::sut/ban-level            50
+                            ::sut/event-levels         {"m.room.name"         100
+                                                        "m.room.power_levels" 100}
+                            ::sut/events-default-level 0
+                            ::sut/invite-level         50
+                            ::sut/kick-level           50
+                            ::sut/redact-level         50
+                            ::sut/state-default-level  50
+                            ::sut/user-levels          {"@alice:example.org" 100}
+                            ::sut/users-default-level  0
+                            ::sut/notification-levels  {"room" 20}}))
     (is (not (m/validate schema {::sut/type "m.room.avatar"})))
+    (is (not (m/validate schema {::sut/type      "m.room.power_levels"
+                                 ::sut/state-key "@not-empty"})))
+    (is (not (m/validate schema {::sut/type        "m.room.power_levels"
+                                 ::sut/user-levels {"@alice:example.org"
+                                                    9007199254740992}})))
     (is (not (m/validate schema {::sut/type "m.room.unknown"
                                  ::sut/body "wat"})))))
+
+(deftest power-levels-content-schema-validates-matrix-content-test
+  (let [schema-entries (sut/schemas {})
+        schema-id      ::sut/PowerLevelsContent]
+    (is (contains? schema-entries schema-id)
+        "PowerLevelsContent schema is missing")
+    (when (contains? schema-entries schema-id)
+      (let [schema (m/schema schema-id {:registry (sut/registry {})})]
+        (is (m/validate schema {}))
+        (is (m/validate schema {::sut/ban-level            50
+                                ::sut/event-levels         {"m.room.name" 100}
+                                ::sut/events-default-level 0
+                                ::sut/invite-level         50
+                                ::sut/kick-level           50
+                                ::sut/redact-level         50
+                                ::sut/state-default-level  50
+                                ::sut/user-levels          {"@alice:example.org" 100}
+                                ::sut/users-default-level  0
+                                ::sut/notification-levels  {"room" 20}
+                                ::sut/external-url         "https://example.org/policy"}))
+        (is (not (m/validate schema {::sut/invite-level :admin})))
+        (is (not (m/validate schema {::sut/user-levels {"@alice:example.org"
+                                                        "admin"}})))
+        (is (not (m/validate schema {::sut/ban-level -9007199254740992})))))))
 
 (deftest media-upload-schemas-capture-prepared-and-uploaded-media-test
   (let [registry (sut/registry {})]

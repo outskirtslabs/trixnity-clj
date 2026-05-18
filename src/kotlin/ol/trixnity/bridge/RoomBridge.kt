@@ -24,6 +24,7 @@ import de.connect2x.trixnity.core.model.events.RoomAccountDataEventContent
 import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.m.TypingEventContent
 import de.connect2x.trixnity.core.model.events.m.room.EncryptionEventContent
+import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.Closeable
@@ -331,6 +332,32 @@ object RoomBridge {
     }
 
     @JvmStatic
+    fun setPowerLevels(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+        powerLevels: KeywordMap,
+        timeout: Duration?,
+        onSuccess: Any,
+        onFailure: Any,
+    ): Closeable = submitBridgeTask(
+        scope = BridgeAsync.clientScope(client),
+        onSuccess = onSuccess,
+        onFailure = onFailure,
+        timeout = timeout,
+    ) {
+        val parsedPowerLevels = requirePowerLevelsContent(
+            mapOf(BridgeSchema.content to powerLevels),
+            BridgeSchema.content,
+        )
+
+        client.api.room.sendStateEvent(
+            RoomId(roomId),
+            parsedPowerLevels,
+            "",
+        ).getOrThrow().full
+    }
+
+    @JvmStatic
     fun redactEvent(
         client: de.connect2x.trixnity.client.MatrixClient,
         roomId: String,
@@ -473,6 +500,17 @@ object RoomBridge {
             javaClassToKClass<StateEventContent>(eventContentClass),
             stateKey,
         ).map(::normalizeStateEvent)
+
+    @JvmStatic
+    fun powerLevels(
+        client: de.connect2x.trixnity.client.MatrixClient,
+        roomId: String,
+    ): Flow<Map<Keyword, Any?>?> =
+        client.room.getState(
+            RoomId(roomId),
+            PowerLevelsEventContent::class,
+            "",
+        ).map { event -> event?.content?.let(::normalizePowerLevelsContent) }
 
     @JvmStatic
     fun allState(

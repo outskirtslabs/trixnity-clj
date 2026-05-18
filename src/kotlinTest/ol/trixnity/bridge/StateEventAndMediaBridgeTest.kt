@@ -5,9 +5,12 @@ import de.connect2x.trixnity.client.media.PlatformMedia
 import de.connect2x.trixnity.client.media.okio.OkioPlatformMedia
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.clientserverapi.model.media.ThumbnailResizingMethod
+import de.connect2x.trixnity.core.model.UserId
+import de.connect2x.trixnity.core.model.events.EventType
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.EncryptedFile
 import de.connect2x.trixnity.core.model.events.m.room.NameEventContent
+import de.connect2x.trixnity.core.model.events.m.room.PowerLevelsEventContent
 import de.connect2x.trixnity.core.model.events.m.room.TopicEventContent
 import de.connect2x.trixnity.utils.ByteArrayFlow
 import de.connect2x.trixnity.utils.toByteArray
@@ -49,6 +52,91 @@ class StateEventAndMediaBridgeTest {
         val content = parsed.toEventContent()
         val avatar = assertIs<AvatarEventContent>(content)
         assertEquals("mxc://example.org/avatar", avatar.url)
+    }
+
+    @Test
+    fun powerLevelsStateEventMapsBuildExpectedUpstreamContent() {
+        val parsed = requireStateEventSpec(
+            mapOf(
+                BridgeSchema.SendStateEventRequest.stateEvent to mapOf(
+                    BridgeSchema.type to "m.room.power_levels",
+                    BridgeSchema.PowerLevelsContent.banLevel to 51,
+                    BridgeSchema.PowerLevelsContent.eventLevels to mapOf(
+                        "m.room.name" to 100,
+                        "m.room.power_levels" to 100,
+                    ),
+                    BridgeSchema.PowerLevelsContent.eventsDefaultLevel to 1,
+                    BridgeSchema.PowerLevelsContent.inviteLevel to 2,
+                    BridgeSchema.PowerLevelsContent.kickLevel to 52,
+                    BridgeSchema.PowerLevelsContent.redactLevel to 53,
+                    BridgeSchema.PowerLevelsContent.stateDefaultLevel to 54,
+                    BridgeSchema.PowerLevelsContent.userLevels to mapOf(
+                        "@alice:example.org" to 101,
+                    ),
+                    BridgeSchema.PowerLevelsContent.usersDefaultLevel to 3,
+                    BridgeSchema.PowerLevelsContent.notificationLevels to mapOf("room" to 20),
+                    BridgeSchema.PowerLevelsContent.externalUrl to "https://example.org/policy",
+                ),
+            ),
+            BridgeSchema.SendStateEventRequest.stateEvent,
+        )
+
+        assertEquals("", parsed.stateKey)
+        val content = assertIs<PowerLevelsEventContent>(parsed.toEventContent())
+        assertEquals(51L, content.ban)
+        assertEquals(
+            mapOf("m.room.name" to 100L, "m.room.power_levels" to 100L),
+            content.events.entries.associate { it.key.name to it.value },
+        )
+        assertEquals(1L, content.eventsDefault)
+        assertEquals(2L, content.invite)
+        assertEquals(52L, content.kick)
+        assertEquals(53L, content.redact)
+        assertEquals(54L, content.stateDefault)
+        assertEquals(
+            mapOf("@alice:example.org" to 101L),
+            content.users.entries.associate { it.key.full to it.value },
+        )
+        assertEquals(3L, content.usersDefault)
+        assertEquals(mapOf("room" to 20L), content.notifications)
+        assertEquals("https://example.org/policy", content.externalUrl)
+    }
+
+    @Test
+    fun normalizePowerLevelsContentReturnsNamespacedKeywordMap() {
+        val normalized = normalizePowerLevelsContent(
+            PowerLevelsEventContent(
+                ban = 51,
+                events = mapOf(EventType(null, "m.room.name") to 100),
+                eventsDefault = 1,
+                invite = 2,
+                kick = 52,
+                redact = 53,
+                stateDefault = 54,
+                users = mapOf(UserId("@alice:example.org") to 101),
+                usersDefault = 3,
+                notifications = mapOf("room" to 20),
+                externalUrl = "https://example.org/policy",
+            ),
+        )
+
+        assertEquals(
+            mapOf(
+                BridgeSchema.PowerLevelsContent.banLevel to 51L,
+                BridgeSchema.PowerLevelsContent.eventLevels to mapOf("m.room.name" to 100L),
+                BridgeSchema.PowerLevelsContent.eventsDefaultLevel to 1L,
+                BridgeSchema.PowerLevelsContent.inviteLevel to 2L,
+                BridgeSchema.PowerLevelsContent.kickLevel to 52L,
+                BridgeSchema.PowerLevelsContent.redactLevel to 53L,
+                BridgeSchema.PowerLevelsContent.stateDefaultLevel to 54L,
+                BridgeSchema.PowerLevelsContent.userLevels to mapOf("@alice:example.org" to 101L),
+                BridgeSchema.PowerLevelsContent.usersDefaultLevel to 3L,
+                BridgeSchema.PowerLevelsContent.notificationLevels to mapOf("room" to 20L),
+                BridgeSchema.PowerLevelsContent.externalUrl to "https://example.org/policy",
+                BridgeSchema.PowerLevelsContent.raw to normalized[BridgeSchema.PowerLevelsContent.raw],
+            ),
+            normalized,
+        )
     }
 
     @Test

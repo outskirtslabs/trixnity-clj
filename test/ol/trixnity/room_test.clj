@@ -30,10 +30,10 @@
     (swap! closed-count inc)))
 
 (deftest task-surfaces-return-missionary-tasks-test
-  (let [calls                                       (atom {})
-        timeout                                     (Duration/ofSeconds 5)
-        ev                                          {::schemas/room-id  "!room:example.org"
-                                                     ::schemas/event-id "$event"}
+  (let [calls   (atom {})
+        timeout (Duration/ofSeconds 5)
+        ev      {::schemas/room-id  "!room:example.org"
+                 ::schemas/event-id "$event"}
         state-event
         {::schemas/type "m.room.name"
          ::schemas/name "Ops Bot"}
@@ -90,6 +90,115 @@
              (:send-reaction @calls)))
       (is (= [:client-handle "!room:example.org" state-event timeout]
              (:send-state-event @calls))))))
+
+(deftest power-levels-surfaces-get-and-set-room-state-test
+  (let [get-power-levels-var        (resolve-var 'ol.trixnity.room
+                                                 'get-power-levels)
+        set-power-levels-var        (resolve-var 'ol.trixnity.room
+                                                 'set-power-levels)
+        bridge-power-levels-var     (resolve-var 'ol.trixnity.internal.bridge
+                                                 'power-levels)
+        bridge-set-power-levels-var (resolve-var 'ol.trixnity.internal.bridge
+                                                 'set-power-levels)
+        timeout                     (Duration/ofSeconds 5)
+        power-levels                {::schemas/ban-level            50
+                                     ::schemas/event-levels         {"m.room.name"         100
+                                                                     "m.room.power_levels" 100}
+                                     ::schemas/events-default-level 0
+                                     ::schemas/invite-level         50
+                                     ::schemas/kick-level           50
+                                     ::schemas/redact-level         50
+                                     ::schemas/state-default-level  50
+                                     ::schemas/user-levels          {"@alice:example.org" 100}
+                                     ::schemas/users-default-level  0
+                                     ::schemas/notification-levels  {"room" 20}}
+        calls                       (atom {})]
+    (is (some? get-power-levels-var)
+        "ol.trixnity.room/get-power-levels is missing")
+    (is (some? set-power-levels-var)
+        "ol.trixnity.room/set-power-levels is missing")
+    (is (some? bridge-power-levels-var)
+        "ol.trixnity.internal.bridge/power-levels is missing")
+    (is (some? bridge-set-power-levels-var)
+        "ol.trixnity.internal.bridge/set-power-levels is missing")
+    (when (every? some? [get-power-levels-var
+                         set-power-levels-var
+                         bridge-power-levels-var
+                         bridge-set-power-levels-var])
+      (with-redefs-fn
+        {bridge-power-levels-var
+         (fn [client room-id]
+           (swap! calls assoc :power-levels [client room-id])
+           ::power-levels-flow)
+
+         bridge-set-power-levels-var
+         (fn [client room-id sent-power-levels bridge-timeout on-success _]
+           (swap! calls assoc :set-power-levels
+                  [client room-id sent-power-levels bridge-timeout])
+           (on-success "$power-levels")
+           (->StubCloseable (atom 0)))
+
+         #'internal/observe-flow
+         (fn [_ kotlin-flow]
+           (is (= ::power-levels-flow kotlin-flow))
+           (m/observe
+            (fn [emit]
+              (future
+                (emit nil)
+                (emit power-levels))
+              (constantly nil))))}
+        (fn []
+          (is (= [nil power-levels]
+                 (collect-values
+                  ((var-get get-power-levels-var)
+                   :client-handle
+                   "!room:example.org")
+                  2)))
+          (is (= "$power-levels"
+                 (realize-task
+                  ((var-get set-power-levels-var)
+                   :client-handle
+                   "!room:example.org"
+                   power-levels
+                   {::schemas/timeout timeout}))))))
+      (is (= [:client-handle "!room:example.org"]
+             (:power-levels @calls)))
+      (is (= [:client-handle "!room:example.org" power-levels timeout]
+             (:set-power-levels @calls))))))
+
+(deftest power-levels-surfaces-validate-before-bridge-test
+  (let [set-power-levels-var        (resolve-var 'ol.trixnity.room
+                                                 'set-power-levels)
+        bridge-set-power-levels-var (resolve-var 'ol.trixnity.internal.bridge
+                                                 'set-power-levels)
+        calls                       (atom [])]
+    (is (some? set-power-levels-var)
+        "ol.trixnity.room/set-power-levels is missing")
+    (is (some? bridge-set-power-levels-var)
+        "ol.trixnity.internal.bridge/set-power-levels is missing")
+    (when (every? some? [set-power-levels-var bridge-set-power-levels-var])
+      (with-redefs-fn
+        {bridge-set-power-levels-var
+         (fn [& _]
+           (swap! calls conj :set-power-levels)
+           (throw (ex-info "bridge should not be called" {})))}
+        (fn []
+          (is (try
+                ((var-get set-power-levels-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/user-levels {"@alice:example.org" "admin"}})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))
+          (is (try
+                ((var-get set-power-levels-var)
+                 :client-handle
+                 "!room:example.org"
+                 {::schemas/ban-level 50}
+                 {::schemas/timeout :soon})
+                false
+                (catch clojure.lang.ExceptionInfo _ true)))))
+      (is (empty? @calls)))))
 
 (deftest send-message-returns-a-send-handle-with-transaction-id-and-status-flow-test
   (let [calls         (atom {})
@@ -927,20 +1036,20 @@
       (is (false? @next-called?)))))
 
 (deftest timeline-attachment-accessors-cover-normalized-download-fields-test
-  (let [msgtype-var                                                   (resolve-var 'ol.trixnity.event 'msgtype)
-        url-var                                                       (resolve-var 'ol.trixnity.event 'url)
-        encrypted-file-var                                            (resolve-var 'ol.trixnity.event
-                                                                                   'encrypted-file)
-        file-name-var                                                 (resolve-var 'ol.trixnity.event 'file-name)
-        mime-type-var                                                 (resolve-var 'ol.trixnity.event 'mime-type)
-        size-bytes-var                                                (resolve-var 'ol.trixnity.event 'size-bytes)
-        duration-var                                                  (resolve-var 'ol.trixnity.event 'duration)
-        height-var                                                    (resolve-var 'ol.trixnity.event 'height)
-        width-var                                                     (resolve-var 'ol.trixnity.event 'width)
-        thumbnail-url-var                                             (resolve-var 'ol.trixnity.event
-                                                                                   'thumbnail-url)
-        thumbnail-encrypted-file-var                                  (resolve-var 'ol.trixnity.event
-                                                                                   'thumbnail-encrypted-file)
+  (let [msgtype-var                  (resolve-var 'ol.trixnity.event 'msgtype)
+        url-var                      (resolve-var 'ol.trixnity.event 'url)
+        encrypted-file-var           (resolve-var 'ol.trixnity.event
+                                                  'encrypted-file)
+        file-name-var                (resolve-var 'ol.trixnity.event 'file-name)
+        mime-type-var                (resolve-var 'ol.trixnity.event 'mime-type)
+        size-bytes-var               (resolve-var 'ol.trixnity.event 'size-bytes)
+        duration-var                 (resolve-var 'ol.trixnity.event 'duration)
+        height-var                   (resolve-var 'ol.trixnity.event 'height)
+        width-var                    (resolve-var 'ol.trixnity.event 'width)
+        thumbnail-url-var            (resolve-var 'ol.trixnity.event
+                                                  'thumbnail-url)
+        thumbnail-encrypted-file-var (resolve-var 'ol.trixnity.event
+                                                  'thumbnail-encrypted-file)
         encrypted-file
         {::schemas/url                   "mxc://example.org/encrypted"
          ::schemas/jwk                   {::schemas/jwk-key        "secret"

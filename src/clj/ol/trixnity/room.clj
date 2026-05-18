@@ -214,6 +214,8 @@
   - `{::mx/type \"m.room.name\", ::mx/name ...}`
   - `{::mx/type \"m.room.topic\", ::mx/topic ...}`
   - `{::mx/type \"m.room.avatar\", ::mx/url ...}`
+  - `{::mx/type \"m.room.power_levels\", ...}` using the same content keys as
+    [[set-power-levels]]
 
   `::mx/state-key` is optional on the payload and defaults to the empty string.
 
@@ -232,6 +234,43 @@
                             client
                             room-id
                             state-event
+                            (get opts ::mx/timeout)))))
+
+(defn set-power-levels
+  "Sets the `m.room.power_levels` content for `room-id`.
+
+  `power-levels` is a map with Matrix power-level fields using namespaced
+  Clojure keys:
+
+  | key | description |
+  |-----|-------------|
+  | `::mx/ban-level` | Level required to ban users |
+  | `::mx/event-levels` | Map of event type string to required level |
+  | `::mx/events-default-level` | Default level for message events |
+  | `::mx/invite-level` | Level required to invite users |
+  | `::mx/kick-level` | Level required to kick users |
+  | `::mx/redact-level` | Level required to redact others' events |
+  | `::mx/state-default-level` | Default level for state events |
+  | `::mx/user-levels` | Map of user id string to user level |
+  | `::mx/users-default-level` | Default level for users not in `::mx/user-levels` |
+  | `::mx/notification-levels` | Map of notification key to required level |
+  | `::mx/external-url` | Optional external URL attached to the state event content |
+
+  Supported opts:
+
+  | key | description
+  |-----|-------------
+  | `::mx/timeout` | Maximum time to wait for the send operation |"
+  ([client room-id power-levels]
+   (set-power-levels client room-id power-levels {}))
+  ([client room-id power-levels opts]
+   (mx/validate! ::mx/room-id room-id)
+   (let [power-levels (mx/validate! ::mx/PowerLevelsContent power-levels)
+         opts         (mx/validate! ::mx/SetPowerLevelsOpts opts)]
+     (internal/suspend-task bridge/set-power-levels
+                            client
+                            room-id
+                            power-levels
                             (get opts ::mx/timeout)))))
 
 (defn redact-event
@@ -322,6 +361,16 @@
                             room-id
                             typing?
                             (get opts ::mx/timeout)))))
+
+(defn get-power-levels
+  "Returns a Missionary flow of normalized `m.room.power_levels` content.
+
+  The flow emits `nil` when no local power-level state is available for
+  `room-id`. Emitted maps use the same content keys accepted by
+  [[set-power-levels]]."
+  [client room-id]
+  (mx/validate! ::mx/room-id room-id)
+  (internal/observe-flow client (bridge/power-levels client room-id)))
 
 (defn get-account-data
   "Returns a Missionary flow of room account-data content.
@@ -522,7 +571,7 @@
    (get-timeline-events client response {}))
   ([client response opts]
    (mx/validate! ::mx/response response)
-   (let [opts                                                       (mx/validate! ::mx/TimelineSubscribeOpts opts)
+   (let [opts (mx/validate! ::mx/TimelineSubscribeOpts opts)
          decryption-timeout-ms
          (internal/duration->millis (::mx/decryption-timeout opts))]
      (internal/observe-flow

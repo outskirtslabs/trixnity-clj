@@ -2126,6 +2126,40 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
+[#bootstrap-cross-signing]
+== bootstrap-cross-signing
+
+
+
+
+[source,clojure]
+----
+(bootstrap-cross-signing client opts on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L481-L482[source,window=_blank]
+
+'''
+
+[#bootstrap-cross-signing-from-passphrase]
+== bootstrap-cross-signing-from-passphrase
+
+
+
+
+[source,clojure]
+----
+(bootstrap-cross-signing-from-passphrase client passphrase opts on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L484-L486[source,window=_blank]
+
+'''
+
 [#current-backup-version]
 == current-backup-version
 
@@ -2139,7 +2173,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L481-L482[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L488-L489[source,window=_blank]
 
 '''
 
@@ -2156,7 +2190,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L484-L485[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L491-L492[source,window=_blank]
 
 '''
 
@@ -2173,7 +2207,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L487-L488[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L494-L495[source,window=_blank]
 
 '''
 
@@ -2190,7 +2224,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L490-L491[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L497-L498[source,window=_blank]
 
 '''
 
@@ -2207,7 +2241,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L493-L494[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L500-L501[source,window=_blank]
 
 '''
 
@@ -2224,7 +2258,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L496-L497[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L503-L504[source,window=_blank]
 
 '''
 
@@ -2241,4 +2275,4 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L499-L500[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L506-L507[source,window=_blank]

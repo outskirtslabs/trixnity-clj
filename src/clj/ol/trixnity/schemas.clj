@@ -75,6 +75,7 @@
   [_]
   {::homeserver-url            :string
    ::password                  :string
+   ::passphrase                :string
    ::database-path             :string
    ::media-path                :string
    ::client                    [:fn #(instance? MatrixClient %)]
@@ -96,6 +97,13 @@
    ::users                     [:set ::user-id]
    ::event-id                  :string
    ::version                   :string
+   ::recovery-key              :string
+   ::uia                       ::UIA
+   ::completed                 [:vector :string]
+   ::flows                     [:vector [:vector :string]]
+   ::session                   :string
+   ::error-kind                [:or :keyword :string]
+   ::error-message             :string
    ::state-key                 :string
    ::transaction-id            :string
    ::room-type                 :string
@@ -799,6 +807,27 @@
     [::verified {:optional true} ::verified]
     [::reason {:optional true} ::reason]
     [::raw {:optional true} ::raw]]
+
+   ::UIA
+   [:map
+    [::kind [:enum :success :step :error "success" "step" "error"]]
+    [::completed {:optional true} ::completed]
+    [::flows {:optional true} ::flows]
+    [::session {:optional true} ::session]
+    [::error-kind {:optional true} ::error-kind]
+    [::error-message {:optional true} ::error-message]]
+
+   ::BootstrapCrossSigningResult
+   [:map
+    [::kind [:enum :success :uia-required :uia-error "success" "uia-required" "uia-error"]]
+    [::recovery-key ::recovery-key]
+    [::uia ::UIA]]
+
+   ::BootstrapCrossSigningOptions
+   [:map
+    {:closed true}
+    [::password {:optional true} ::password]
+    [::user-id {:optional true} ::user-id]]
 
    ::BackupVersion
    [:map

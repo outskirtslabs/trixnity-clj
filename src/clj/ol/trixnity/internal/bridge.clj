@@ -478,6 +478,13 @@
 (defn bootstrap-running-flow [^MatrixClient client]
   (KeyBridge/bootstrapRunningFlow client))
 
+(defn bootstrap-cross-signing [^MatrixClient client opts on-success on-failure]
+  (KeyBridge/bootstrapCrossSigning client opts on-success on-failure))
+
+(defn bootstrap-cross-signing-from-passphrase
+  [^MatrixClient client passphrase opts on-success on-failure]
+  (KeyBridge/bootstrapCrossSigningFromPassphrase client passphrase opts on-success on-failure))
+
 (defn current-backup-version [^MatrixClient client]
   (KeyBridge/currentBackupVersion client))
 

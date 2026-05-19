@@ -1,16 +1,26 @@
 (ns ol.trixnity.key-test
   (:require
-   [clojure.test :refer [deftest is]]
+   [clojure.test :refer [deftest is testing]]
    [missionary.core :as m]
    [ol.trixnity.internal :as internal]
    [ol.trixnity.internal.bridge :as bridge]
    [ol.trixnity.key :as sut]
-   [ol.trixnity.schemas :as schemas]))
+   [ol.trixnity.schemas :as schemas])
+  (:import
+   [java.io Closeable]))
 
 (defn- collect-values [flow n]
   (m/? (->> flow
             (m/eduction (take n))
             (m/reduce conj []))))
+
+(defn- realize-task [task]
+  (m/? task))
+
+(deftype StubCloseable [closed-count]
+  Closeable
+  (close [_]
+    (swap! closed-count inc)))
 
 (deftest key-surfaces-stay-thin-test
   (let [calls          (atom {})
@@ -65,6 +75,96 @@
              (collect-values (sut/get-device-keys :client "@alice:example.org") 2)))
       (is (= [nil [{::schemas/raw :cross-signing-key}]]
              (collect-values (sut/get-cross-signing-keys :client "@alice:example.org") 2))))))
+
+(deftest bootstrap-cross-signing-task-forwards-options-test
+  (let [calls    (atom [])
+        snapshot {::schemas/kind         "success"
+                  ::schemas/recovery-key "RECOVERY"
+                  ::schemas/uia          {::schemas/kind "success"}}]
+    (with-redefs [bridge/bootstrap-cross-signing
+                  (fn [client opts on-success _]
+                    (swap! calls conj [client opts])
+                    (on-success snapshot)
+                    (->StubCloseable (atom 0)))]
+      (is (= snapshot
+             (realize-task
+              (sut/bootstrap-cross-signing!
+               :client
+               {::schemas/password "secret"
+                ::schemas/user-id  "@bot:example.org"}))))
+      (is (= [[:client {::schemas/password "secret"
+                        ::schemas/user-id  "@bot:example.org"}]]
+             @calls)))))
+
+(deftest bootstrap-cross-signing-from-passphrase-task-forwards-options-test
+  (let [calls    (atom [])
+        snapshot {::schemas/kind         "success"
+                  ::schemas/recovery-key "RECOVERY"
+                  ::schemas/uia          {::schemas/kind "success"}}]
+    (with-redefs [bridge/bootstrap-cross-signing-from-passphrase
+                  (fn [client passphrase opts on-success _]
+                    (swap! calls conj [client passphrase opts])
+                    (on-success snapshot)
+                    (->StubCloseable (atom 0)))]
+      (is (= snapshot
+             (realize-task
+              (sut/bootstrap-cross-signing-from-passphrase!
+               :client
+               "storage-passphrase"
+               {::schemas/password "secret"}))))
+      (is (= [[:client "storage-passphrase" {::schemas/password "secret"}]]
+             @calls)))))
+
+(deftest bootstrap-cross-signing-validates-options-test
+  (testing "password must be a string when supplied"
+    (is (thrown? clojure.lang.ExceptionInfo
+                 (sut/bootstrap-cross-signing!
+                  :client
+                  {::schemas/password nil}))))
+  (testing "uia user id must be a string when supplied"
+    (is (thrown? clojure.lang.ExceptionInfo
+                 (sut/bootstrap-cross-signing!
+                  :client
+                  {::schemas/user-id nil}))))
+  (testing "passphrase must be a string"
+    (is (thrown? clojure.lang.ExceptionInfo
+                 (sut/bootstrap-cross-signing-from-passphrase!
+                  :client
+                  nil)))))
+
+(deftest bootstrap-cross-signing-result-schema-test
+  (let [registry (schemas/registry {})]
+    (is (= {::schemas/kind         "success"
+            ::schemas/recovery-key "RECOVERY"
+            ::schemas/uia          {::schemas/kind "success"}}
+           (schemas/validate!
+            registry
+            ::schemas/BootstrapCrossSigningResult
+            {::schemas/kind         "success"
+             ::schemas/recovery-key "RECOVERY"
+             ::schemas/uia          {::schemas/kind "success"}})))
+    (is (= {::schemas/kind         "uia-required"
+            ::schemas/recovery-key "RECOVERY"
+            ::schemas/uia          {::schemas/kind      "step"
+                                    ::schemas/completed []
+                                    ::schemas/flows     [["m.login.password"]]
+                                    ::schemas/session   "session1"}}
+           (schemas/validate!
+            registry
+            ::schemas/BootstrapCrossSigningResult
+            {::schemas/kind         "uia-required"
+             ::schemas/recovery-key "RECOVERY"
+             ::schemas/uia          {::schemas/kind      "step"
+                                     ::schemas/completed []
+                                     ::schemas/flows     [["m.login.password"]]
+                                     ::schemas/session   "session1"}})))
+    (is (thrown? clojure.lang.ExceptionInfo
+                 (schemas/validate!
+                  registry
+                  ::schemas/BootstrapCrossSigningResult
+                  {::schemas/kind         "done"
+                   ::schemas/recovery-key "RECOVERY"
+                   ::schemas/uia          {::schemas/kind "success"}})))))
 
 (deftest backup-version-schema-rejects-invalid-auth-payload-type-test
   (is (try

@@ -60,7 +60,7 @@
   (b/delete {:path "target"}))
 
 (defn prep-lib [_]
-  (let [{:keys [exit out err]} (sh/sh "mvn" "-q" "clean" "test")]
+  (let [{:keys [exit out err]} (sh/sh "mvn" "-q" "clean" "compile")]
     (when-not (zero? exit)
       (throw (ex-info "Bridge compilation failed during deps prep."
                       {:exit exit

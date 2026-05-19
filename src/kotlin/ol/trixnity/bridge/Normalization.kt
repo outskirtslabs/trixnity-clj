@@ -13,8 +13,11 @@ import de.connect2x.trixnity.client.store.TimelineEventRelation
 import de.connect2x.trixnity.client.store.UserPresence
 import de.connect2x.trixnity.client.user.PowerLevel
 import de.connect2x.trixnity.client.verification.ActiveDeviceVerification
+import de.connect2x.trixnity.client.verification.ActiveSasVerificationMethod
+import de.connect2x.trixnity.client.verification.ActiveSasVerificationState
 import de.connect2x.trixnity.client.verification.ActiveUserVerification
 import de.connect2x.trixnity.client.verification.ActiveVerification
+import de.connect2x.trixnity.client.verification.ActiveVerificationState
 import de.connect2x.trixnity.client.verification.VerificationService
 import de.connect2x.trixnity.clientserverapi.model.media.FileTransferProgress
 import de.connect2x.trixnity.clientserverapi.model.key.GetRoomKeysBackupVersionResponse
@@ -27,6 +30,7 @@ import de.connect2x.trixnity.core.model.events.RoomEventContent
 import de.connect2x.trixnity.core.model.events.StateEventContent
 import de.connect2x.trixnity.core.model.events.UnknownEventContent
 import de.connect2x.trixnity.core.model.events.m.RelatesTo
+import de.connect2x.trixnity.core.model.events.m.key.verification.VerificationMethod
 import de.connect2x.trixnity.core.model.events.m.ReactionEventContent
 import de.connect2x.trixnity.core.model.events.m.room.AvatarEventContent
 import de.connect2x.trixnity.core.model.events.m.room.CreateEventContent
@@ -508,28 +512,170 @@ internal suspend fun normalizeNotificationUpdate(
         }
     }
 
-private fun normalizeVerificationStateValue(
-    state: Any?,
+private val sasEmojiDescriptions = mapOf(
+    0 to "Dog", 1 to "Cat", 2 to "Lion", 3 to "Horse",
+    4 to "Unicorn", 5 to "Pig", 6 to "Elephant", 7 to "Rabbit",
+    8 to "Panda", 9 to "Rooster", 10 to "Penguin", 11 to "Turtle",
+    12 to "Fish", 13 to "Octopus", 14 to "Butterfly", 15 to "Flower",
+    16 to "Tree", 17 to "Cactus", 18 to "Mushroom", 19 to "Globe",
+    20 to "Moon", 21 to "Cloud", 22 to "Fire", 23 to "Banana",
+    24 to "Apple", 25 to "Strawberry", 26 to "Corn", 27 to "Pizza",
+    28 to "Cake", 29 to "Heart", 30 to "Smiley", 31 to "Robot",
+    32 to "Hat", 33 to "Glasses", 34 to "Spanner", 35 to "Santa",
+    36 to "Thumbs Up", 37 to "Umbrella", 38 to "Hourglass",
+    39 to "Clock", 40 to "Gift", 41 to "Light Bulb", 42 to "Book",
+    43 to "Pencil", 44 to "Paperclip", 45 to "Scissors",
+    46 to "Lock", 47 to "Key", 48 to "Hammer", 49 to "Telephone",
+    50 to "Flag", 51 to "Train", 52 to "Bicycle", 53 to "Aeroplane",
+    54 to "Rocket", 55 to "Trophy", 56 to "Ball", 57 to "Guitar",
+    58 to "Trumpet", 59 to "Bell", 60 to "Anchor",
+    61 to "Headphones", 62 to "Folder", 63 to "Pin",
+)
+
+internal fun activeVerificationId(verification: ActiveVerification): String =
+    when (verification) {
+        is ActiveUserVerification ->
+            "user:${verification.roomId.full}:${verification.requestEventId.full}"
+
+        is ActiveDeviceVerification ->
+            "device:${verification.theirUserId.full}:${verification.transactionId}"
+
+        else -> "verification:${verification.theirUserId.full}:${verification.timestamp}"
+    }
+
+private fun normalizeVerificationMethod(method: VerificationMethod): String =
+    when (method) {
+        VerificationMethod.Sas -> VerificationMethod.Sas.value
+        is VerificationMethod.Unknown -> method.value
+    }
+
+private fun normalizeSasEmojis(
+    emojis: List<Pair<Int, String>>,
+): List<Map<Keyword, Any?>> =
+    emojis.map { (index, emoji) ->
+        buildMap {
+            put(BridgeSchema.SasEmoji.index, index)
+            put(BridgeSchema.SasEmoji.emoji, emoji)
+            sasEmojiDescriptions[index]?.let { put(BridgeSchema.SasEmoji.description, it) }
+        }
+    }
+
+private fun normalizeSasVerificationStateValue(
+    state: ActiveSasVerificationState?,
 ): Map<Keyword, Any?>? =
     if (state == null) null
-    else mapOf(
-        BridgeSchema.VerificationState.kind to normalizedKind(state::class.simpleName),
-        BridgeSchema.VerificationState.raw to state,
-    )
+    else buildMap {
+        put(BridgeSchema.SasVerificationState.kind, normalizedKind(state::class.simpleName))
+        when (state) {
+            is ActiveSasVerificationState.ComparisonByUser -> {
+                put(BridgeSchema.SasVerificationState.sasDecimal, state.decimal)
+                put(BridgeSchema.SasVerificationState.sasEmojis, normalizeSasEmojis(state.emojis))
+            }
+
+            else -> Unit
+        }
+        put(BridgeSchema.SasVerificationState.raw, state)
+    }
+
+private fun normalizeVerificationStateValue(
+    state: ActiveVerificationState?,
+    ownUserId: String? = null,
+    ownDeviceId: String? = null,
+): Map<Keyword, Any?>? =
+    if (state == null) null
+    else buildMap {
+        put(BridgeSchema.VerificationState.kind, normalizedKind(state::class.simpleName))
+        when (state) {
+            is ActiveVerificationState.OwnRequest -> {
+                put(BridgeSchema.VerificationState.verificationDirection, "outgoing")
+                put(
+                    BridgeSchema.VerificationState.methods,
+                    state.content.methods.map(::normalizeVerificationMethod).toSet(),
+                )
+            }
+
+            is ActiveVerificationState.TheirRequest -> {
+                put(BridgeSchema.VerificationState.verificationDirection, "incoming")
+                put(
+                    BridgeSchema.VerificationState.methods,
+                    state.content.methods.map(::normalizeVerificationMethod).toSet(),
+                )
+            }
+
+            is ActiveVerificationState.Ready -> {
+                put(
+                    BridgeSchema.VerificationState.methods,
+                    state.methods.map(::normalizeVerificationMethod).toSet(),
+                )
+            }
+
+            is ActiveVerificationState.Start -> {
+                val method = state.method
+                if (method is ActiveSasVerificationMethod) {
+                    put(BridgeSchema.VerificationState.verificationMethod, VerificationMethod.Sas.value)
+                    put(
+                        BridgeSchema.VerificationState.sasState,
+                        normalizeSasVerificationStateValue(method.state.value),
+                    )
+                }
+                put(BridgeSchema.VerificationState.senderUserId, state.senderUserId.full)
+                put(BridgeSchema.VerificationState.senderDeviceId, state.senderDeviceId)
+                if (ownUserId != null && ownDeviceId != null) {
+                    val direction =
+                        if (state.senderUserId.full == ownUserId && state.senderDeviceId == ownDeviceId)
+                            "outgoing"
+                        else "incoming"
+                    put(BridgeSchema.VerificationState.verificationDirection, direction)
+                }
+            }
+
+            is ActiveVerificationState.WaitForDone -> {
+                put(BridgeSchema.VerificationState.isOurOwn, state.isOurOwn)
+            }
+
+            is ActiveVerificationState.Cancel -> {
+                put(BridgeSchema.VerificationState.cancelCode, state.content.code.value)
+                put(BridgeSchema.VerificationState.reason, state.content.reason)
+                put(BridgeSchema.VerificationState.isOurOwn, state.isOurOwn)
+            }
+
+            ActiveVerificationState.AcceptedByOtherDevice,
+            ActiveVerificationState.Done,
+            ActiveVerificationState.Undefined,
+            -> Unit
+        }
+        put(BridgeSchema.VerificationState.raw, state)
+    }
 
 internal fun normalizeActiveVerification(
     verification: ActiveVerification?,
+    ownUserId: String? = null,
+    ownDeviceId: String? = null,
 ): Map<Keyword, Any?>? {
     if (verification == null) return null
     return buildMap {
+        put(BridgeSchema.ActiveVerification.verificationId, activeVerificationId(verification))
+        put(
+            BridgeSchema.ActiveVerification.verificationKind,
+            when (verification) {
+                is ActiveUserVerification -> "user"
+                is ActiveDeviceVerification -> "device"
+                else -> "unknown"
+            },
+        )
         put(BridgeSchema.ActiveVerification.theirUserId, verification.theirUserId.full)
         verification.theirDeviceId?.let { put(BridgeSchema.ActiveVerification.theirDeviceId, it) }
         verification.transactionId?.let { put(BridgeSchema.ActiveVerification.transactionId, it) }
         put(BridgeSchema.ActiveVerification.timestamp, verification.timestamp)
-        put(
-            BridgeSchema.ActiveVerification.verificationState,
-            normalizeVerificationStateValue(verification.state.value),
+        val normalizedState = normalizeVerificationStateValue(
+            verification.state.value,
+            ownUserId,
+            ownDeviceId,
         )
+        normalizedState?.get(BridgeSchema.VerificationState.verificationDirection)?.let {
+            put(BridgeSchema.ActiveVerification.verificationDirection, it)
+        }
+        put(BridgeSchema.ActiveVerification.verificationState, normalizedState)
         when (verification) {
             is ActiveUserVerification -> {
                 put(BridgeSchema.ActiveVerification.requestEventId, verification.requestEventId.full)

@@ -9,6 +9,9 @@ This namespace maps to Trixnity's `VerificationService`.
 
 The public wrappers here cover:
 
+- creating device and user verification requests
+- accepting requests, starting and accepting SAS, confirming or rejecting SAS,
+  and cancelling active verifications
 - the current active device verification and its relieved flow
 - the current active user verifications and their relieved flow
 - self-verification method discovery
@@ -30,7 +33,7 @@ accompany verification workflows.
 Returns the current active device verification, or nil when none is active.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L23-L26[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L30-L33[source,window=_blank]
 
 '''
 
@@ -48,7 +51,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a relieved Missionary flow of the current active device verification.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L28-L32[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L35-L39[source,window=_blank]
 
 '''
 
@@ -66,7 +69,50 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns the current active user verifications as a vector.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L34-L37[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L41-L44[source,window=_blank]
+
+'''
+
+[#active-verification-snapshots]
+== active-verification-snapshots
+
+
+
+
+[source,clojure]
+----
+(active-verification-snapshots client)
+----
+
+Returns active device and user verification snapshots as a vector.
+
+Device verification, when present, appears first, followed by active user
+verifications in Trixnity order. Each snapshot contains a stable
+`::mx/verification-id` suitable for <<ready-BANG-,`ready!`>>, <<start-sas-BANG-,`start-sas!`>>,
+<<accept-sas-BANG-,`accept-sas!`>>, <<confirm-BANG-,`confirm!`>>, <<no-match-BANG-,`no-match!`>>, and <<cancel-BANG-,`cancel!`>>.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L46-L57[source,window=_blank]
+
+'''
+
+[#status]
+== status
+
+
+
+
+[source,clojure]
+----
+(status client)
+----
+
+Returns active verification snapshots.
+
+Alias for <<active-verification-snapshots,`active-verification-snapshots`>>.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L59-L64[source,window=_blank]
 
 '''
 
@@ -84,7 +130,228 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 Returns a relieved Missionary flow of the current active user verifications.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L39-L43[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L66-L70[source,window=_blank]
+
+'''
+
+[#start-device-verification-BANG-]
+== start-device-verification!
+
+
+
+
+[source,clojure]
+----
+(start-device-verification! client user-id device-id)
+----
+
+Creates a device verification request and returns a Missionary task.
+
+`user-id` is the target Matrix user id. `device-id` is the target Matrix
+device id. The task resolves to a normalized active-verification snapshot.
+
+Maps to Trixnity `VerificationService.createDeviceVerificationRequest`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L72-L85[source,window=_blank]
+
+'''
+
+[#start-user-verification-BANG-]
+== start-user-verification!
+
+
+
+
+[source,clojure]
+----
+(start-user-verification! client user-id)
+----
+
+Creates a user verification request and returns a Missionary task.
+
+The task resolves to a normalized active-verification snapshot. Maps to
+Trixnity `VerificationService.createUserVerificationRequest`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L87-L94[source,window=_blank]
+
+'''
+
+[#get-active-user-verification-BANG-]
+== get-active-user-verification!
+
+
+
+
+[source,clojure]
+----
+(get-active-user-verification! client room-id event-id)
+----
+
+Gets or creates an active user verification for a room request event.
+
+`room-id` and `event-id` identify a Matrix verification request event. The
+task resolves to a normalized active-verification snapshot or nil. Maps to
+Trixnity `VerificationService.getActiveUserVerification`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L96-L108[source,window=_blank]
+
+'''
+
+[#ready-BANG-]
+== ready!
+
+
+
+
+[source,clojure]
+----
+(ready! client verification-id)
+----
+
+Sends `m.key.verification.ready` for an incoming verification request.
+
+`verification-id` must come from an active-verification snapshot. The task
+resolves to the updated snapshot. Maps to Trixnity
+`ActiveVerificationState.TheirRequest.ready`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L110-L118[source,window=_blank]
+
+'''
+
+[#start-sas-BANG-]
+== start-sas!
+
+
+
+
+[source,clojure]
+----
+(start-sas! client verification-id)
+----
+
+Starts SAS verification for a ready verification request.
+
+`verification-id` must come from an active-verification snapshot. The task
+resolves to the updated snapshot. Maps to Trixnity
+`ActiveVerificationState.Ready.start(VerificationMethod.Sas)`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L120-L128[source,window=_blank]
+
+'''
+
+[#accept-sas-BANG-]
+== accept-sas!
+
+
+
+
+[source,clojure]
+----
+(accept-sas! client verification-id)
+----
+
+Accepts an incoming SAS start event.
+
+`verification-id` must come from an active-verification snapshot. The task
+resolves to the updated snapshot. Maps to Trixnity
+`ActiveSasVerificationState.TheirSasStart.accept`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L130-L138[source,window=_blank]
+
+'''
+
+[#accept-BANG-]
+== accept!
+
+
+
+
+[source,clojure]
+----
+(accept! client verification-id)
+----
+
+Accepts the current incoming verification step.
+
+`verification-id` must come from an active-verification snapshot. This maps
+to Trixnity's available incoming action for the current state: request
+`ready` or SAS `accept`. Prefer <<ready-BANG-,`ready!`>> or <<accept-sas-BANG-,`accept-sas!`>> when the
+caller already knows the state.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L140-L149[source,window=_blank]
+
+'''
+
+[#confirm-BANG-]
+== confirm!
+
+
+
+
+[source,clojure]
+----
+(confirm! client verification-id)
+----
+
+Confirms that the SAS comparison matches.
+
+`verification-id` must come from an active-verification snapshot. The task
+resolves to the updated snapshot. Maps to Trixnity
+`ActiveSasVerificationState.ComparisonByUser.match`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L151-L159[source,window=_blank]
+
+'''
+
+[#no-match-BANG-]
+== no-match!
+
+
+
+
+[source,clojure]
+----
+(no-match! client verification-id)
+----
+
+Rejects the SAS comparison as a mismatch.
+
+`verification-id` must come from an active-verification snapshot. The task
+resolves to the updated snapshot. Maps to Trixnity
+`ActiveSasVerificationState.ComparisonByUser.noMatch`.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L161-L169[source,window=_blank]
+
+'''
+
+[#cancel-BANG-]
+== cancel!
+
+
+
+
+[source,clojure]
+----
+(cancel! client verification-id)
+(cancel! client verification-id reason)
+----
+
+Cancels an active verification and returns a Missionary task.
+
+`verification-id` must come from an active-verification snapshot. With
+`reason`, passes that Matrix cancellation reason through to Trixnity.
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L171-L185[source,window=_blank]
 
 '''
 
@@ -106,4 +373,4 @@ preconditions, no-cross-signing-yet, already-cross-signed, and available
 self-verification methods.
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L45-L52[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/verification.clj#L187-L194[source,window=_blank]

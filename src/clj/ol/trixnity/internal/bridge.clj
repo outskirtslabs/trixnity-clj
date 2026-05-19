@@ -442,6 +442,36 @@
 (defn self-verification-methods [^MatrixClient client]
   (VerificationBridge/selfVerificationMethods client))
 
+(defn start-device-verification [^MatrixClient client user-id device-id on-success on-failure]
+  (VerificationBridge/startDeviceVerification client user-id device-id on-success on-failure))
+
+(defn start-user-verification [^MatrixClient client user-id on-success on-failure]
+  (VerificationBridge/startUserVerification client user-id on-success on-failure))
+
+(defn get-active-user-verification [^MatrixClient client room-id event-id on-success on-failure]
+  (VerificationBridge/getActiveUserVerification client room-id event-id on-success on-failure))
+
+(defn ready-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/readyVerification client verification-id on-success on-failure))
+
+(defn start-sas-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/startSasVerification client verification-id on-success on-failure))
+
+(defn accept-sas-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/acceptSasVerification client verification-id on-success on-failure))
+
+(defn accept-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/acceptVerification client verification-id on-success on-failure))
+
+(defn confirm-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/confirmVerification client verification-id on-success on-failure))
+
+(defn no-match-verification [^MatrixClient client verification-id on-success on-failure]
+  (VerificationBridge/noMatchVerification client verification-id on-success on-failure))
+
+(defn cancel-verification [^MatrixClient client verification-id reason on-success on-failure]
+  (VerificationBridge/cancelVerification client verification-id reason on-success on-failure))
+
 (defn current-bootstrap-running [^MatrixClient client]
   (KeyBridge/currentBootstrapRunning client))
 

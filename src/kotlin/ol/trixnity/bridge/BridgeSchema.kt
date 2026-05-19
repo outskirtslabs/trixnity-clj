@@ -99,6 +99,20 @@ internal object BridgeSchema {
     val theirDeviceId: Keyword = Keyword.intern(schemaNamespace, "their-device-id")
     val requestEventId: Keyword = Keyword.intern(schemaNamespace, "request-event-id")
     val verificationState: Keyword = Keyword.intern(schemaNamespace, "verification-state")
+    val verificationId: Keyword = Keyword.intern(schemaNamespace, "verification-id")
+    val verificationKind: Keyword = Keyword.intern(schemaNamespace, "verification-kind")
+    val verificationDirection: Keyword = Keyword.intern(schemaNamespace, "verification-direction")
+    val verificationMethod: Keyword = Keyword.intern(schemaNamespace, "verification-method")
+    val sasState: Keyword = Keyword.intern(schemaNamespace, "sas-state")
+    val sasDecimal: Keyword = Keyword.intern(schemaNamespace, "sas-decimal")
+    val sasEmojis: Keyword = Keyword.intern(schemaNamespace, "sas-emojis")
+    val emoji: Keyword = Keyword.intern(schemaNamespace, "emoji")
+    val description: Keyword = Keyword.intern(schemaNamespace, "description")
+    val index: Keyword = Keyword.intern(schemaNamespace, "index")
+    val isOurOwn: Keyword = Keyword.intern(schemaNamespace, "is-our-own")
+    val cancelCode: Keyword = Keyword.intern(schemaNamespace, "cancel-code")
+    val senderUserId: Keyword = Keyword.intern(schemaNamespace, "sender-user-id")
+    val senderDeviceId: Keyword = Keyword.intern(schemaNamespace, "sender-device-id")
     val methods: Keyword = Keyword.intern(schemaNamespace, "methods")
     val reasons: Keyword = Keyword.intern(schemaNamespace, "reasons")
     val algorithm: Keyword = Keyword.intern(schemaNamespace, "algorithm")
@@ -306,6 +320,9 @@ internal object BridgeSchema {
     }
 
     object ActiveVerification {
+        val verificationId: Keyword = BridgeSchema.verificationId
+        val verificationKind: Keyword = BridgeSchema.verificationKind
+        val verificationDirection: Keyword = BridgeSchema.verificationDirection
         val theirUserId: Keyword = BridgeSchema.theirUserId
         val theirDeviceId: Keyword = BridgeSchema.theirDeviceId
         val requestEventId: Keyword = BridgeSchema.requestEventId
@@ -318,7 +335,29 @@ internal object BridgeSchema {
 
     object VerificationState {
         val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val verificationDirection: Keyword = BridgeSchema.verificationDirection
+        val verificationMethod: Keyword = BridgeSchema.verificationMethod
+        val methods: Keyword = BridgeSchema.methods
+        val senderUserId: Keyword = BridgeSchema.senderUserId
+        val senderDeviceId: Keyword = BridgeSchema.senderDeviceId
+        val isOurOwn: Keyword = BridgeSchema.isOurOwn
+        val cancelCode: Keyword = BridgeSchema.cancelCode
+        val reason: Keyword = BridgeSchema.reason
+        val sasState: Keyword = BridgeSchema.sasState
         val raw: Keyword = BridgeSchema.raw
+    }
+
+    object SasVerificationState {
+        val kind: Keyword = BridgeSchema.MessageSpec.kind
+        val sasDecimal: Keyword = BridgeSchema.sasDecimal
+        val sasEmojis: Keyword = BridgeSchema.sasEmojis
+        val raw: Keyword = BridgeSchema.raw
+    }
+
+    object SasEmoji {
+        val index: Keyword = BridgeSchema.index
+        val emoji: Keyword = BridgeSchema.emoji
+        val description: Keyword = BridgeSchema.description
     }
 
     object SelfVerificationMethods {

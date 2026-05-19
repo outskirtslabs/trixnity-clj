@@ -1922,6 +1922,176 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 '''
 
+[#start-device-verification]
+== start-device-verification
+
+
+
+
+[source,clojure]
+----
+(start-device-verification client user-id device-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L445-L446[source,window=_blank]
+
+'''
+
+[#start-user-verification]
+== start-user-verification
+
+
+
+
+[source,clojure]
+----
+(start-user-verification client user-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L448-L449[source,window=_blank]
+
+'''
+
+[#get-active-user-verification]
+== get-active-user-verification
+
+
+
+
+[source,clojure]
+----
+(get-active-user-verification client room-id event-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L451-L452[source,window=_blank]
+
+'''
+
+[#ready-verification]
+== ready-verification
+
+
+
+
+[source,clojure]
+----
+(ready-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L454-L455[source,window=_blank]
+
+'''
+
+[#start-sas-verification]
+== start-sas-verification
+
+
+
+
+[source,clojure]
+----
+(start-sas-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L457-L458[source,window=_blank]
+
+'''
+
+[#accept-sas-verification]
+== accept-sas-verification
+
+
+
+
+[source,clojure]
+----
+(accept-sas-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L460-L461[source,window=_blank]
+
+'''
+
+[#accept-verification]
+== accept-verification
+
+
+
+
+[source,clojure]
+----
+(accept-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L463-L464[source,window=_blank]
+
+'''
+
+[#confirm-verification]
+== confirm-verification
+
+
+
+
+[source,clojure]
+----
+(confirm-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L466-L467[source,window=_blank]
+
+'''
+
+[#no-match-verification]
+== no-match-verification
+
+
+
+
+[source,clojure]
+----
+(no-match-verification client verification-id on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L469-L470[source,window=_blank]
+
+'''
+
+[#cancel-verification]
+== cancel-verification
+
+
+
+
+[source,clojure]
+----
+(cancel-verification client verification-id reason on-success on-failure)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L472-L473[source,window=_blank]
+
+'''
+
 [#current-bootstrap-running]
 == current-bootstrap-running
 
@@ -1935,7 +2105,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L445-L446[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L475-L476[source,window=_blank]
 
 '''
 
@@ -1952,7 +2122,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L448-L449[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L478-L479[source,window=_blank]
 
 '''
 
@@ -1969,7 +2139,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L451-L452[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L481-L482[source,window=_blank]
 
 '''
 
@@ -1986,7 +2156,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L454-L455[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L484-L485[source,window=_blank]
 
 '''
 
@@ -2003,7 +2173,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L457-L458[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L487-L488[source,window=_blank]
 
 '''
 
@@ -2020,7 +2190,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L460-L461[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L490-L491[source,window=_blank]
 
 '''
 
@@ -2037,7 +2207,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L463-L464[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L493-L494[source,window=_blank]
 
 '''
 
@@ -2054,7 +2224,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L466-L467[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L496-L497[source,window=_blank]
 
 '''
 
@@ -2071,4 +2241,4 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L469-L470[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/internal/bridge.clj#L499-L500[source,window=_blank]

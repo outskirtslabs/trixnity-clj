@@ -206,6 +206,18 @@
    ::notification-kind         [:or :keyword :string]
    ::notification-update-kind  [:or :keyword :string]
    ::timestamp                 int?
+   ::verification-id           [:fn non-blank-string?]
+   ::verification-kind         [:enum :device :user "device" "user"]
+   ::verification-direction    [:enum :incoming :outgoing "incoming" "outgoing"]
+   ::verification-method       [:or :keyword :string]
+   ::sas-state                 ::SasVerificationState
+   ::sas-decimal               [:vector int?]
+   ::sas-emojis                [:vector ::SasEmoji]
+   ::emoji                     :string
+   ::description               :string
+   ::index                     int?
+   ::is-our-own                :boolean
+   ::cancel-code               [:or :keyword :string]
    ::their-user-id             :string
    ::their-device-id           :string
    ::request-event-id          :string
@@ -733,13 +745,38 @@
     [::state-event {:optional true} ::StateEvent]
     [::raw {:optional true} ::raw]]
 
+   ::SasEmoji
+   [:map
+    [::index ::index]
+    [::emoji ::emoji]
+    [::description {:optional true} ::description]]
+
+   ::SasVerificationState
+   [:map
+    [::kind ::kind]
+    [::sas-decimal {:optional true} ::sas-decimal]
+    [::sas-emojis {:optional true} ::sas-emojis]
+    [::raw {:optional true} ::raw]]
+
    ::VerificationState
    [:map
     [::kind ::kind]
+    [::verification-direction {:optional true} ::verification-direction]
+    [::verification-method {:optional true} ::verification-method]
+    [::methods {:optional true} ::methods]
+    [::sender-user-id {:optional true} ::user-id]
+    [::sender-device-id {:optional true} ::device-id]
+    [::is-our-own {:optional true} ::is-our-own]
+    [::cancel-code {:optional true} ::cancel-code]
+    [::reason {:optional true} ::reason]
+    [::sas-state {:optional true} ::SasVerificationState]
     [::raw {:optional true} ::raw]]
 
    ::ActiveVerification
    [:map
+    [::verification-id ::verification-id]
+    [::verification-kind ::verification-kind]
+    [::verification-direction {:optional true} ::verification-direction]
     [::their-user-id ::their-user-id]
     [::their-device-id {:optional true} ::their-device-id]
     [::request-event-id {:optional true} ::request-event-id]

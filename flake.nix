@@ -12,7 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     devenv = {
-      url = "https://flakehub.com/f/ramblurr/nix-devenv/*";
+      url = "github:ramblurr/nix-devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

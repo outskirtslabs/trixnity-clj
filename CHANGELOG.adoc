@@ -10,6 +10,9 @@ This project uses https://www.taoensso.com/break-versioning[*Break Versioning*].
 
 * Add public room power-level helpers for reading and writing `m.room.power_levels`.
 * Add public Matrix space helpers for space creation, local space listing, hierarchy inspection, and relation management.
+* Add public Matrix verification workflow helpers and normalized active-verification snapshots.
+* Add public cross-signing bootstrap helpers under `ol.trixnity.key`, including password UIA completion and passphrase-based secret-storage bootstrap.
+* Change git dependency prep to compile classes without running tests, so Java 21 consumers can prepare the library from a git SHA.
 
 [[v002-2026-05-17]]
 == `v0.0.2` (2026-05-17)

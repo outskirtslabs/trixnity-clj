@@ -1,10 +1,31 @@
 {
   "nodes": {
+    "clj-helpers": {
+      "inputs": {
+        "clojure-nix-locker": "clojure-nix-locker",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781180565,
+        "narHash": "sha256-RkwmAp3FvQ3czih+WUYCF8TZE3viJyF8U6i3ekm8o+Q=",
+        "owner": "outskirtslabs",
+        "repo": "clojure-nix-locker-helpers",
+        "rev": "b72df887ae16d56c9d8e1a3d39b0242830011be6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "outskirtslabs",
+        "repo": "clojure-nix-locker-helpers",
+        "type": "github"
+      }
+    },
     "clojure-nix-locker": {
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": [
-          "devenv",
+          "clj-helpers",
           "nixpkgs"
         ]
       },
@@ -24,7 +45,6 @@
     },
     "devenv": {
       "inputs": {
-        "clojure-nix-locker": "clojure-nix-locker",
         "devshell": "devshell",
         "flake-schemas": "flake-schemas",
         "flakelight": "flakelight",
@@ -35,11 +55,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1781168402,
-        "narHash": "sha256-n+DVw0Y2LIBmtF14euMnco7GliBWlcIThiyvX4mTS48=",
+        "lastModified": 1781182424,
+        "narHash": "sha256-3nwfJ96y0gpRkgimUiRUpY/R+T9qaY+0Cux/1CVLxjQ=",
         "owner": "ramblurr",
         "repo": "nix-devenv",
-        "rev": "3510b314b7350bbfd907441c99e6c8b05ffccdbb",
+        "rev": "58e5288a0a0600f980ea4758672c61cb51e2ad0a",
         "type": "github"
       },
       "original": {
@@ -149,11 +169,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778512898,
-        "narHash": "sha256-kwq7PYUbP6jNM/YiDEo21vbzefr93SUe0NbmCJIMFNw=",
+        "lastModified": 1780934502,
+        "narHash": "sha256-n3poyqxCWcahIXTaRV+yKInIOC8HmSnct5H/MI6TrVY=",
         "owner": "nix-community",
         "repo": "flakelight",
-        "rev": "f91eac171176dca81cbb0ae64ed75a9143ded8ba",
+        "rev": "f8e4ba181be319da2e2a0513c902fb65b911b218",
         "type": "github"
       },
       "original": {
@@ -197,12 +217,12 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1778869304,
-        "narHash": "sha256-30sZNZoA1cqF5JNO9fVX+wgiQYjB7HJqqJ4ztCDeBZE=",
-        "rev": "d233902339c02a9c334e7e593de68855ad26c4cb",
-        "revCount": 998534,
+        "lastModified": 1780749050,
+        "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
+        "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+        "revCount": 1011622,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.998534%2Brev-d233902339c02a9c334e7e593de68855ad26c4cb/019e3132-2bc3-7cf0-a522-2d02374629cf/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.1011622%2Brev-a799d3e3886da994fa307f817a6bc705ae538eeb/019ea4be-9303-7001-8232-6b7ec45c4f5b/source.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -211,6 +231,7 @@
     },
     "root": {
       "inputs": {
+        "clj-helpers": "clj-helpers",
         "devenv": "devenv",
         "devshell": "devshell_2",
         "flakelight": "flakelight_2",

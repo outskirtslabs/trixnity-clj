@@ -15,12 +15,17 @@
       url = "github:ramblurr/nix-devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    clj-helpers = {
+      url = "github:outskirtslabs/clojure-nix-locker-helpers";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     inputs@{ self
     , devenv
     , flakelight
+    , clj-helpers
     , ...
     }:
     let
@@ -40,7 +45,7 @@
           pkgs:
           let
             clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
-            clojureLocker = devenv.clojure.mkLockfile {
+            clojureLocker = clj-helpers.lib.mkLockfile {
               inherit pkgs;
               jdk = pkgs.${jdk};
               src = ./.;
@@ -62,7 +67,7 @@
         let
           clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
           sqlite4cljRev = "2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7";
-          clojureLocker = devenv.clojure.mkLockfile {
+          clojureLocker = clj-helpers.lib.mkLockfile {
             inherit pkgs;
             jdk = pkgs.${jdk};
             src = ./.;

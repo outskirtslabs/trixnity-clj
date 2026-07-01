@@ -2,9 +2,9 @@
  ["src/clj" "target/classes"]
 
  :deps
- {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.5.2"}
-  de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.5.2"}
-  de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.5.2"}
+ {de.connect2x.trixnity/trixnity-client-jvm                        {:mvn/version "5.6.0"}
+  de.connect2x.trixnity/trixnity-client-media-okio-jvm             {:mvn/version "5.6.0"}
+  de.connect2x.trixnity/trixnity-client-cryptodriver-vodozemac-jvm {:mvn/version "5.6.0"}
   io.ktor/ktor-client-java-jvm                                     {:mvn/version "3.5.0"}
   io.ktor/ktor-client-mock-jvm                                     {:mvn/version "3.5.0"}
   io.ktor/ktor-client-auth-jvm                                     {:mvn/version "3.5.0"}

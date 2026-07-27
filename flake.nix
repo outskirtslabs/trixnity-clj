@@ -3,10 +3,6 @@
 
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
-    flakelight = {
-      url = "github:nix-community/flakelight";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,14 +20,13 @@
   outputs =
     inputs@{ self
     , devenv
-    , flakelight
     , clj-helpers
     , ...
     }:
     let
       jdk = "jdk25";
     in
-    flakelight ./. {
+    devenv.lib.mkFlake ./. {
       inherit inputs;
       pname = "trixnity-clj";
 
@@ -60,9 +55,7 @@
             ${clojure}/bin/clojure -Srepro -P -M:dev:kaocha
             ${clojure}/bin/clojure -Srepro -P -T:build jar
           '';
-      };
-
-      package =
+        default =
         pkgs:
         let
           clojure = pkgs.clojure.override { jdk = pkgs.${jdk}; };
@@ -150,6 +143,7 @@
             runHook postInstall
           '';
         };
+      };
 
       checks = {
         package = pkgs: self.packages.${pkgs.system}.default;

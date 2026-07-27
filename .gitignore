@@ -5,15 +5,11 @@
 .clj-kondo/
 .lsp/
 .nrepl-port
-archive/
 target/
 .clojure-mcp
-extra/
 .direnv
 *.log
 .worktrees/
-prompts/PROMPTS.md
-prompts/*
 result
 .env
 kotlin/build
@@ -23,4 +19,3 @@ dev-data
 *.db
 archive
 tmp/
-*.md

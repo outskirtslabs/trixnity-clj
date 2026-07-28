@@ -308,10 +308,26 @@
                           ::sut/event-id "$event"
                           ::sut/msgtype  :image})))))
 
+(deftest media-download-options-schema-validates-maximum-byte-counts-test
+  (let [registry        (sut/registry {})
+        download-schema (m/schema ::sut/DownloadMediaOpts {:registry registry})
+        valid-options   [{}
+                         {::sut/max-size-bytes 0}
+                         {::sut/max-size-bytes Long/MAX_VALUE}]
+        invalid-options [{::sut/max-size-bytes -1}
+                         {::sut/max-size-bytes 1.5}
+                         {::sut/max-size-bytes "4096"}
+                         {::sut/max-size-bytes (inc (bigint Long/MAX_VALUE))}]]
+    (is (= [true true true]
+           (mapv #(m/validate download-schema %) valid-options)))
+    (is (= [false false false false]
+           (mapv #(m/validate download-schema %) invalid-options)))))
+
 (deftest thumbnail-options-schema-stays-close-to-upstream-thumbnail-parameters-test
   (let [schema (m/schema ::sut/GetThumbnailOpts {:registry (sut/registry {})})]
-    (is (m/validate schema {::sut/method   :crop
-                            ::sut/animated false}))
+    (is (m/validate schema {::sut/max-size-bytes 4096
+                            ::sut/method         :crop
+                            ::sut/animated       false}))
     (is (m/validate schema {::sut/method :scale}))
     (is (not (m/validate schema {::sut/method :stretch})))
     (is (not (m/validate schema {::sut/animated :sometimes})))))

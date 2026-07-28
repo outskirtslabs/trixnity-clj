@@ -26,6 +26,10 @@
   The public shapes here stay normalized as namespaced keyword maps so callers
   do not need to work with Kotlin media APIs directly.
 
+  Pass `::mx/max-size-bytes` to a download options map to reject oversized
+  remote content. Use a finite limit for untrusted media. Omitting the option
+  preserves the existing unbounded download behaviour.
+
   Resolved download handles all share the same shape:
 
   ```clojure
@@ -258,26 +262,41 @@
   - `::mx/raw`, an opaque upstream media value used only for composition with
     [[temporary-file]]
 
-  `uri` should be an MXC URI such as `mxc://example.org/abc`.
+  `uri` should be an MXC URI such as `mxc://example.org/abc`. Use this for event
+  fields that already carry a plain media reference, such as `::mx/url` or
+  `::mx/thumbnail-url`.
 
-  Use this for event fields that already carry a plain media reference, such as
-  `::mx/url` or `::mx/thumbnail-url`.
+  Supported opts:
+
+  | key                   | description
+  |-----------------------|------------
+  | `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+
+  Trixnity fails the task with its upstream download-limit exception when
+  remote content exceeds `::mx/max-size-bytes`.
 
   Example:
 
   ```clojure
   (m/sp
-    (let [handle (m/? (get-media client (::mx/url ev)))]
+    (let [handle (m/? (get-media client
+                                  (::mx/url ev)
+                                  {::mx/max-size-bytes (* 20 1024 1024)}))]
       (slurp (::mx/input-stream handle))))
   ```"
-  [client uri]
-  (let [uri (mx/validate! ::mx/url uri)]
-    (deferred-task
-     #(mx/validate!
-       ::mx/MediaHandle
-       (m/? (internal/suspend-task bridge/get-media
-                                   client
-                                   uri))))))
+  ([client uri]
+   (get-media client uri {}))
+  ([client uri opts]
+   (let [uri            (mx/validate! ::mx/url uri)
+         opts           (mx/validate! ::mx/DownloadMediaOpts opts)
+         max-size-bytes (some-> (::mx/max-size-bytes opts) long)]
+     (deferred-task
+      #(mx/validate!
+        ::mx/MediaHandle
+        (m/? (internal/suspend-task bridge/get-media
+                                    client
+                                    uri
+                                    max-size-bytes)))))))
 
 (defn get-encrypted-media
   "Downloads encrypted media from normalized `encrypted-file` metadata.
@@ -289,22 +308,38 @@
   `::mx/input-stream` as the public happy path and `::mx/raw` kept opaque for
   [[temporary-file]] composition.
 
+  Supported opts:
+
+  | key                   | description
+  |-----------------------|------------
+  | `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+
+  Trixnity fails the task with its upstream download-limit exception when
+  remote content exceeds `::mx/max-size-bytes`.
+
   Example:
 
   ```clojure
   (m/sp
-    (let [handle (m/? (get-encrypted-media client
-                                           (::mx/encrypted-file ev)))]
+    (let [handle (m/? (get-encrypted-media
+                         client
+                         (::mx/encrypted-file ev)
+                         {::mx/max-size-bytes (* 20 1024 1024)}))]
       (slurp (::mx/input-stream handle))))
   ```"
-  [client encrypted-file]
-  (let [encrypted-file (mx/validate! ::mx/EncryptedFile encrypted-file)]
-    (deferred-task
-     #(mx/validate!
-       ::mx/MediaHandle
-       (m/? (internal/suspend-task bridge/get-encrypted-media
-                                   client
-                                   encrypted-file))))))
+  ([client encrypted-file]
+   (get-encrypted-media client encrypted-file {}))
+  ([client encrypted-file opts]
+   (let [encrypted-file (mx/validate! ::mx/EncryptedFile encrypted-file)
+         opts           (mx/validate! ::mx/DownloadMediaOpts opts)
+         max-size-bytes (some-> (::mx/max-size-bytes opts) long)]
+     (deferred-task
+      #(mx/validate!
+        ::mx/MediaHandle
+        (m/? (internal/suspend-task bridge/get-encrypted-media
+                                    client
+                                    encrypted-file
+                                    max-size-bytes)))))))
 
 (defn get-thumbnail
   "Downloads a homeserver-generated thumbnail for `uri`.
@@ -319,29 +354,36 @@
 
   Supported opts:
 
-  | key | description
-  |-----|-------------
-  | `::mx/method` | Thumbnail resize method, either `:crop` or `:scale` |
-  | `::mx/animated` | Request animated thumbnails when upstream supports them |
+  | key                   | description
+  |-----------------------|------------
+  | `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+  | `::mx/method`         | Thumbnail resize method, either `:crop` or `:scale` (default `:crop`) |
+  | `::mx/animated`       | Request animated thumbnails when supported (default `false`) |
+
+  Trixnity fails the task with its upstream download-limit exception when
+  remote content exceeds `::mx/max-size-bytes`.
 
   Example:
 
   ```clojure
   (m/sp
-    (let [handle (m/? (get-thumbnail client
-                                      (::mx/url ev)
-                                      320
-                                      200
-                                      {::mx/method :scale}))]
+    (let [handle (m/? (get-thumbnail
+                         client
+                         (::mx/url ev)
+                         320
+                         200
+                         {::mx/max-size-bytes (* 2 1024 1024)
+                          ::mx/method         :scale}))]
       (slurp (::mx/input-stream handle))))
   ```"
   ([client uri width height]
    (get-thumbnail client uri width height {}))
   ([client uri width height opts]
-   (mx/validate! ::mx/url uri)
-   (mx/validate! ::mx/width width)
-   (mx/validate! ::mx/height height)
-   (let [opts (mx/validate! ::mx/GetThumbnailOpts opts)]
+   (let [uri            (mx/validate! ::mx/url uri)
+         width          (mx/validate! ::mx/width width)
+         height         (mx/validate! ::mx/height height)
+         opts           (mx/validate! ::mx/GetThumbnailOpts opts)
+         max-size-bytes (some-> (::mx/max-size-bytes opts) long)]
      (deferred-task
       #(mx/validate!
         ::mx/MediaHandle
@@ -350,6 +392,7 @@
                                     uri
                                     (long width)
                                     (long height)
+                                    max-size-bytes
                                     (some-> (::mx/method opts) name)
                                     (::mx/animated opts))))))))
 

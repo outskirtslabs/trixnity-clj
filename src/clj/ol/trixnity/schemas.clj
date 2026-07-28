@@ -137,6 +137,7 @@
    ::file-name                 [:fn non-blank-string?]
    ::mime-type                 [:fn non-blank-string?]
    ::size-bytes                nat-int?
+   ::max-size-bytes            [:int {:min 0 :max Long/MAX_VALUE}]
    ::height                    pos-int?
    ::width                     pos-int?
    ::key                       :string
@@ -404,8 +405,13 @@
     [::mime-type {:optional true} ::mime-type]
     [::keep-in-cache {:optional true} ::keep-in-cache]]
 
+   ::DownloadMediaOpts
+   [:map
+    [::max-size-bytes {:optional true} ::max-size-bytes]]
+
    ::GetThumbnailOpts
    [:map
+    [::max-size-bytes {:optional true} ::max-size-bytes]
     [::method {:optional true} ::method]
     [::animated {:optional true} ::animated]]
 

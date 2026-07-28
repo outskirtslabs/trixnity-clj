@@ -212,15 +212,17 @@
 (defn upload-media [^MatrixClient client cache-uri keep-in-cache on-progress on-success on-failure]
   (MediaBridge/uploadMedia client cache-uri keep-in-cache on-progress on-success on-failure))
 
-(defn get-media [^MatrixClient client uri on-success on-failure]
-  (MediaBridge/getMedia client uri on-success on-failure))
+(defn get-media [^MatrixClient client uri max-size-bytes on-success on-failure]
+  (MediaBridge/getMedia client uri max-size-bytes on-success on-failure))
 
-(defn get-encrypted-media [^MatrixClient client encrypted-file on-success on-failure]
-  (MediaBridge/getEncryptedMedia client encrypted-file on-success on-failure))
+(defn get-encrypted-media
+  [^MatrixClient client encrypted-file max-size-bytes on-success on-failure]
+  (MediaBridge/getEncryptedMedia client encrypted-file max-size-bytes on-success on-failure))
 
 (defn get-thumbnail
-  [^MatrixClient client uri width height method animated on-success on-failure]
-  (MediaBridge/getThumbnail client uri width height method animated on-success on-failure))
+  [^MatrixClient client uri width height max-size-bytes method animated on-success on-failure]
+  (MediaBridge/getThumbnail
+   client uri width height max-size-bytes method animated on-success on-failure))
 
 (defn media-temporary-file [platform-media on-success on-failure]
   (MediaBridge/mediaTemporaryFile platform-media on-success on-failure))

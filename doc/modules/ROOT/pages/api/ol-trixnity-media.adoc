@@ -28,6 +28,10 @@ Download selection follows the normalized event data:
 The public shapes here stay normalized as namespaced keyword maps so callers
 do not need to work with Kotlin media APIs directly.
 
+Pass `::mx/max-size-bytes` to a download options map to reject oversized
+remote content. Use a finite limit for untrusted media. Omitting the option
+preserves the existing unbounded download behaviour.
+
 Resolved download handles all share the same shape:
 
 [source,clojure]
@@ -52,7 +56,7 @@ Resolved download handles all share the same shape:
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L151-L154[source,window=_blank]
 
 '''
 
@@ -65,7 +69,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L151-L154[source,window=_blank]
 
 '''
 
@@ -82,7 +86,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L147-L150[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L151-L154[source,window=_blank]
 
 '''
 
@@ -113,7 +117,7 @@ Supported opts:
 |===
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L165-L190[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L169-L194[source,window=_blank]
 
 '''
 
@@ -153,7 +157,7 @@ Supported opts:
 | `::mx/keep-in-cache` | Keep the staged media in the local cache after upload, defaults to `true` |
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L192-L250[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L196-L254[source,window=_blank]
 
 '''
 
@@ -166,6 +170,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [source,clojure]
 ----
 (get-media client uri)
+(get-media client uri opts)
 ----
 
 Downloads plain media identified by `uri`.
@@ -176,22 +181,32 @@ Returns a Missionary task of a normalized media handle:
 - `::mx/raw`, an opaque upstream media value used only for composition with
   <<temporary-file,`temporary-file`>>
 
-`uri` should be an MXC URI such as `mxc://example.org/abc`.
+`uri` should be an MXC URI such as `mxc://example.org/abc`. Use this for event
+fields that already carry a plain media reference, such as `::mx/url` or
+`::mx/thumbnail-url`.
 
-Use this for event fields that already carry a plain media reference, such as
-`::mx/url` or `::mx/thumbnail-url`.
+Supported opts:
+
+| key                   | description
+|-----------------------|------------
+| `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+
+Trixnity fails the task with its upstream download-limit exception when
+remote content exceeds `::mx/max-size-bytes`.
 
 Example:
 
 [source,clojure]
 ----
 (m/sp
-  (let [handle (m/? (get-media client (::mx/url ev)))]
+  (let [handle (m/? (get-media client
+                                (::mx/url ev)
+                                {::mx/max-size-bytes (* 20 1024 1024)}))]
     (slurp (::mx/input-stream handle))))
 ----
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L252-L280[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L256-L299[source,window=_blank]
 
 '''
 
@@ -204,6 +219,7 @@ link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity
 [source,clojure]
 ----
 (get-encrypted-media client encrypted-file)
+(get-encrypted-media client encrypted-file opts)
 ----
 
 Downloads encrypted media from normalized `encrypted-file` metadata.
@@ -215,18 +231,29 @@ Returns the same normalized media-handle shape as <<get-media,`get-media`>>, wit
 `::mx/input-stream` as the public happy path and `::mx/raw` kept opaque for
 <<temporary-file,`temporary-file`>> composition.
 
+Supported opts:
+
+| key                   | description
+|-----------------------|------------
+| `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+
+Trixnity fails the task with its upstream download-limit exception when
+remote content exceeds `::mx/max-size-bytes`.
+
 Example:
 
 [source,clojure]
 ----
 (m/sp
-  (let [handle (m/? (get-encrypted-media client
-                                         (::mx/encrypted-file ev)))]
+  (let [handle (m/? (get-encrypted-media
+                       client
+                       (::mx/encrypted-file ev)
+                       {::mx/max-size-bytes (* 20 1024 1024)}))]
     (slurp (::mx/input-stream handle))))
 ----
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L282-L307[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L301-L342[source,window=_blank]
 
 '''
 
@@ -254,26 +281,32 @@ Returns the same normalized media-handle shape as <<get-media,`get-media`>>.
 
 Supported opts:
 
-| key | description
-|-----|-------------
-| `::mx/method` | Thumbnail resize method, either `:crop` or `:scale` |
-| `::mx/animated` | Request animated thumbnails when upstream supports them |
+| key                   | description
+|-----------------------|------------
+| `::mx/max-size-bytes` | Maximum bytes to download; omit for an unbounded download |
+| `::mx/method`         | Thumbnail resize method, either `:crop` or `:scale` (default `:crop`) |
+| `::mx/animated`       | Request animated thumbnails when supported (default `false`) |
+
+Trixnity fails the task with its upstream download-limit exception when
+remote content exceeds `::mx/max-size-bytes`.
 
 Example:
 
 [source,clojure]
 ----
 (m/sp
-  (let [handle (m/? (get-thumbnail client
-                                    (::mx/url ev)
-                                    320
-                                    200
-                                    {::mx/method :scale}))]
+  (let [handle (m/? (get-thumbnail
+                       client
+                       (::mx/url ev)
+                       320
+                       200
+                       {::mx/max-size-bytes (* 2 1024 1024)
+                        ::mx/method         :scale}))]
     (slurp (::mx/input-stream handle))))
 ----
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L309-L354[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L344-L397[source,window=_blank]
 
 '''
 
@@ -315,4 +348,4 @@ Example:
 ----
 
 [.api-source]
-link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L356-L395[source,window=_blank]
+link:https://github.com/outskirtslabs/trixnity-clj/blob/main/src/clj/ol/trixnity/media.clj#L399-L438[source,window=_blank]

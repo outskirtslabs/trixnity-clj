@@ -218,7 +218,7 @@ class StateEventAndMediaBridgeTest {
     }
 
     @Test
-    fun getMediaReturnsAStreamFirstHandle() = runTest {
+    fun getMediaReturnsAStreamFirstHandleAndForwardsMaximumSize() = runTest {
         val recorder = MediaRecorder()
 
         val handle =
@@ -226,16 +226,20 @@ class StateEventAndMediaBridgeTest {
                 scope = backgroundScope,
                 mediaService = mediaService(recorder),
                 uri = "mxc://example.org/plain",
+                maxSize = 12_345,
             )
 
         val stream = assertIs<java.io.InputStream>(handle[BridgeSchema.inputStream])
         assertEquals("plain-bytes", stream.reader().readText())
         assertIs<PlatformMedia>(handle[BridgeSchema.raw])
-        assertEquals(listOf("mxc://example.org/plain"), recorder.downloadedPlain)
+        assertEquals(
+            listOf(MediaDownloadRequest("mxc://example.org/plain", 12_345)),
+            recorder.downloadedPlain,
+        )
     }
 
     @Test
-    fun getEncryptedMediaDelegatesToUpstreamEncryptedDownload() = runTest {
+    fun getEncryptedMediaForwardsMaximumSize() = runTest {
         val recorder = MediaRecorder()
         val encryptedFile =
             EncryptedFile(
@@ -250,15 +254,19 @@ class StateEventAndMediaBridgeTest {
                 scope = backgroundScope,
                 mediaService = mediaService(recorder),
                 encryptedFile = encryptedFile,
+                maxSize = 54_321,
             )
 
         val stream = assertIs<java.io.InputStream>(handle[BridgeSchema.inputStream])
         assertEquals("encrypted-bytes", stream.reader().readText())
-        assertEquals(listOf(encryptedFile), recorder.downloadedEncrypted)
+        assertEquals(
+            listOf(EncryptedMediaDownloadRequest(encryptedFile, 54_321)),
+            recorder.downloadedEncrypted,
+        )
     }
 
     @Test
-    fun getThumbnailDelegatesExplicitSizingOptions() = runTest {
+    fun getThumbnailForwardsSizingOptionsAndMaximumSize() = runTest {
         val recorder = MediaRecorder()
 
         val handle =
@@ -268,6 +276,7 @@ class StateEventAndMediaBridgeTest {
                 uri = "mxc://example.org/plain",
                 width = 320,
                 height = 200,
+                maxSize = 4_096,
                 method = ThumbnailResizingMethod.SCALE,
                 animated = true,
             )
@@ -280,6 +289,7 @@ class StateEventAndMediaBridgeTest {
                     uri = "mxc://example.org/plain",
                     width = 320,
                     height = 200,
+                    maxSize = 4_096,
                     method = ThumbnailResizingMethod.SCALE,
                     animated = true,
                 ),
@@ -337,15 +347,26 @@ class StateEventAndMediaBridgeTest {
         val contentTypes: MutableList<ContentType?> = mutableListOf(),
         val uploaded: MutableList<Pair<String, Boolean>> = mutableListOf(),
         val uploadProgress: MutableList<Any?> = mutableListOf(),
-        val downloadedPlain: MutableList<String> = mutableListOf(),
-        val downloadedEncrypted: MutableList<EncryptedFile> = mutableListOf(),
+        val downloadedPlain: MutableList<MediaDownloadRequest> = mutableListOf(),
+        val downloadedEncrypted: MutableList<EncryptedMediaDownloadRequest> = mutableListOf(),
         val thumbnailRequests: MutableList<ThumbnailRequest> = mutableListOf(),
+    )
+
+    private data class MediaDownloadRequest(
+        val uri: String,
+        val maxSize: Long?,
+    )
+
+    private data class EncryptedMediaDownloadRequest(
+        val encryptedFile: EncryptedFile,
+        val maxSize: Long?,
     )
 
     private data class ThumbnailRequest(
         val uri: String,
         val width: Long,
         val height: Long,
+        val maxSize: Long?,
         val method: ThumbnailResizingMethod,
         val animated: Boolean,
     )
@@ -354,14 +375,22 @@ class StateEventAndMediaBridgeTest {
         proxy(MediaService::class.java) { proxy, method, args ->
             when {
                 method.name.startsWith("getMedia") -> {
-                    recorder.downloadedPlain += args[0] as String
+                    recorder.downloadedPlain +=
+                        MediaDownloadRequest(
+                            uri = args[0] as String,
+                            maxSize = args[1] as Long?,
+                        )
                     TestPlatformMedia(
                         chunks = listOf("plain-".toByteArray(), "bytes".toByteArray()),
                     )
                 }
 
                 method.name.startsWith("getEncryptedMedia") -> {
-                    recorder.downloadedEncrypted += args[0] as EncryptedFile
+                    recorder.downloadedEncrypted +=
+                        EncryptedMediaDownloadRequest(
+                            encryptedFile = args[0] as EncryptedFile,
+                            maxSize = args[1] as Long?,
+                        )
                     TestPlatformMedia(
                         chunks = listOf("encrypted-".toByteArray(), "bytes".toByteArray()),
                     )
@@ -373,8 +402,9 @@ class StateEventAndMediaBridgeTest {
                             uri = args[0] as String,
                             width = args[1] as Long,
                             height = args[2] as Long,
-                            method = args[3] as ThumbnailResizingMethod,
-                            animated = args[4] as Boolean,
+                            maxSize = args[3] as Long?,
+                            method = args[4] as ThumbnailResizingMethod,
+                            animated = args[5] as Boolean,
                         )
                     TestPlatformMedia(
                         chunks = listOf("thumbnail-".toByteArray(), "bytes".toByteArray()),

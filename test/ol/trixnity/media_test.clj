@@ -6,6 +6,7 @@
    [ol.trixnity.media :as sut]
    [ol.trixnity.schemas :as schemas])
   (:import
+   [de.connect2x.trixnity.clientserverapi.client DownloadLimitExceededException]
    [java.io ByteArrayInputStream Closeable InputStream]
    [java.nio.charset StandardCharsets]
    [java.nio.file Files Paths]))
@@ -249,8 +250,8 @@
             thumb-raw     (Object.)]
         (with-redefs-fn
           {bridge-get-media-var
-           (fn [client uri on-success _]
-             (swap! calls conj [:get-media client uri])
+           (fn [client uri max-size-bytes on-success _]
+             (swap! calls conj [:get-media client uri max-size-bytes])
              (on-success {::schemas/input-stream
                           (ByteArrayInputStream. (.getBytes "plain"
                                                             StandardCharsets/UTF_8))
@@ -258,8 +259,9 @@
              (->StubCloseable (atom 0)))
 
            bridge-get-encrypted-media-var
-           (fn [client payload on-success _]
-             (swap! calls conj [:get-encrypted-media client payload])
+           (fn [client payload max-size-bytes on-success _]
+             (swap! calls conj
+                    [:get-encrypted-media client payload max-size-bytes])
              (on-success {::schemas/input-stream
                           (ByteArrayInputStream. (.getBytes "secret"
                                                             StandardCharsets/UTF_8))
@@ -267,31 +269,52 @@
              (->StubCloseable (atom 0)))
 
            bridge-get-thumbnail-var
-           (fn [client uri width height method animated on-success _]
-             (swap! calls conj [:get-thumbnail client uri width height method animated])
+           (fn [client uri width height max-size-bytes method animated on-success _]
+             (swap! calls conj
+                    [:get-thumbnail
+                     client uri width height max-size-bytes method animated])
              (on-success {::schemas/input-stream
                           (ByteArrayInputStream. (.getBytes "thumb"
                                                             StandardCharsets/UTF_8))
                           ::schemas/raw          thumb-raw})
              (->StubCloseable (atom 0)))}
           (fn []
-            (let [plain-handle     ((var-get get-media-var)
-                                    :client-handle
-                                    "mxc://example.org/plain")
-                  encrypted-handle ((var-get get-encrypted-media-var)
-                                    :client-handle
-                                    encrypted-file)
-                  thumbnail-handle ((var-get get-thumbnail-var)
-                                    :client-handle
-                                    "mxc://example.org/plain"
-                                    320
-                                    200
-                                    {::schemas/method   :scale
-                                     ::schemas/animated true})]
+            (let [plain-handle
+                  ((var-get get-media-var)
+                   :client-handle
+                   "mxc://example.org/plain"
+                   {::schemas/max-size-bytes 10000})
+                  encrypted-handle
+                  ((var-get get-encrypted-media-var)
+                   :client-handle
+                   encrypted-file
+                   {::schemas/max-size-bytes 20000})
+                  thumbnail-handle
+                  ((var-get get-thumbnail-var)
+                   :client-handle
+                   "mxc://example.org/plain"
+                   320
+                   200
+                   {::schemas/max-size-bytes 4096
+                    ::schemas/method         :scale
+                    ::schemas/animated       true})
+                  legacy-handles
+                  [((var-get get-media-var)
+                    :client-handle
+                    "mxc://example.org/plain")
+                   ((var-get get-encrypted-media-var)
+                    :client-handle
+                    encrypted-file)
+                   ((var-get get-thumbnail-var)
+                    :client-handle
+                    "mxc://example.org/plain"
+                    320
+                    200)]]
               (is (= "plain"
                      (slurp-stream
                       (::schemas/input-stream (realize-task plain-handle)))))
-              (is (identical? plain-raw (::schemas/raw (realize-task plain-handle))))
+              (is (identical? plain-raw
+                              (::schemas/raw (realize-task plain-handle))))
               (is (= "secret"
                      (slurp-stream
                       (::schemas/input-stream (realize-task encrypted-handle)))))
@@ -301,11 +324,39 @@
                      (slurp-stream
                       (::schemas/input-stream (realize-task thumbnail-handle)))))
               (is (identical? thumb-raw
-                              (::schemas/raw (realize-task thumbnail-handle)))))))))
-    (is (= [[:get-media :client-handle "mxc://example.org/plain"]
-            [:get-encrypted-media :client-handle encrypted-file]
-            [:get-thumbnail :client-handle "mxc://example.org/plain" 320 200 "scale" true]]
+                              (::schemas/raw (realize-task thumbnail-handle))))
+              (is (= ["plain" "secret" "thumb"]
+                     (mapv #(-> %
+                                realize-task
+                                ::schemas/input-stream
+                                slurp-stream)
+                           legacy-handles))))))))
+    (is (= [[:get-media :client-handle "mxc://example.org/plain" 10000]
+            [:get-encrypted-media :client-handle encrypted-file 20000]
+            [:get-thumbnail
+             :client-handle "mxc://example.org/plain" 320 200 4096 "scale" true]
+            [:get-media :client-handle "mxc://example.org/plain" nil]
+            [:get-encrypted-media :client-handle encrypted-file nil]
+            [:get-thumbnail
+             :client-handle "mxc://example.org/plain" 320 200 nil nil nil]]
            @calls))))
+
+(deftest download-limit-failure-propagates-unchanged-test
+  (let [failure (DownloadLimitExceededException. 1024 nil nil)]
+    (with-redefs [bridge/get-media
+                  (fn [_ _ _ _ on-failure]
+                    (on-failure failure)
+                    (->StubCloseable (atom 0)))]
+      (is (identical?
+           failure
+           (try
+             (realize-task
+              (sut/get-media :client-handle
+                             "mxc://example.org/plain"
+                             {::schemas/max-size-bytes 1024}))
+             nil
+             (catch Throwable error
+               error)))))))
 
 (deftest temporary-file-composes-with-media-handle-tasks-and-resolved-handles-test
   (let [temporary-file-var          (resolve-var 'ol.trixnity.media 'temporary-file)
@@ -338,8 +389,8 @@
                          bridge-delete-temp-file-var])
       (with-redefs-fn
         {bridge-get-media-var
-         (fn [client uri on-success _]
-           (swap! calls conj [:get-media client uri])
+         (fn [client uri max-size-bytes on-success _]
+           (swap! calls conj [:get-media client uri max-size-bytes])
            (on-success {::schemas/input-stream
                         (ByteArrayInputStream. (.getBytes "downloaded"
                                                           StandardCharsets/UTF_8))
@@ -371,7 +422,7 @@
                                                                StandardCharsets/UTF_8))
                              ::schemas/raw          handle-raw}))]
             (is (= "downloaded" (slurp (:path tmp))))))))
-    (is (= [[:get-media :client-handle "mxc://example.org/plain"]
+    (is (= [[:get-media :client-handle "mxc://example.org/plain" nil]
             [:temporary-file handle-raw]
             [:temporary-file handle-raw]]
            @calls))
@@ -454,6 +505,13 @@
           (is (thrown-with-msg?
                clojure.lang.ExceptionInfo
                #"Schema validation failed"
+               ((var-get get-media-var)
+                :client-handle
+                "mxc://example.org/plain"
+                {::schemas/max-size-bytes -1})))
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
                ((var-get get-encrypted-media-var)
                 :client-handle
                 {::schemas/url "mxc://example.org/encrypted"})))
@@ -465,6 +523,15 @@
                 "mxc://example.org/plain"
                 0
                 200)))
+          (is (thrown-with-msg?
+               clojure.lang.ExceptionInfo
+               #"Schema validation failed"
+               ((var-get get-thumbnail-var)
+                :client-handle
+                "mxc://example.org/plain"
+                320
+                200
+                {::schemas/max-size-bytes "large"})))
           (is (thrown-with-msg?
                clojure.lang.ExceptionInfo
                #"Schema validation failed"

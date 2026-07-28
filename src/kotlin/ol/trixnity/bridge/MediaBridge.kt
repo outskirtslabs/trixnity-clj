@@ -49,6 +49,7 @@ object MediaBridge {
     fun getMedia(
         client: de.connect2x.trixnity.client.MatrixClient,
         uri: String,
+        maxSize: Long?,
         onSuccess: Any,
         onFailure: Any,
     ): Closeable = submitBridgeTask(
@@ -60,6 +61,7 @@ object MediaBridge {
             scope = this,
             mediaService = client.media,
             uri = uri,
+            maxSize = maxSize,
         )
     }
 
@@ -67,6 +69,7 @@ object MediaBridge {
     fun getEncryptedMedia(
         client: de.connect2x.trixnity.client.MatrixClient,
         encryptedFile: Map<*, *>,
+        maxSize: Long?,
         onSuccess: Any,
         onFailure: Any,
     ): Closeable = submitBridgeTask(
@@ -81,6 +84,7 @@ object MediaBridge {
                 mapOf(BridgeSchema.encryptedFile to encryptedFile),
                 BridgeSchema.encryptedFile,
             ),
+            maxSize = maxSize,
         )
     }
 
@@ -90,6 +94,7 @@ object MediaBridge {
         uri: String,
         width: Long,
         height: Long,
+        maxSize: Long?,
         method: String?,
         animated: Boolean?,
         onSuccess: Any,
@@ -105,6 +110,7 @@ object MediaBridge {
             uri = uri,
             width = width,
             height = height,
+            maxSize = maxSize,
             method = parseThumbnailMethod(method, BridgeSchema.method),
             animated = animated ?: false,
         )

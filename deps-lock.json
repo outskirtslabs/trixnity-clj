@@ -378,11 +378,11 @@
     "com/nextjournal/beholder/1.0.2/beholder-1.0.2.pom": {
       "sha256": "2d12644867503df2e87868cbc14ddd7852a86ae9b6756fd0278ea508ad1de2ee"
     },
-    "com/squareup/okio/okio-jvm/3.16.4/okio-jvm-3.16.4.jar": {
-      "sha256": "2196b993cd34dbbd919e7e01f57a4781b58bee80f86106163e287c20343a96a7"
+    "com/squareup/okio/okio-jvm/3.17.0/okio-jvm-3.17.0.jar": {
+      "sha256": "3b13dcc3e1573047c2d507fc4f7fcb0bb0cbcd9d395da21d20e09406e2cd6a73"
     },
-    "com/squareup/okio/okio-jvm/3.16.4/okio-jvm-3.16.4.pom": {
-      "sha256": "66778f4d0597bce63f91ec000c575cc029b3201f7dd092cb808875155b3e86a1"
+    "com/squareup/okio/okio-jvm/3.17.0/okio-jvm-3.17.0.pom": {
+      "sha256": "e4e44237a66f4091bc0f5b1d5a2bbe228ac014ab3c0f918cd6fc02ba31999030"
     },
     "com/sun/activation/all/1.2.0/all-1.2.0.pom": {
       "sha256": "1d8518e3ac7532a104e4f7be77def37c982e530723c6bdb3d67708cce2b0c2c4"
@@ -405,95 +405,95 @@
     "commons-logging/commons-logging/1.3.6/commons-logging-1.3.6.pom": {
       "sha256": "49fc185139bdd0c6c4adf440721e3279cb5342906bcd01a7a89399ceeaa78e85"
     },
-    "de/connect2x/lognity/lognity-api-jvm/2.1.0/lognity-api-jvm-2.1.0.jar": {
-      "sha256": "eb406de2e28b1f2968d7612f215d4fc591dfaa1dea54f814d5250e9f354f1c2b"
+    "de/connect2x/lognity/lognity-api-jvm/2.2.0/lognity-api-jvm-2.2.0.jar": {
+      "sha256": "152134eec7cd386aa1a15e7b8d22fa129d53d304fc1944dc3bd89586039b575f"
     },
-    "de/connect2x/lognity/lognity-api-jvm/2.1.0/lognity-api-jvm-2.1.0.pom": {
-      "sha256": "ff33bd518f4797f4e6bb72dcd161b3669fe5b50387cca5974fc75d234c0b333a"
+    "de/connect2x/lognity/lognity-api-jvm/2.2.0/lognity-api-jvm-2.2.0.pom": {
+      "sha256": "2690ed1165a52ffd828911968225409d6555cd8cfdc9d17330a5e948e077fa31"
     },
-    "de/connect2x/trixnity/trixnity-api-client-jvm/5.6.0/trixnity-api-client-jvm-5.6.0.jar": {
+    "de/connect2x/trixnity/trixnity-api-client-jvm/5.7.0/trixnity-api-client-jvm-5.7.0.jar": {
       "sha256": "04f3789e30992e2a0e85f30dc704545b9c375dd3f70485aea2515481b24f4ac6"
     },
-    "de/connect2x/trixnity/trixnity-api-client-jvm/5.6.0/trixnity-api-client-jvm-5.6.0.pom": {
-      "sha256": "82f5f373545686a03b201819436320577dc4c975fc04201a37f18985d3ab8778"
+    "de/connect2x/trixnity/trixnity-api-client-jvm/5.7.0/trixnity-api-client-jvm-5.7.0.pom": {
+      "sha256": "63719eb48f0bfca6b7da575d1d6dc75b26bef12f038ceb1330d6dc1025501caa"
     },
-    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.6.0/trixnity-client-cryptodriver-vodozemac-jvm-5.6.0.jar": {
-      "sha256": "bb6dadf0dcc69a13df12617c2b7e24d02a8c9d8601aa0d36b857c4acda41fc27"
+    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.7.0/trixnity-client-cryptodriver-vodozemac-jvm-5.7.0.jar": {
+      "sha256": "2255863b73fe517779adebcc3c5f0992f17aa4080daa9d197a8db6b2b746a52e"
     },
-    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.6.0/trixnity-client-cryptodriver-vodozemac-jvm-5.6.0.pom": {
-      "sha256": "7619534e70081e18f7075806b8f60c0960bb6eb45349458ebf02513b3fb4ba9c"
+    "de/connect2x/trixnity/trixnity-client-cryptodriver-vodozemac-jvm/5.7.0/trixnity-client-cryptodriver-vodozemac-jvm-5.7.0.pom": {
+      "sha256": "7fc29a61be292e1bd19340567358cf08275eb0923fb31c447157d04480012c01"
     },
-    "de/connect2x/trixnity/trixnity-client-jvm/5.6.0/trixnity-client-jvm-5.6.0.jar": {
-      "sha256": "5c57bb5e341acecc5ad22275ec880db9b50a18f549c9a7e423dda8f90fe058c3"
+    "de/connect2x/trixnity/trixnity-client-jvm/5.7.0/trixnity-client-jvm-5.7.0.jar": {
+      "sha256": "a5bf116dd8c4d3ee49432cde2f88d8c6bababecf57ec463298452486ee2c0ec2"
     },
-    "de/connect2x/trixnity/trixnity-client-jvm/5.6.0/trixnity-client-jvm-5.6.0.pom": {
-      "sha256": "8c312b7efe9359318015dd961552f095eb4fdf83a8a342b84362f928d4d30559"
+    "de/connect2x/trixnity/trixnity-client-jvm/5.7.0/trixnity-client-jvm-5.7.0.pom": {
+      "sha256": "778b0ef45fe61e8df03affcbe78380146b228fd98a387c107b911f90746bc889"
     },
-    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.6.0/trixnity-client-media-okio-jvm-5.6.0.jar": {
-      "sha256": "5a2218174d80ba859dcea2e703538ae7ac6337f036f1016fb33acff816410e4f"
+    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.7.0/trixnity-client-media-okio-jvm-5.7.0.jar": {
+      "sha256": "22c4b318d893ffd48137902002c7107a16fd92b0a31b307a3b528b6dbd094036"
     },
-    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.6.0/trixnity-client-media-okio-jvm-5.6.0.pom": {
-      "sha256": "86996d8e48958483973231d1bac8e366b5fabb4fc37740d56b7c8554fe6d29ff"
+    "de/connect2x/trixnity/trixnity-client-media-okio-jvm/5.7.0/trixnity-client-media-okio-jvm-5.7.0.pom": {
+      "sha256": "371c043d3278792f0c46777cecfc9314fdd3354f50bd4f3bc90141ece15daa1d"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.6.0/trixnity-clientserverapi-client-jvm-5.6.0.jar": {
-      "sha256": "56a748bc20235530b44e9b385ad54981aa3ef45f45891afd76b6f5801dc782b5"
+    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.7.0/trixnity-clientserverapi-client-jvm-5.7.0.jar": {
+      "sha256": "4602a0a3fb4f7ec3a602c7ab5e891f6a37bcf6d6ace5db7b168340d54414a142"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.6.0/trixnity-clientserverapi-client-jvm-5.6.0.pom": {
-      "sha256": "5140534a2d8923c069c6b1f3f7ee04f25401485ffafdeadd2433647ee11e64e1"
+    "de/connect2x/trixnity/trixnity-clientserverapi-client-jvm/5.7.0/trixnity-clientserverapi-client-jvm-5.7.0.pom": {
+      "sha256": "ad2e6564106b9e8cf833782759437f41983ef63315d4ed6c4ba193069042f862"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.6.0/trixnity-clientserverapi-model-jvm-5.6.0.jar": {
-      "sha256": "8aef78710670d5e1a789e928507c13cbc4f4f58e3bc3e13adcd443108f20b89d"
+    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.7.0/trixnity-clientserverapi-model-jvm-5.7.0.jar": {
+      "sha256": "22f51bba3d62e97b73e9b6e9744670183650f1ef6354b5d03cf1d47d733b503a"
     },
-    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.6.0/trixnity-clientserverapi-model-jvm-5.6.0.pom": {
-      "sha256": "90a9ad8d64f3369eff7d8ff7100deec9fee5dd5d4d1bfcdd233fa00cb912e648"
+    "de/connect2x/trixnity/trixnity-clientserverapi-model-jvm/5.7.0/trixnity-clientserverapi-model-jvm-5.7.0.pom": {
+      "sha256": "ea7925bcae5847a8762d4bcc57864622ecb5a355907abc809dea317d1ed3dfa3"
     },
-    "de/connect2x/trixnity/trixnity-core-jvm/5.6.0/trixnity-core-jvm-5.6.0.jar": {
-      "sha256": "ed93c0bb790364f3d1957c520a2fb68a3eeed24dd3720f37b51b755768024820"
+    "de/connect2x/trixnity/trixnity-core-jvm/5.7.0/trixnity-core-jvm-5.7.0.jar": {
+      "sha256": "ede16c388aed149bcd43e346b8787a5d18e717b084afef72c152f4bd136cc6f0"
     },
-    "de/connect2x/trixnity/trixnity-core-jvm/5.6.0/trixnity-core-jvm-5.6.0.pom": {
-      "sha256": "ad4f7909beb45c4697749f436a977ec3af2a4854009645506d0daefe6e3d2e51"
+    "de/connect2x/trixnity/trixnity-core-jvm/5.7.0/trixnity-core-jvm-5.7.0.pom": {
+      "sha256": "05931ebcb0bb0ab4411b4b449d49c9b90ca4b7810e2c2624facfa9f17c3d8235"
     },
-    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.6.0/trixnity-crypto-core-jvm-5.6.0.jar": {
-      "sha256": "7ae782bda26584a13ad4e7f1fc2c6eecae99b096e3c366325e1f3f34c7619ab2"
+    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.7.0/trixnity-crypto-core-jvm-5.7.0.jar": {
+      "sha256": "8bc4654bb288fff34f583d260763d0e5f5a4b51c8bf305a9e960acab6f26e391"
     },
-    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.6.0/trixnity-crypto-core-jvm-5.6.0.pom": {
-      "sha256": "75d618a8f7ed9a11f5f61293c061f604456eff105288cdd35537aefd9cf2104d"
+    "de/connect2x/trixnity/trixnity-crypto-core-jvm/5.7.0/trixnity-crypto-core-jvm-5.7.0.pom": {
+      "sha256": "4037825a599a523bd2273f3f55265d7bf487abe96f1c95c9d400794586a3b7fe"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.6.0/trixnity-crypto-driver-jvm-5.6.0.jar": {
+    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.7.0/trixnity-crypto-driver-jvm-5.7.0.jar": {
       "sha256": "b93201b2008d640ff184a894e54f865d5fd5a98ef976aedd8c068de5685fed47"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.6.0/trixnity-crypto-driver-jvm-5.6.0.pom": {
-      "sha256": "52459d6e6901a9127d37ae83d627defedd361c3aacb8fd05f770747789ba0f70"
+    "de/connect2x/trixnity/trixnity-crypto-driver-jvm/5.7.0/trixnity-crypto-driver-jvm-5.7.0.pom": {
+      "sha256": "19706cb2a9470b501229ce3f2712bf022dadf0d813db3c3041d67608193459ad"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.6.0/trixnity-crypto-driver-vodozemac-jvm-5.6.0.jar": {
-      "sha256": "f93f1f23bc8e807471080e9aa079ecf26f477d265e14019d0b5b54d4d09e4cb8"
+    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.7.0/trixnity-crypto-driver-vodozemac-jvm-5.7.0.jar": {
+      "sha256": "1e5fb76db4575d3683040ad1b0b2ac891c1cf5017c948e03c1c94233f16bf92d"
     },
-    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.6.0/trixnity-crypto-driver-vodozemac-jvm-5.6.0.pom": {
-      "sha256": "5af6ba34b0e381db19f57db2dd568d12a0519bf12fa9156788aecdd3bf914e32"
+    "de/connect2x/trixnity/trixnity-crypto-driver-vodozemac-jvm/5.7.0/trixnity-crypto-driver-vodozemac-jvm-5.7.0.pom": {
+      "sha256": "0195484218b09c3963b0c4b2419a94c5ebcde9967314a236db130f0cf54a2c85"
     },
-    "de/connect2x/trixnity/trixnity-crypto-jvm/5.6.0/trixnity-crypto-jvm-5.6.0.jar": {
-      "sha256": "511d8ca032ae117c78251b18441e7516cf14ad974d4352611fb3ed866e5d1df5"
+    "de/connect2x/trixnity/trixnity-crypto-jvm/5.7.0/trixnity-crypto-jvm-5.7.0.jar": {
+      "sha256": "48dc7ce5ccc557ecbf18fe5645a80e9d55ae735497982f1d9b2107e81191b89f"
     },
-    "de/connect2x/trixnity/trixnity-crypto-jvm/5.6.0/trixnity-crypto-jvm-5.6.0.pom": {
-      "sha256": "0cdd7ce8890b2d3b889310d2b2bb10751d63f943158fa053881800e1de0b4834"
+    "de/connect2x/trixnity/trixnity-crypto-jvm/5.7.0/trixnity-crypto-jvm-5.7.0.pom": {
+      "sha256": "ad2631805074f456124d518c4f6e675cf9c2bb085cd325dbd1f4b022bf65e99f"
     },
-    "de/connect2x/trixnity/trixnity-utils-jvm/5.6.0/trixnity-utils-jvm-5.6.0.jar": {
-      "sha256": "8faf2b3cd9d243c024a33052cabefc5f2bab5dd919e80b833514c4e916ea5c47"
+    "de/connect2x/trixnity/trixnity-utils-jvm/5.7.0/trixnity-utils-jvm-5.7.0.jar": {
+      "sha256": "d35605362f179d6ede1ab3fa0a4a32d896ff608dc4b09d6906f8318706e159e5"
     },
-    "de/connect2x/trixnity/trixnity-utils-jvm/5.6.0/trixnity-utils-jvm-5.6.0.pom": {
-      "sha256": "6280206bf62ed756a03913b0ca8e604840f2943200a6dd7a0b37e2a6541522a4"
+    "de/connect2x/trixnity/trixnity-utils-jvm/5.7.0/trixnity-utils-jvm-5.7.0.pom": {
+      "sha256": "89a5f15f0f75fcf1924e0f217070f2b5c6ffcb17d12c63c8c72bc65aed3b5d39"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.6.0/trixnity-vodozemac-binaries-jvm-5.6.0.jar": {
+    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.7.0/trixnity-vodozemac-binaries-jvm-5.7.0.jar": {
       "sha256": "ea40419daebe2af0b9f47466601f89235f0d09585d3ef20287bf16da4d5c2369"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.6.0/trixnity-vodozemac-binaries-jvm-5.6.0.pom": {
-      "sha256": "f7d47807491297e91475998e8565ce65af266ee609db51ee0f6114891b823674"
+    "de/connect2x/trixnity/trixnity-vodozemac-binaries-jvm/5.7.0/trixnity-vodozemac-binaries-jvm-5.7.0.pom": {
+      "sha256": "6876820363fc3632e5d4a3c68e3ebd30ecd9235fd9e10b0db38445bac9d702df"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.6.0/trixnity-vodozemac-jvm-5.6.0.jar": {
+    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.7.0/trixnity-vodozemac-jvm-5.7.0.jar": {
       "sha256": "08324bf5912f5909433d3c2bf4f19f4f96f57581fe1a6d2cd0a8544614981927"
     },
-    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.6.0/trixnity-vodozemac-jvm-5.6.0.pom": {
-      "sha256": "019ca6f2b94ce90c85f44d18af5ccaaf5d1b52a22226ca97f998621576d43ec7"
+    "de/connect2x/trixnity/trixnity-vodozemac-jvm/5.7.0/trixnity-vodozemac-jvm-5.7.0.pom": {
+      "sha256": "7fbce234a1d8221522db75fd4c73c6802d2bbbe52603b13ac8f91c95778286ac"
     },
     "dev/weavejester/hashp/0.5.1/hashp-0.5.1.jar": {
       "sha256": "ecf7ed76d9f1bdfb2acfdae73a1f6775e8f17dd2a7d4381e80e053aefbdd9e09"
@@ -603,11 +603,11 @@
     "io/github/tonsky/fast-edn/1.1.3/fast-edn-1.1.3.pom": {
       "sha256": "de09e9435d1248032da6acda70ec884cd2d8394234b5c2cddbab0a01b1eab901"
     },
-    "io/insert-koin/koin-core-jvm/4.1.1/koin-core-jvm-4.1.1.jar": {
-      "sha256": "90a8e98c0de5351325804db39a2154ab283503a6d92981609da3dcc16b0d15ca"
+    "io/insert-koin/koin-core-jvm/4.2.2/koin-core-jvm-4.2.2.jar": {
+      "sha256": "6d88966bbd7e65631f6a962f46a959b857e39e6fcc45b4088997b1d54fef0004"
     },
-    "io/insert-koin/koin-core-jvm/4.1.1/koin-core-jvm-4.1.1.pom": {
-      "sha256": "618ef6ef26cd651336a92b71100ae5565edd08d224a2ea0edb77f55c6868ada6"
+    "io/insert-koin/koin-core-jvm/4.2.2/koin-core-jvm-4.2.2.pom": {
+      "sha256": "105e6303fcaa4a8cc374317dcb04faf64b64146e1130feaac15773023e09d2ba"
     },
     "io/ktor/ktor-client-auth-jvm/3.5.0/ktor-client-auth-jvm-3.5.0.jar": {
       "sha256": "75d0e37b25ed209b07206149cafe849e21ff1b04578218ed85d49edbc7411fa5"
@@ -1731,11 +1731,11 @@
     "org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/1.11.0/kotlinx-coroutines-slf4j-1.11.0.pom": {
       "sha256": "20850a2ade75ca8f00c7981b94d659f28ab26a1e27b8666e4b8a3102ee7d238d"
     },
-    "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.7.1/kotlinx-datetime-jvm-0.7.1.jar": {
-      "sha256": "3b8b98657c9aff3be7f6b4b575e9f3fb9a3a1f452a801da0f438901734acdade"
+    "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.8.0/kotlinx-datetime-jvm-0.8.0.jar": {
+      "sha256": "ee44b51f8977c2f51d575299a4fc6782ab3700eba4cfc7fad548cced1543936a"
     },
-    "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.7.1/kotlinx-datetime-jvm-0.7.1.pom": {
-      "sha256": "8a750497e705cbfe4b8eabb620dd4c1b8c284ecead6aa8e630a59779f438975d"
+    "org/jetbrains/kotlinx/kotlinx-datetime-jvm/0.8.0/kotlinx-datetime-jvm-0.8.0.pom": {
+      "sha256": "66a49c6f5379910651a2732ab73858f888a686a569c9b1cbf2f600a034582827"
     },
     "org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/0.9.0/kotlinx-io-bytestring-jvm-0.9.0.jar": {
       "sha256": "43a8c9d7c5460622c4ffe7e7c9443736af1a69183316b532de78a9aafa86b636"

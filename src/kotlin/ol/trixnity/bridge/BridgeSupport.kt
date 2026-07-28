@@ -394,15 +394,26 @@ internal suspend fun getMedia(
     scope: CoroutineScope,
     mediaService: MediaService,
     uri: String,
+    maxSize: Long?,
 ): Map<Keyword, Any?> =
-    normalizeMediaHandle(scope, mediaService.getMedia(uri).getOrThrow())
+    normalizeMediaHandle(
+        scope,
+        mediaService.getMedia(uri = uri, maxSize = maxSize).getOrThrow(),
+    )
 
 internal suspend fun getEncryptedMedia(
     scope: CoroutineScope,
     mediaService: MediaService,
     encryptedFile: EncryptedFile,
+    maxSize: Long?,
 ): Map<Keyword, Any?> =
-    normalizeMediaHandle(scope, mediaService.getEncryptedMedia(encryptedFile).getOrThrow())
+    normalizeMediaHandle(
+        scope,
+        mediaService.getEncryptedMedia(
+            encryptedFile = encryptedFile,
+            maxSize = maxSize,
+        ).getOrThrow(),
+    )
 
 internal suspend fun getThumbnail(
     scope: CoroutineScope,
@@ -410,12 +421,20 @@ internal suspend fun getThumbnail(
     uri: String,
     width: Long,
     height: Long,
+    maxSize: Long?,
     method: ThumbnailResizingMethod,
     animated: Boolean,
 ): Map<Keyword, Any?> =
     normalizeMediaHandle(
         scope,
-        mediaService.getThumbnail(uri, width, height, method, animated).getOrThrow(),
+        mediaService.getThumbnail(
+            uri = uri,
+            width = width,
+            height = height,
+            maxSize = maxSize,
+            method = method,
+            animated = animated,
+        ).getOrThrow(),
     )
 
 internal suspend fun temporaryMediaFile(
